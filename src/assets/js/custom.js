@@ -4,6 +4,9 @@ Author: Wrappixel
 Email: niravjoshi87@gmail.com
 File: js
 */
+
+function init_plugins(){
+
 $(function() {
     "use strict";
     $(function() {
@@ -155,3 +158,20 @@ $(function() {
     });
 
 });
+
+}
+
+function toggleSidebar(){
+
+    
+          $("body").trigger("resize");
+          $("body").addClass("mini-sidebar");
+          $(".navbar-brand span").hide();
+
+            $("body").toggleClass("show-sidebar");
+            $(".nav-toggler i").toggleClass("ti-menu");
+            // $(".nav-toggler i").addClass("ti-close");
+            // $("aside").addClass("");
+        }
+
+        

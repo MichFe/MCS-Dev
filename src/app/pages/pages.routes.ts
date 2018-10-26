@@ -7,12 +7,14 @@ import { Graficas1Component } from "./graficas1/graficas1.component";
 import { CrmComponent } from "./crm/crm.component";
 import { CalendarioComponent } from "./calendario/calendario.component";
 import { UsuariosComponent } from "./usuarios/usuarios.component";
+import { LoginGuardGuard } from "../services/guards/login-guard.guard";
 
 
 const pagesRoutes:Routes = [
     {
         path: '',
         component: PagesComponent,
+        canActivate: [ LoginGuardGuard ],
         children: [
             { path: 'dashboard', component: DashboardComponent },
             { path: 'progress', component: ProgressComponent },

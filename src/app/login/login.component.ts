@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { UsuarioService } from '../services/usuarios/usuario.service';
 import { Usuario } from '../models/usuario.model';
 import { Router } from '@angular/router';
+import swal from 'sweetalert'
 
 
 @Component({
@@ -17,7 +18,7 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private _usuarioService:UsuarioService,
-    private router:Router
+    private router:Router,
   ) {}
 
   ngOnInit() {
@@ -46,15 +47,13 @@ export class LoginComponent implements OnInit {
             
             if(correcto){
               this.router.navigate(['/dashboard']);
+            }else{
+              swal('Login', 'El usuario o la contraseña son incorrectos', 'warning');
             }
             
           });
     //---->
     
-
-
-    console.log( forma.valid );
-    console.log( forma.value );
 
   }
 }

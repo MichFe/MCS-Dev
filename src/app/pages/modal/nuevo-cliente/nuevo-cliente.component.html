@@ -1,0 +1,107 @@
+<div class="modal fade" id="nuevoCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+  
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Registrar Cliente</h4>
+        <button (click)="resetearModal()" 
+                type="button" 
+                class="close" 
+                data-dismiss="modal" 
+                aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+      
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+          <form class="form-horizontal" role="form">
+            <div class="form-body">
+
+              <div class="text-center">
+                <div class="image-container">
+                  <img class="profile img-circle" src="../assets/images/users/default.png">
+                  <div class="after text-center"><i class="fa fa-plus icon-center"></i></div>
+                </div>
+                <h3 class="box-title font-bold">{{ nombre }}</h3>
+              </div>
+
+              <hr class="m-t-0">
+
+              <!-- Panel de ingreso de información del cliente -->
+              <div>
+              
+                <form class="form-horizontal p-t-20">
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Nombre*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-user"></i></div>
+                        <input (keyup)="validarFormulario()" name="nombre" [(ngModel)]="nombre" type="text" class="form-control" placeholder="Nombre del Cliente">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Teléfono*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-mobile"></i></div>
+                        <input (keyup)="validarFormulario()" name="telefono" [(ngModel)]="telefono" type="text" class="form-control" placeholder="Teléfono (sólo números)">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Dirección*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-location-pin"></i></div>
+                        <input (keyup)="validarFormulario()" name="direccion" [(ngModel)]="direccion" type="text" class="form-control" placeholder="Calle #, Colonia, Ciudad, Estado">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row m-b-0">
+                    <label class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-email"></i></div>
+                        <input (keyup)="validarFormulario()" name="correo" [(ngModel)]="correo" type="email" class="form-control" placeholder="Correo electrónico">
+                      </div>
+                    </div>
+                  </div>
+              
+                </form>
+              
+              </div>
+              <!-- Fin de panel de edición de información del cliente -->
+            
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button (click)="registrarCliente()"
+                type="button"
+                [attr.data-toggle]="(!completo)?'tooltip':null"
+                [attr.data-title]="(!completo)?mensajeRequeridos:null"
+                [attr.data-placement]="(!completo)?'bottom':null"
+                 [ngClass]="{ 'disabled': !completo }"
+                class="btn btn-success waves-effect waves-light">Registrar</button>
+
+        <button type="button"
+                (click)="resetearModal()" 
+                class="btn btn-danger waves-effect waves-light" 
+                data-dismiss="modal">Salir</button>
+        <!-- Fin de botones -->
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

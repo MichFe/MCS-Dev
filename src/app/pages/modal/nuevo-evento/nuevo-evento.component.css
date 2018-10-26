@@ -1,0 +1,28 @@
+p{
+    margin:0px;
+}
+
+hr{
+     border: 0; 
+     height: 1px; 
+     background: #278395; 
+     background-image: linear-gradient(to right, #caebf1, #278395, #caebf1);
+}
+
+img.profile{
+    width: 90px;
+}
+
+.input-group-addon{
+    background-color: #278395;
+    border-color: #278395;
+    color:#caebf1;
+}
+
+input.form-control{
+    border-color:#278395;
+}
+
+div.info{
+    font-size: smaller;
+}

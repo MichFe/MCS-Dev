@@ -1,0 +1,42 @@
+img.logo{
+    width:150px;
+}
+
+td{
+    vertical-align: middle;
+}
+
+td.clickable{
+    cursor: pointer;
+}
+
+td.clickable:hover{
+    border:2px solid #caebf1;
+}
+
+td.editando{
+    background-color:#caebf1;
+}
+
+div.politicas{
+    font-size:8px;
+}
+
+img.product-image{
+    height: 50px;
+}
+
+.oculto{
+    display: none;
+}
+
+.modal-lg {
+    max-width: 85%;
+}
+
+@media print {
+
+    .no-print {
+        display: none;
+    }
+}

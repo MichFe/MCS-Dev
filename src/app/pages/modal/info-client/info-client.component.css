@@ -1,0 +1,23 @@
+
+img.profile{
+    width:100px;
+}
+
+label{
+    font-weight: bold;
+}
+
+hr{
+     border: 0; 
+     height: 1px; 
+     background: #278395; 
+     background-image: linear-gradient(to right, #caebf1, #278395, #caebf1);
+}
+
+/* h3,label{
+    color:#278395; 
+} */
+
+/* span{
+    color:#2e9bb0;
+} */

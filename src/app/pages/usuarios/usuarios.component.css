@@ -1,0 +1,50 @@
+
+/* Paleta de colores */
+.paleta-de-colores{
+    color: #278395;
+    color: #2e9bb0;
+    color: #caebf1;
+    color: #f6f6f6;
+}
+
+
+*{
+    color: #278395;
+}
+
+ul{
+}
+
+li{
+    list-style: none;
+
+    
+}
+
+.small{
+    line-height: 80%;
+    font-size:80%;
+    /* font-weight:400; */
+}
+
+div.v-center{
+    /* display: flex; */
+    /* align-items: center; */
+    /* height: 50px; */
+    margin:auto;
+}
+
+span.linea{
+    display: block;
+    width: 100%;
+    align-self: center
+
+}
+
+.img-profile{
+    width:50px;
+    border-radius: 100%;
+
+    margin-top: 50%;
+    margin-bottom: 50%;
+}

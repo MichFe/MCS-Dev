@@ -1,0 +1,75 @@
+  
+  <div class="container">
+  
+        <div class="card-body">
+
+          <div class="controlBar">
+
+            <div class="btn-group pull-left">
+              <button class="btn btn-light custom-btn"
+                      (click)="mesAnterior()"><i class="fa fa-arrow-left"></i></button>
+              <button class="btn btn-light custom-btn"
+                      (click)="mesSiguiente()"><i class="fa fa-arrow-right"></i></button>
+            </div>
+
+            <div class="displayFecha">
+              {{ month | mes |uppercase }} {{ year }}
+            </div>
+
+
+          </div>
+
+          <table *ngIf="semanas.length>0" class="table text-center">
+            <thead>
+              <tr>
+                <th>Dom</th>
+                <th>Lun</th>
+                <th>Mar</th>
+                <th>Mié</th>
+                <th>Jue</th>
+                <th>Vie</th>
+                <th>Sáb</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let semana of semanas; let numSemana=index;">
+
+                <!-- Celda del día  -->
+                <td *ngFor="let dia of semana; let numDia=index;"
+                     (click)="registrarSemanaYDia(numSemana,numDia)"
+                     data-toggle="modal" 
+                     data-target="#nuevoEvento"
+                     [ngClass]="{
+                       'noMesActual': (dia.otroMes),
+                       'today': (dia.today)
+                      }">
+                  
+                  <!-- numero de día -->
+                  <div class="dia">
+                    <span class="pull-left">{{ dia.numero }}</span>
+                  </div>
+                  <!-- Fin numero de dia -->
+                    <br>
+                  
+                  <!-- Div de eventos -->
+                  <div *ngFor="let evento of dia.eventos; let numEvento=index;" 
+                       class="evento"
+                       [ngStyle]="{'background-color': evento.colorFondo}"
+                       (click)="editarEvento(numSemana,numDia, numEvento, $event)">
+                    <span>{{ evento.nombreEvento }}</span>
+                  </div>
+                  <!-- Fin de div de eventos -->
+
+  
+                </td>
+                <!-- Termina celda del Dia -->
+
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+  
+  </div>
+
+  <app-nuevo-evento (nuevoEvento)="nombreEvento($event)"></app-nuevo-evento>

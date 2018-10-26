@@ -1,0 +1,175 @@
+<div class="modal fade" id="cotizacion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Cotización: {{ proyecto.nombre }}</h4>
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+
+          <!-- Documento Cotización -->
+          <div id="documento-cotizacion" class="container print-content">
+
+            <!-- Header de cotizacion -->
+            <div class="row m-b-5">
+
+              <div class="col col-md-12 m-b-30">
+                <img class="logo pull-left" src="../assets/images/mobla-logo.png" alt="">
+              </div>
+              
+            </div>
+            <div class="row">
+              <div class="col col-md-12">
+                <span class="pull-left">
+                  Cotización: {{ cliente.nombre }}
+                </span>
+
+                <span class="pull-right">
+                  León Gto. al {{ fecha | date:'fullDate'}}
+                </span>
+              </div>
+            </div>
+            <!-- Fin de header de cotizacion -->
+
+            <!-- Tabla de productos -->
+            <div class="row m-b-30">
+              <div class="col col-md-12 p-l-10 p-r-10 table-responsive">
+
+                <table  id="tablaCotizacion" 
+                        class="table editable-table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Imágen</th>
+                      <th>Producto</th>
+                      <th>Descripción</th>
+                      <th>Cant.</th>
+                      <th [ngClass]="{'no-print': totalDescuento==0}">Descuento</th>
+                      <th>Precio</th>
+                      <th>Importe</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let producto of productos; let i=index;">
+                      <td class="text-center"><img class="product-image" src="../assets/images/gallery/chair2.jpg"></td>
+                      <td>{{ producto.nombre }}</td>
+                      <td>{{ producto.descripcion }}</td>
+                      <td (click)="clearFieldCantidad($event,i)" 
+                          (keyup.enter)="loseFocus(i)" 
+                          (blur)="loseFocus(i)" 
+                          (input)="actualizandoCantidad($event,i)" 
+                          class="text-center clickable"
+                           [ngClass]="{'editando': producto.editandoCantidad}"
+                          contenteditable="true">0</td>
+                      <td (click)="clearFieldDescuento($event,i)"
+                          (keyup.enter)="loseFocusDescuento(i)"
+                          (blur)="loseFocusDescuento(i)"
+                          (input)="actualizarDescuento($event,i)"
+                          class="text-center clickable"
+                          [ngClass]="{
+                            'editando': producto.editandoDescuento,
+                            'no-print':totalDescuento==0
+                          }"
+                          contenteditable="true">0</td>
+                      <td (click)="clearFieldPrecio($event,i)" 
+                          (keyup.enter)="loseFocusPrecio(i)" 
+                          (blur)="loseFocusPrecio(i)" 
+                          (input)="actualizarPrecio($event,i)" 
+                          class="text-center clickable"
+                          [ngClass]="{'editando': producto.editandoPrecio}"
+                          contenteditable="true">$8,000.00</td>
+                      <td class="text-center">{{ producto.precio * producto.cantidad | currency:'MXN' }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th><strong>SUBTOTAL</strong></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                      <th></th>
+                      <th class="text-center">{{ totalImporte | currency:'MXN' }}</th>
+                    </tr>
+                    <tr [ngClass]="{'oculto': totalDescuento==0}">
+                      <th><strong>DESCUENTO</strong></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                      <th></th>
+                      <th class="text-center">{{ totalDescuento | currency:'MXN' }}</th>
+                    </tr>
+                    <tr>
+                      <th><strong>TOTAL</strong></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                      <th></th>
+                      <th class="text-center">{{ totalImporte - totalDescuento | currency:'MXN' }}</th>
+                    </tr>
+                  </tfoot>
+
+                </table>
+                
+              </div>
+            </div>
+            <!-- Fin de tabla de productos -->
+
+            <!-- Políticas -->
+            <div class="politicas">
+              <span><strong>Imágenes meramente ilustrativas</strong></span>
+            
+              <ol class="p-l-0 m-l-10">
+                <li *ngFor="let politica of politicas"
+                    class="m-0">{{ politica }}</li>
+              </ol>
+            </div>
+            <!-- Fin de Políticas -->
+          
+
+          </div>
+          <!-- Fin de documento Cotización -->
+
+        </div>
+      </div>
+      <!-- Final de Modal Body -->
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+
+        <button type="button"
+                class="btn btn-success waves-effect waves-light"
+                (click)="imprimirCotizacion()"
+                >Imprimir</button>
+
+        <button type="button"
+                class="btn btn-warning waves-effect waves-light"
+                 (click)="guardarCotizacion()"
+                [ngClass]="{'disabled': !notaValida}"
+                [attr.data-toggle]="(!notaValida)?'tooltip':null"
+                [attr.data-original-title]="(!notaValida)?'Favor de validar la nota':null"
+                [attr.data-placement]="(!notaValida)?'bottom':null">Guardar</button>
+
+        <button type="button"
+                (click)="resetearModal()" 
+                class="btn btn-danger waves-effect waves-light" 
+                data-dismiss="modal">Salir</button>
+        <!-- Fin de botones -->
+
+      </div>
+      <!-- Fin de Modal Footer -->
+
+    </div>
+  </div>
+</div>
+

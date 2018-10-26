@@ -1,0 +1,92 @@
+table{
+    display: table;
+    table-layout: fixed;
+
+}
+
+th{
+    font-weight:600;
+    text-align: center;
+}
+td,th{
+    padding:5px;
+}
+
+td{
+    height:80px;
+    border: 1px solid rgba(120, 130, 140, 0.09);
+}
+
+td:hover{
+    background-color: #caebf1;
+}
+
+div.dia{
+    font-size: 13px;
+    display:block;
+}
+
+div.evento{
+    background-color: #278395;
+    color:white;
+    cursor:pointer;
+    font-size: 13px;
+    padding-left:5px;
+    margin-bottom: 5px;
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+div.evento-1{
+    background-color: #278395;
+}
+
+div.evento-2{
+    background-color: #0300c4;
+
+}
+
+div.evento-3{
+    background-color: #ee7f00;
+}
+
+
+div.evento:hover{
+    background-color: #19545f !important;
+}
+
+.controlBar{
+    font-size: 25px;
+    padding:25px 0px;
+}
+
+.custom-btn{
+    color:rgb(103, 117, 124);
+    border: 1px solid rgba(120, 130, 140, 0.13);
+}
+
+.displayFecha{
+    text-align: center;
+    font-weight: 500;
+
+}
+
+.noMesActual{
+    /* visibility: hidden; */
+    background-color: rgba(220, 220, 220, 0.7);
+    
+}
+
+.noMesActual:hover{
+    background-color: #a1dbe7;
+}
+
+td.today{
+    border: 2px solid #a1dbe7;;
+    border-style: dashed;
+}
+
+

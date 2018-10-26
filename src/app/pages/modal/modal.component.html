@@ -1,0 +1,57 @@
+<!-- Ejemplo botones -->
+<!-- <div class="button-box">
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open
+    modal for @mdo</button>
+  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal" data-whatever="@fat">Open modal
+    for @fat</button>
+  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal" data-whatever="@getbootstrap">Open
+    modal for @getbootstrap</button>
+</div> -->
+
+<!-- Modal con inputs -->
+<div class="modal fade" id="nuevoProyecto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">{{ tituloModal }}</h4>
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="control-label">Proyecto*:</label>
+            <input type="text" class="form-control" id="recipient-name1"
+                    [(ngModel)]="nombreProyecto"
+                    name="nombreProyecto">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="control-label">Descripción*:</label>
+            <textarea class="form-control" id="message-text1"
+                      [(ngModel)]="descripcionProyecto"
+                      name="descripcionProyecto"></textarea>
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        
+        <button (click)="guardarProyecto()"
+                [ngClass]="{ 'disabled': (nombreProyecto=='' || descripcionProyecto=='') }"
+                type="button" 
+                class="btn btn-success waves-effect waves-light"
+                [attr.data-toggle]="(nombreProyecto=='' || descripcionProyecto=='')?'tooltip':null"
+                [attr.data-original-title]="(nombreProyecto=='' || descripcionProyecto=='')?mensajeRequeridos:null"
+                [attr.data-placement]="(nombreProyecto=='' || descripcionProyecto=='')?'bottom':null"
+                [attr.data-dismiss]="(nombreProyecto!='' && descripcionProyecto!='')?'modal':''">Agregar</button>
+
+        <button (click)="resetearModal()" 
+                type="button" 
+                class="btn btn-danger waves-effect waves-light" 
+                data-dismiss="modal">Cancelar</button>
+
+      </div>
+    </div>
+  </div>
+</div>

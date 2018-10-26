@@ -1,0 +1,198 @@
+<div class="modal fade" id="infoCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+ 
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Información de: <small>{{ cliente.nombre }}</small></h4>
+        <button (click)="resetearModal();" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+
+        <!-- Vista de información -->
+        <div class="card-body">
+          <form class="form-horizontal" role="form">
+            <div class="form-body">
+
+              <div class="text-center">
+                <img *ngIf="cliente.imagen" class="profile img-circle m-b-10" [src]="cliente.imagen">
+                <h3 class="box-title font-bold">{{ cliente.nombre }}</h3>
+              </div>
+              
+              <hr class="m-t-0"
+                  [ngClass]="{
+                    'm-b-40': !editando
+                  }">
+
+              <!-- Alineación de información centrada -->
+              <div *ngIf="!editando"
+                   class="animated"
+                   [ngClass]="{ 
+                      'bounceInDown': !editando, 
+                      'bounceOutDown': outAnimation}">
+                <div class="text-center">
+                  <label class="control-label">Nombre:</label>
+                  <span class="form-control-static"> {{ cliente.nombre }} </span>
+                </div>
+                
+                <br>
+                
+                <div class="text-center">
+                  <label class="control-label">Teléfono:</label>
+                  <span class="form-control-static"> {{ cliente.telefono}} </span>
+                </div>
+                
+                <br>
+                
+                <div class="text-center">
+                  <label class="control-label">Dirección:</label>
+                  <span class="form-control-static"> {{ cliente.direccion }} </span>
+                </div>
+                
+                <br>
+                
+                <div class="text-center">
+                  <label class="control-label">Email:</label>
+                  <span class="form-control-static"> {{ cliente.correo }} </span>
+                </div>
+              </div>
+              <!-- Fin de información centrada
+
+              <!-- Alineación de información izquierda (basada en columnas) -->
+              <!-- <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="control-label text-right col-md-3">Nombre:</label>
+                    <div class="col-md-9">
+                      <p class="form-control-static"> {{ cliente.nombre }} </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="control-label text-right col-md-3">Teléfono:</label>
+                    <div class="col-md-9">
+                      <p class="form-control-static"> 477-238-25-25 </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="control-label text-right col-md-3">Dirección</label>
+                    <div class="col-md-9">
+                      <p class="form-control-static"> Violetas 110, Jardínes de Jerez, León, Gto. </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group row">
+                    <label class="control-label text-right col-md-3">Email:</label>
+                    <div class="col-md-9">
+                      <p class="form-control-static"> mich.feloz@gmail.com </p>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+
+              <!-- Fin de información izquierda -->
+
+              <!-- Panel de edición de información del cliente -->
+              <div *ngIf="editando"
+                   class="animated"
+                   [ngClass]="{
+                                'bounceInDown': editando,
+                                 'bounceOutDown': outAnimation
+                              }">
+
+                <form class="form-horizontal p-t-20">
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Nombre*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-user"></i></div>
+                        <input  name="nuevoNombre"
+                                [(ngModel)]="nuevoNombre"
+                                type="text" class="form-control" placeholder="Nombre del Cliente">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label  class="col-sm-3 control-label">Teléfono*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-mobile"></i></div>
+                        <input  name="nuevoTelefono"
+                                [(ngModel)]="nuevoTelefono" 
+                                type="text" class="form-control" placeholder="Teléfono (sólo números)">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Dirección*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-location-pin"></i></div>
+                        <input  name="nuevaDireccion" 
+                                [(ngModel)]="nuevaDireccion"
+                                type="text" class="form-control" placeholder="Calle #, Colonia, Ciudad, Estado">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row m-b-0">
+                    <label class="col-sm-3 control-label">Email</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-email"></i></div>
+                        <input  name="nuevoCorreo"
+                                [(ngModel)]="nuevoCorreo"
+                                type="email" class="form-control" placeholder="Correo electrónico">
+                      </div>
+                    </div>
+                  </div>
+                  
+                </form>
+
+              </div>
+              <!-- Fin de panel de edición de información del cliente -->
+
+            </div>
+          </form>
+        </div>
+
+      </div>
+      <!-- Fin de Modal Body -->
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones vista información -->
+        <button *ngIf="!editando"
+                (click)="cerrarInformacion()"
+                type="button" class="btn btn-success waves-effect waves-light">Editar</button>
+        <button *ngIf="!editando"
+                type="button" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">Salir</button>
+        <!-- Fin de botones vista información -->
+
+        <!-- Botones vista edición -->
+        <button *ngIf="editando" 
+                (click)="guardarCambios()"
+                class="btn btn-warning waves-effect waves-light">Guardar</button>
+        <button *ngIf="editando"
+                (click)="cerrarEdicion()" 
+                class="btn btn-danger waves-effect waves-light">Cancelar</button>
+        <!-- Fin de botones vista edición -->
+
+      </div>
+      <!-- Fin de Modal Footer -->
+    </div>
+
+  </div>
+
+</div>

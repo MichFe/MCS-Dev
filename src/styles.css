@@ -6,6 +6,10 @@
     #printSection {
         display: none;
     }
+
+    .pointer{
+        cursor: pointer;
+    }
 }
 
 @media print {

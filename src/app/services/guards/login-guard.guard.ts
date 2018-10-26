@@ -27,11 +27,11 @@ export class LoginGuardGuard implements CanActivate {
       }else{
         
         this.router.navigate(['/login']);
-        
+
       }
     }),catchError((err)=>{
       this.router.navigate(['/login']);
-      swal('Login', 'Favor de iniciar sesión','warning');
+      // swal('Login', 'Favor de iniciar sesión','warning');
       return of(false);
     }));
     

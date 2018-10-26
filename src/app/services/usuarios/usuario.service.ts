@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { URL_SERVICIOS } from '../../config/config';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
 
 
@@ -12,12 +13,16 @@ import { of } from 'rxjs';
 })
 export class UsuarioService {
   usuario: Usuario;
-  id:string;
+  id: string;
   token: string;
 
-  constructor(public http: HttpClient) {
+  constructor(
+    public http: HttpClient,
+    private router:Router
+  ) {
     this.cargarStorage();
   }
+
   //------------------------
   // Función de login
   //------------------------
@@ -42,7 +47,7 @@ export class UsuarioService {
         return true;
         // ---->
       }),
-      catchError((err)=>{
+      catchError(err => {
         return of(false);
       })
     );
@@ -51,6 +56,26 @@ export class UsuarioService {
   //------------------------
   // FIN de Función login
   //------------------------
+
+  //---------------------------
+  // Función de logout
+  //---------------------------
+  logout(){
+    this.usuario=null;
+    this.token='';
+    this.id='';
+
+    localStorage.removeItem('token');
+    localStorage.removeItem("id");
+    localStorage.removeItem("usuario");
+
+    this.router.navigate(['/login']);
+    
+  
+  }
+  //---------------------------
+  // Fin de Función de logout
+  //---------------------------
 
   //-------------------------------------
   // Función crear Usuario
@@ -83,16 +108,15 @@ export class UsuarioService {
   // Función para cargar los datos del usuario desde el localstorage
   //-------------------------------------------------------------------------
   cargarStorage() {
-    if(localStorage.getItem('token')){
-      this.token=localStorage.getItem('token');
-      this.usuario = JSON.parse(localStorage.getItem('usuario'));
-      this.id = localStorage.getItem('id');
-    }else{
-      this.token='';
-      this.usuario=null;
-      this.id='';
+    if (localStorage.getItem("token")) {
+      this.token = localStorage.getItem("token");
+      this.usuario = JSON.parse(localStorage.getItem("usuario"));
+      this.id = localStorage.getItem("id");
+    } else {
+      this.token = "";
+      this.usuario = null;
+      this.id = "";
     }
-
   }
   //-------------------------------------------------------------------------
   // FIN de Función para cargar los datos del usuario desde el localstorage
@@ -103,9 +127,9 @@ export class UsuarioService {
   //--------------------------------------------------------------
   validarLogin() {
     let url = URL_SERVICIOS + "/validarToken";
-    
-    return this.http.post(url,{
-      'token': this.token
+
+    return this.http.post(url, {
+      token: this.token
     });
   }
   //--------------------------------------------------------------

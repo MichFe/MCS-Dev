@@ -5,6 +5,8 @@ import { Usuario } from '../models/usuario.model';
 import { Router } from '@angular/router';
 import swal from 'sweetalert'
 
+declare function init_plugins();
+
 
 @Component({
   selector: "app-login",
@@ -22,10 +24,14 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
+    init_plugins();
+
     this.email = localStorage.getItem('email') || '';
     if( this.email.length > 1 ){
       this.recordarPassword = true;
     }
+    
   }
 
   login(forma:NgForm){

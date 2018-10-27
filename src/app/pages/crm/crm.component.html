@@ -24,7 +24,14 @@
                     <li *ngFor="let cliente of clientesFiltrados; let i=index;"
                         (click)="seleccionarCliente(cliente,i)">
                       <a class="list-cliente">
-                        <img [src]="cliente.imagen" alt="user-img" class="img-circle"> 
+                        <img [src]="cliente.imagen" 
+                             class="img-circle"
+                             *ngIf="cliente.imagen">
+                        <div class="iniciales-cliente align-content-center"
+                             *ngIf="!cliente.imagen"
+                             [ngStyle]="{ 'background-color': cliente.backgroundColor }">
+                          {{ cliente.nombre | iniciales }}
+                        </div>
                         <span>
                           {{ cliente.nombre }}
                           <small 
@@ -42,21 +49,31 @@
                   </ul>
                 </div>
 
-                <div class="container m-t-20">
+                <div class="container">
                   <button *ngIf="!chatProyectos" 
-                          class="btn btn-success btn-block waves-effect waves-light"
+                          class="btn btn-success btn-block waves-effect waves-light m-t-20"
                           data-toggle="modal" 
                           data-target="#nuevoCliente">Agregar Cliente</button>
                 </div>
 
                 <!-- Cliente Actual y proyectos -->
                 <div class="chat-clients" *ngIf="chatProyectos">
-                  <ul class="chatonline style-non cliente-actual">
+
+                  <ul class="chatonline style-non cliente-actual m-0">
                     <li 
                       data-toggle="modal" 
                       data-target="#infoCliente">
                       <a href="javascript:void(0)" class="list-cliente">
-                        <img [src]="clienteActual.imagen" alt="user-img" class="img-circle"> 
+                        <img [src]="clienteActual.imagen" 
+                             *ngIf="clienteActual.imagen" 
+                             class="img-circle">
+
+                        <div class="iniciales-cliente align-content-center"
+                             [ngStyle]="{ 'background-color': clienteActual.backgroundColor }"
+                             *ngIf="!clienteActual.imagen">
+                          {{ clienteActual.nombre | iniciales }}
+                        </div>
+
                         <span>
                           {{ clienteActual.nombre }}
                           <small 
@@ -72,7 +89,7 @@
                     </li>
                   </ul>
 
-                  <hr>
+                  <hr class="m-t-0">
                   
                   <ul class="chatonline style-none">
                     <li *ngFor="let proyecto of proyectos; let i=index;"

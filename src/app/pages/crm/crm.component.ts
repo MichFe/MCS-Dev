@@ -157,9 +157,7 @@ export class CrmComponent implements OnInit {
     
     this._clientesServicio.guardarCliente(nuevoCliente).subscribe( 
       (resp:any)=>{
-      
-        console.log(resp);
-        
+              
       this.obtenerClientes(1);
       swal(
         'Registro exitoso',

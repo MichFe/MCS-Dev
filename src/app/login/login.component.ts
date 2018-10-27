@@ -63,11 +63,12 @@ export class LoginComponent implements OnInit {
     this._usuarioService
       .login(usuario, forma.value.recordarPassword)
       .subscribe(correcto => {
+        
         if (correcto) {
           this.router.navigate(["/dashboard"]);
         } else {
           swal(
-            "Login",
+            "Error en Login:",
             "El usuario o la contraseña son incorrectos",
             "warning"
           );

@@ -5,7 +5,6 @@ import { SharedService } from '../../services/shared.service';
 import { ClienteService } from '../../services/clientes/cliente.service';
 import { Cliente } from '../../models/cliente.model';
 import swal from "sweetalert";
-import { catchError } from 'rxjs/internal/operators/catchError';
 
 @Component({
   selector: "app-crm",

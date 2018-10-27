@@ -1,4 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Cliente } from '../../../models/cliente.model';
+import { UsuarioService } from '../../../services/usuarios/usuario.service';
+
 declare var $: any;
 
 @Component({
@@ -19,7 +22,9 @@ export class NuevoClienteComponent implements OnInit {
   direccion: string='';
   correo: string='';
 
-  constructor() {
+  constructor(
+    public _usuarioService:UsuarioService
+  ) {
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     });
@@ -54,13 +59,18 @@ export class NuevoClienteComponent implements OnInit {
       return;
     }
 
-    let nuevoCliente = {
-      'nombre': this.nombre,
-      'telefono': this.telefono,
-      'direccion': this.direccion,
-      'correo': this.correo,
-      'imagen':'../assets/images/users/default.png'
-    };
+    let nuevoCliente = new Cliente(
+      this.nombre,
+      this.telefono,
+      this.direccion,
+      this.correo,
+      'Activo',
+      null,
+      null,
+      this._usuarioService.id,
+      this._usuarioService.id
+    );
+
 
     this.clienteNuevo.emit(nuevoCliente);
 

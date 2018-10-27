@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { VoiceRecorderService } from '../../services/voice-recorder.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SharedService } from '../../services/shared.service';
+import { ClienteService } from '../../services/clientes/cliente.service';
+import { Cliente } from '../../models/cliente.model';
+import swal from "sweetalert";
+import { catchError } from 'rxjs/internal/operators/catchError';
 
 @Component({
   selector: "app-crm",
@@ -9,20 +13,57 @@ import { SharedService } from '../../services/shared.service';
   styleUrls: ["./crm.component.custom.css"]
 })
 export class CrmComponent implements OnInit {
-  chatProyectos: boolean = false;
+
+  //------------------------------
+  //Variables Generales
+  //------------------------------
+
+  //Variable de termino de busqueda para buscador de clientes
+  terminoBusqueda: string = "";
+
+  //Variables que identifican al cliente seleccionado
   clienteActual: any = {};
   indexClienteActual: number;
 
-  grabandoAudio:boolean=false;
-
+  //Variable que identifica el proyecto seleccionado
   indexProyectoActual: number;
+
   mensaje: string = "";
-  terminoBusqueda: string = "";
+
+  //------------------------------
+  // FIN de Variables Generales
+  //------------------------------
+
+  //-------------------
+  //Data
+  //-------------------
+
+  clientes: any[] = [
+    {
+      nombre: "Michelle Felix",
+      telefono: "477-123-45-67",
+      direccion: "Marioano Escobedo 1300, Centro, León, Guanajuato",
+      correo: "mobla@gmail.com",
+      imagen: "../assets/images/users/1.jpg",
+      estatus: "Activo",
+      clientId: 1
+    },
+    {
+      nombre: "Rodrigo Martinez",
+      imagen: "../assets/images/users/2.jpg",
+      telefono: "477-123-45-67",
+      direccion: "Marioano Escobedo 1300, Centro, León, Guanajuato",
+      correo: "mobla@gmail.com",
+      estatus: "Inactivo",
+      clientId: 2
+    }
+  ];
+
   clientesFiltrados: any[] = [];
 
   proyectos: any = [
     {
-      clientId:1,
+      clientId: 1,
       nombre: "Sala Cafetería",
       imagen: "../assets/images/gallery/chair.jpg",
       estatus: "Activo",
@@ -50,258 +91,122 @@ export class CrmComponent implements OnInit {
     }
   ];
 
-  clientes: any[] = [
-    {
-      nombre: "Michelle Felix",
-      telefono: "477-123-45-67",
-      direccion: "Marioano Escobedo 1300, Centro, León, Guanajuato",
-      correo: "mobla@gmail.com",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo",
-      clientId: 1
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      telefono: "477-123-45-67",
-      direccion: "Marioano Escobedo 1300, Centro, León, Guanajuato",
-      correo: "mobla@gmail.com",
-      estatus: "Inactivo",
-      clientId: 2
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    },
-    {
-      nombre: "Michelle Felix",
-      imagen: "../assets/images/users/1.jpg",
-      estatus: "Activo"
-    },
-    {
-      nombre: "Rodrigo Martinez",
-      imagen: "../assets/images/users/2.jpg",
-      estatus: "Inactivo"
-    }
-  ];
-
   chats: any = [];
+
+  //-------------------
+  //Data
+  //-------------------
+
+  //-------------------------------
+  //Flag variables
+  //-------------------------------
+
+  //Flag - Variable para activar o desactivar la vista chat proyectos
+  chatProyectos: boolean = false;
+  //Flag - Variable para controlar la animacion boton grabando
+  grabandoAudio: boolean = false;
+
+  //-------------------------------
+  //FIN de Flag variables
+  //-------------------------------
 
   constructor(
     private audio: VoiceRecorderService,
     private sanitizer: DomSanitizer,
-    private shared:SharedService
+    private shared: SharedService,
+    private _clientesServicio: ClienteService
   ) {
+
+    this.obtenerClientes(1);
+    
+  }
+
+  obtenerClientes(pagina){
+
+    this._clientesServicio.obtenerClientes(pagina).subscribe((resp: any) => {
+      this.clientes = resp.clientes;
+
+      this.buscarCliente();
+      this.cambiarColorIniciales();
+    });
+
+  }
+
+  cambiarColorIniciales(){
+
+    this.clientesFiltrados.forEach((cliente, index) => {
+      
+      let color = this.randomColor();
+      
+      cliente.backgroundColor = color;
+      
+      this.clientesFiltrados[index] = cliente;
+
+    });
+
+  }
+
+  seleccionarCliente(cliente, index) {
+    this.clienteActual = cliente;
+    this.indexClienteActual = index;
+
+    this.shared.clienteSeleccionado = cliente;
+    this.chatProyectos = true;
+  }
+
+  registrarClienteNuevo(nuevoCliente) {
+    
+    this._clientesServicio.guardarCliente(nuevoCliente).subscribe( 
+      (resp:any)=>{
+      
+        console.log(resp);
+        
+      this.obtenerClientes(1);
+      swal(
+        'Registro exitoso',
+        'El cliente ' + resp.cliente.nombre + ' se ha guardado correctamente!',
+        'success'
+      );
+      
+    },
+    (error)=>{
+
+      swal(
+        'Registro fallido',
+        error.error.mensaje + ' | ' + error.error.errors.message,
+        'error'
+      );
+
+    }
+  );
+
+    this.clientes.push(nuevoCliente);
     this.buscarCliente();
   }
 
-  seleccionarCliente(cliente,index){
-    this.clienteActual=cliente;
-    this.indexClienteActual=index;
+  guardarCambiosCliente(clienteActualizado:Cliente) {
+    //Guardando cambios en base de datos
+    this._clientesServicio.actualizarCliente( clienteActualizado ).subscribe( 
+      (resp:any)=>{
+      //Actualizando cliente actual localmente con la respuesta del servicio
+      this.clienteActual=resp.cliente;
+      swal(
+        'Actualización exitosa',
+        'El cliente ' + clienteActualizado.nombre + ' se ha actualizado correctamente!',
+        'success'
+      );
+      
+    },
+    (error)=>{
 
-    this.shared.clienteSeleccionado=cliente;
-    this.chatProyectos=true;
-  }
-
-  registrarClienteNuevo(nuevoCliente){
-    let cliente = {
-      nombre: nuevoCliente.nombre,
-      telefono: nuevoCliente.telefono,
-      direccion: nuevoCliente.direccion,
-      correo: nuevoCliente.correo,
-      imagen: nuevoCliente.imagen,
-      estatus: "Activo"
-    };
-
-    this.clientes.push(cliente);
-    this.buscarCliente();
-  }
-
-  guardarCambiosCliente(informacion) {
-    let cliente = this.clientesFiltrados[this.indexClienteActual];
-
-    cliente.nombre = informacion.nombre;
-    cliente.telefono = informacion.telefono;
-    cliente.direccion = informacion.direccion;
-    cliente.correo = informacion.correo;
-
-    this.clienteActual = this.clientesFiltrados[this.indexClienteActual];
+      swal(
+        'Actualización fallida',
+        error.error.mensaje + ' | ' + error.error.errors.message,
+        'error'
+      );
+      
+    }
+  );
 
   }
 
@@ -314,13 +219,13 @@ export class CrmComponent implements OnInit {
   }
 
   recordAudio() {
-    this.grabandoAudio=true;
+    this.grabandoAudio = true;
     let stopButton = document.getElementById("stopButton");
     this.audio.grabarAudio(stopButton);
   }
 
-  stopRecording(){
-    this.grabandoAudio=false;
+  stopRecording() {
+    this.grabandoAudio = false;
   }
 
   playAudio() {
@@ -409,8 +314,19 @@ export class CrmComponent implements OnInit {
 
   mostrarChatProyecto(index) {
     this.chats = this.proyectos[index].chatProyecto;
-    this.shared.proyectoSeleccionado=this.proyectos[index];
+    this.shared.proyectoSeleccionado = this.proyectos[index];
+  }
+  
+  randomColor(){
+  
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
   ngOnInit() {}
 }
+

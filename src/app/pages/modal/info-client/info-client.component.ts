@@ -1,4 +1,7 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Cliente } from "../../../models/cliente.model";
+import { UsuarioService } from '../../../services/usuarios/usuario.service';
+
 
 @Component({
   selector: "app-info-client",
@@ -18,14 +21,16 @@ export class InfoClientComponent implements OnInit, OnChanges {
   nombre: string;
   telefono: string;
   direccion: string;
-  correo: string;
+  email: string;
 
   nuevoNombre: string;
   nuevoTelefono: string;
   nuevaDireccion: string;
   nuevoCorreo: string;
 
-  constructor() {}
+  constructor(
+    public _usuarioService:UsuarioService
+  ) {}
 
   ngOnInit() {}
 
@@ -35,10 +40,12 @@ export class InfoClientComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
+   
     this.nombre = this.cliente.nombre;
     this.telefono = this.cliente.telefono;
     this.direccion = this.cliente.direccion;
-    this.correo = this.cliente.correo;
+    this.email = this.cliente.email;
+    
   }
 
   guardarCambios() {
@@ -46,16 +53,22 @@ export class InfoClientComponent implements OnInit, OnChanges {
     this.nombre=this.nuevoNombre;
     this.telefono=this.nuevoTelefono;
     this.direccion=this.nuevaDireccion;
-    this.correo=this.nuevoCorreo;
+    this.email=this.nuevoCorreo;
     
-    let nuevaInformacion = {
-      nombre: this.nuevoNombre,
-      telefono: this.nuevoTelefono,
-      direccion: this.nuevaDireccion,
-      correo: this.nuevoCorreo
-    };
+    
+    let clienteActualizado = new Cliente(
+      this.nuevoNombre,
+      this.nuevoTelefono,
+      this.nuevaDireccion,
+      this.nuevoCorreo,
+      this.cliente.estatus,
+      this.cliente.img,
+      this.cliente._id,
+      this.cliente.usuarioCreador,
+      this._usuarioService.usuario._id
+    );
 
-    this.cambiosCliente.emit(nuevaInformacion);
+    this.cambiosCliente.emit(clienteActualizado);
 
     this.cerrarEdicion();
   }
@@ -80,6 +93,6 @@ export class InfoClientComponent implements OnInit, OnChanges {
     this.nuevoNombre=this.nombre;
     this.nuevoTelefono=this.telefono;
     this.nuevaDireccion=this.direccion;
-    this.correo=this.nuevoCorreo;
+    this.nuevoCorreo=this.email;
   }
 }

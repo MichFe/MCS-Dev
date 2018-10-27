@@ -28,10 +28,9 @@ import { CotizacionComponent } from './modal/cotizacion/cotizacion.component';
 import { NuevoClienteComponent } from './modal/nuevo-cliente/nuevo-cliente.component';
 import { NuevoEventoComponent } from './modal/nuevo-evento/nuevo-evento.component';
 
-
-
 //Routes
 import { PAGES_ROUTES } from "./pages.routes";
+import { InicialesPipe } from "../pipes/iniciales.pipe";
 
 @NgModule({
   imports:[
@@ -44,6 +43,8 @@ import { PAGES_ROUTES } from "./pages.routes";
     { provide: LOCALE_ID, useValue: 'es-Mx' }
   ],
   declarations: [
+    MesPipe,
+    InicialesPipe,
     DashboardComponent,
     Graficas1Component,
     ProgressComponent,
@@ -54,7 +55,6 @@ import { PAGES_ROUTES } from "./pages.routes";
     NuevoClienteComponent,
     CotizacionComponent,
     CalendarioComponent,
-    MesPipe,
     NuevoEventoComponent,
     UsuariosComponent
   ],

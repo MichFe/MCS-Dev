@@ -13,7 +13,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 
-
 @NgModule({
   imports: [
     BrowserModule,
@@ -24,7 +23,7 @@ import { FormsModule } from '@angular/forms';
   ],
   declarations: [
     AppComponent,
-    LoginComponent,
+    LoginComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

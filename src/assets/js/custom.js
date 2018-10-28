@@ -164,14 +164,16 @@ $(function() {
 function toggleSidebar(){
 
     
-          $("body").trigger("resize");
-          $("body").addClass("mini-sidebar");
-          $(".navbar-brand span").hide();
+        $("body").trigger("resize");
+        $("body").addClass("mini-sidebar");
+        $(".navbar-brand span").hide();
 
-            $("body").toggleClass("show-sidebar");
-            $(".nav-toggler i").toggleClass("ti-menu");
-            // $(".nav-toggler i").addClass("ti-close");
-            // $("aside").addClass("");
+        $("body").toggleClass("show-sidebar");
+        $(".nav-toggler i").toggleClass("ti-menu");
+        // $(".nav-toggler i").addClass("ti-close");
+        // $("aside").addClass("");
+
+
         }
 
         

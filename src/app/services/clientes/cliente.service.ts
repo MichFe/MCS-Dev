@@ -16,9 +16,8 @@ export class ClienteService {
 
   obtenerClientes( pagina ){
     let token = this._usuarioService.token;
-    let desde = pagina;
 
-    let url = URL_SERVICIOS + '/cliente?token=' + token + '&desde=' + desde;
+    let url = URL_SERVICIOS + '/cliente?token=' + token + '&desde=' + pagina;
 
     return this.http.get( url );
   }

@@ -5,6 +5,8 @@ import { SharedService } from '../../services/shared.service';
 import { ClienteService } from '../../services/clientes/cliente.service';
 import { Cliente } from '../../models/cliente.model';
 import swal from "sweetalert";
+import { ProyectoService } from '../../services/proyectos/proyecto.service';
+import { UsuarioService } from '../../services/usuarios/usuario.service';
 
 @Component({
   selector: "app-crm",
@@ -60,35 +62,7 @@ export class CrmComponent implements OnInit {
 
   clientesFiltrados: any[] = [];
 
-  proyectos: any = [
-    {
-      clientId: 1,
-      nombre: "Sala Cafetería",
-      imagen: "../assets/images/gallery/chair.jpg",
-      estatus: "Activo",
-      chatProyecto: [
-        {
-          usuario: {
-            nombre: "Michelle Felix",
-            imagen: "../assets/images/users/1.jpg"
-          },
-          mensaje:
-            "Lorem Ipsum is simply dummy text of the printing & type setting industry.",
-          fecha: "21/09/2018",
-          hora: "12:00 pm"
-        },
-        {
-          usuario: {
-            nombre: "Rodrigo Martinez",
-            imagen: "../assets/images/users/2.jpg"
-          },
-          mensaje: "Hola",
-          fecha: "21/09/2019",
-          hora: "3:00 pm"
-        }
-      ]
-    }
-  ];
+  proyectos: any = [];
 
   chats: any = [];
 
@@ -113,11 +87,54 @@ export class CrmComponent implements OnInit {
     private audio: VoiceRecorderService,
     private sanitizer: DomSanitizer,
     private shared: SharedService,
-    private _clientesServicio: ClienteService
+    private _clientesServicio: ClienteService,
+    private _proyectoService: ProyectoService,
+    private _usuarioService: UsuarioService
   ) {
 
     this.obtenerClientes(1);
     
+  }
+
+  obtenerProyectos(clienteId, pagina){
+
+    this._proyectoService.getProyectos( clienteId, pagina ).subscribe(
+      (resp:any)=>{
+
+        this.proyectos=resp.proyectos;
+        
+      },
+      (error)=>{
+        swal(
+          'Carga de proyectos fallida',
+          error.error.mensaje + ' | ' + error.error.errors.message,
+          'error'
+        );
+      }
+    );
+  
+  }
+
+  agregarProyecto(proyecto) {
+
+    this._proyectoService.postProyecto(proyecto).subscribe(
+      (resp) => {
+
+        this.obtenerProyectos( this.clienteActual._id,1);
+
+      },
+      (error)=>{
+
+        swal(
+          'Registro fallido',
+          error.error.mensaje + ' | ' + error.error.errors.message,
+          'error'
+        );
+
+      }
+    );
+
+    // this.proyectos.push(proyecto);
   }
 
   obtenerClientes(pagina){
@@ -146,6 +163,9 @@ export class CrmComponent implements OnInit {
   }
 
   seleccionarCliente(cliente, index) {
+
+    this.obtenerProyectos( cliente._id, 0 );
+
     this.clienteActual = cliente;
     this.indexClienteActual = index;
 
@@ -232,18 +252,6 @@ export class CrmComponent implements OnInit {
     this.audio.recordedAudio.play();
   }
 
-  agregarProyecto(proyecto) {
-    let nuevoProyecto = {
-      nombre: proyecto.nombreProyecto,
-      imagen: "../assets/images/gallery/chair.jpg",
-      descripcion: proyecto.descripcionProyecto,
-      estatus: "Activo",
-      chatProyecto: []
-    };
-
-    this.proyectos.push(nuevoProyecto);
-  }
-
   scrollBottom(element) {
     element.scrollTop = element.scrollHeight;
   }
@@ -270,8 +278,8 @@ export class CrmComponent implements OnInit {
     //Construyendo mensaje
     let chat: any = {
       usuario: {
-        nombre: "Michelle Felix",
-        imagen: "../assets/images/users/1.jpg"
+        nombre: this._usuarioService.usuario.nombre,
+        imagen: this._usuarioService.usuario.img
       },
       mensaje: this.mensaje,
       audio: this.sanitizer.bypassSecurityTrustUrl(this.audio.recordedAudioUrl),
@@ -287,7 +295,8 @@ export class CrmComponent implements OnInit {
     //--------------------------------------------------------
 
     //Agregando el mensaje a arreglo de chats del proyecto
-    this.proyectos[this.indexProyectoActual].chatProyecto.push(chat);
+    // this.proyectos[this.indexProyectoActual].chatProyecto.push(chat);
+    this.chats.push(chat);
     //--------------------------------------------------------
 
     //Actualizando arreglo de chats actuales en chat body
@@ -310,8 +319,10 @@ export class CrmComponent implements OnInit {
   }
 
   mostrarChatProyecto(index) {
-    this.chats = this.proyectos[index].chatProyecto;
-    this.shared.proyectoSeleccionado = this.proyectos[index];
+
+    // this.chats = this.proyectos[index].chatProyecto;
+    // this.shared.proyectoSeleccionado = this.proyectos[index];
+
   }
   
   randomColor(){

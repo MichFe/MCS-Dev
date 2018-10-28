@@ -9,7 +9,7 @@
         <div class="chat-main-box">
           <!-- Clientes .chat-left-panel -->
           <div class="row">
-            <div class="col col-lg-3 col-md-3 col-sm-12 col-12">
+            <div class="col col-lg-3 col-md-3 col-sm-12 col-12 m-b-20">
               
                 <div class="form-material" *ngIf="!chatProyectos">
                   <input [(ngModel)]="terminoBusqueda"
@@ -26,9 +26,9 @@
                       <a class="list-cliente">
                         <img [src]="cliente.imagen" 
                              class="img-circle"
-                             *ngIf="cliente.imagen">
+                             *ngIf="cliente.img">
                         <div class="iniciales-cliente align-content-center"
-                             *ngIf="!cliente.imagen"
+                             *ngIf="!cliente.img"
                              [ngStyle]="{ 'background-color': cliente.backgroundColor }">
                           {{ cliente.nombre | iniciales }}
                         </div>
@@ -95,12 +95,23 @@
                     <li *ngFor="let proyecto of proyectos; let i=index;"
                         (click)="mostrarChatProyecto(i); indexProyectoActual=i;">
                       <a href="javascript:void(0)" class="list-cliente">
-                        <img [src]="proyecto.imagen" alt="user-img" class="img-circle">
+                        <img [src]="proyecto.img"
+                             *ngIf="proyecto.img"
+                             class="img-circle">
+
+                        <div class="iniciales-cliente align-content-center"
+                             *ngIf="!proyecto.img"
+                             [ngStyle]="{ 'background-color': proyecto.backgroundColor }">
+
+                          {{ proyecto.nombre | iniciales }}
+
+                        </div>
                         <span>
                           {{ proyecto.nombre }}
                           <small [ngClass]="{
-                              'text-success': proyecto.estatus=='Activo', 
-                              'text-muted':proyecto.estatus=='Terminado'
+                              'text-warning': (proyecto.estatus!='Entregado' || proyecto.estatus!='Cerrado'), 
+                              'text-success': proyecto.estatus=='Entregado',
+                              'text-danger': proyecto.estatus=='Cancelado'
                             }">
                             {{ proyecto.estatus }}
                           </small>
@@ -229,6 +240,7 @@
   <!-- Componente Modal -->
   <app-modal
      tituloModal="Nuevo Proyecto"
+     [cliente]="clienteActual"
      (nuevoProyecto)="agregarProyecto($event)"></app-modal>
 
    <app-info-client

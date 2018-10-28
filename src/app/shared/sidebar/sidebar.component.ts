@@ -25,11 +25,13 @@ export class SidebarComponent implements OnInit {
 
   expandCollapsSidebar(){
     
-    if (window.innerWidth <= 600 && window.innerHeight <= 800) {
+    // if ( window.innerWidth <= 800 ) {
     
     toggleSidebar();
 
-    }
+    // }
+
+
   }
 
 }

@@ -32,6 +32,10 @@ import { NuevoEventoComponent } from './modal/nuevo-evento/nuevo-evento.componen
 import { PAGES_ROUTES } from "./pages.routes";
 import { InicialesPipe } from "../pipes/iniciales.pipe";
 
+//Directivas
+import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-scroll.directive";
+
+
 @NgModule({
   imports:[
     CommonModule,
@@ -56,7 +60,8 @@ import { InicialesPipe } from "../pipes/iniciales.pipe";
     CotizacionComponent,
     CalendarioComponent,
     NuevoEventoComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    InfiniteScrollDirective
   ],
   exports: [
     DashboardComponent,

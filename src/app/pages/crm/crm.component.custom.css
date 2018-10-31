@@ -100,6 +100,10 @@ textarea:focus{
         border: 1.5px solid #278395;
 }
 
+.chat-list li{
+    cursor: auto;
+}
+
 .btn-audio{
     margin:5px 0px !important;
     border-right: 1px solid #e0940f;

@@ -30,7 +30,7 @@ export class LoginGuardGuard implements CanActivate {
       
     }),catchError((err)=>{
       this.router.navigate(['/login']);
-        swal( err.error.mensaje + ':', 'Aún no ha iniciado sesión o su sesión ha expirado, favor de iniciar sesión.','warning');
+        // swal( err.error.mensaje + ':', 'Aún no ha iniciado sesión o su sesión ha expirado, favor de iniciar sesión.','warning');
       
       return of(false);
     }));

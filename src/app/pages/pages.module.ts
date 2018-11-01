@@ -20,6 +20,7 @@ import { ProgressComponent } from "./progress/progress.component";
 import { CrmComponent } from './crm/crm.component';
 import { CalendarioComponent } from './calendario/calendario.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
+import { CatalogoProductosComponent } from './catalogo-productos/catalogo-productos.component';
 
 //Modals
 import { ModalComponent } from './modal/modal.component';
@@ -61,7 +62,8 @@ import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-
     CalendarioComponent,
     NuevoEventoComponent,
     UsuariosComponent,
-    InfiniteScrollDirective
+    InfiniteScrollDirective,
+    CatalogoProductosComponent
   ],
   exports: [
     DashboardComponent,

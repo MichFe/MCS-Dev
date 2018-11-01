@@ -1,0 +1,127 @@
+div.familias{
+    margin-bottom:20px;
+}
+
+div.familia-tag{
+    line-height: 13px;
+    font-size: 13px;
+    float:left;
+    cursor: pointer;
+
+    margin:5px;
+    padding:5px 10px 5px 10px;
+
+    background-color: #242a33;
+    border-bottom: 2px solid green;
+    border-radius: 5px;
+
+    color:rgb(199, 199, 199);
+}
+
+div.familia-tag:hover{
+    color: white;
+    font-weight:400;
+    background-color: #2f353f;
+}
+
+div.producto{
+    width: 200px;
+    height: 200px;
+    text-align: center;
+    align-content: center;
+}
+
+.image-container {
+    position: relative;
+    width:120px;
+    border-radius: 5px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.image {
+  display: block;
+  width: 120px;
+  height: auto;
+}
+
+
+.overlay{
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  right: 0;
+  background-color: rgba(51, 46, 46, 0.6);
+  overflow: hidden;
+  width: 0;
+  height: 100%;
+  transition: .5s ease;
+  border-radius: 5px;
+}
+
+.text {
+  color: white;
+  font-size: 13px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  /* white-space: nowrap; */
+
+
+}
+
+.image-container:hover .overlay {
+  width: 100%;
+  left: 0;
+}
+
+.product-name{
+    font-size: 15px;
+}
+
+ul{
+    list-style: none;
+    margin:0px;
+    padding:0px;
+}
+
+.img-lista{
+    height: 50px;
+    border-radius: 5px;
+    float: left;
+}
+
+.nombre-lista{
+    font-size: 10px;
+}
+
+.cantidad-lista{
+    font-size: 10px;
+
+    background: green;
+    color: white;
+    min-width: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.trash-button{
+    color:red;
+}
+
+.right{
+    float:right;
+}
+
+.left{
+    float: left;
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+

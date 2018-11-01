@@ -1,0 +1,62 @@
+<div class="container">
+
+  <div class="row familias" >
+
+    <div *ngFor="let familia of familias"
+          class="familia-tag">
+      <i class="fa fa-tag"></i> {{ familia.nombre}}
+    </div>
+
+  </div>
+
+  <div class="row">
+  
+    <div class="col col-md-9">
+  
+      <div *ngFor="let producto of productos"
+           class="producto">
+
+        <div class="image-container">
+          <img [src]="producto.img"
+               class="image">
+  
+          <div class="overlay">
+
+            <div class="text">
+
+              <button class="btn btn-sm btn-success waves-effect waves-light"
+                      (click)="agregarACarrito(producto)">
+                 <i class="fa fa-plus"></i>
+                  add</button>
+
+            </div>
+          </div>
+        </div>
+        <div class="product-name">
+          {{ producto.nombre }}
+        </div>
+
+      </div>
+      
+  
+    </div>
+  
+    <div class="col col-md-3">
+      
+      <div>Productos</div>
+
+      <ul>
+        <li *ngFor="let producto of carrito">
+          <img class="img-lista" [src]="producto.img">
+          <span class="nombre-lista">{{ producto.nombre }}</span>
+          <div class="right">
+            <span class="cantidad-lista left m-r-5 pointer">{{ producto.cantidad }}</span>
+            <span><i class="fa fa-trash trash-button right pointer"></i></span>
+
+          </div>
+        </li>
+      </ul>
+    </div>
+  
+  </div>
+</div>

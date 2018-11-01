@@ -40,4 +40,12 @@ export class ClienteService {
 
   }
 
+  buscarCliente( termino ){
+    let token = this._usuarioService.token;
+
+    let url = URL_SERVICIOS + '/busqueda/coleccion/cliente/' + termino +'?token=' + token;
+
+    return this.http.get( url );
+  }
+
 }

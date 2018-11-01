@@ -12,7 +12,7 @@ export class SidebarService {
       submenu:[
         { titulo: 'CRM', url:'/crm' },
         { titulo: 'Reporte de Ventas', url:'/dashboard' },
-        { titulo: 'Catálogo de Productos', url:'/graficas1'}
+        { titulo: 'Catálogo de Productos', url:'/catalogoProductos'}
       ]
     }
   ]

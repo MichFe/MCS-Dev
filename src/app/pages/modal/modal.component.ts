@@ -62,7 +62,7 @@ export class ModalComponent implements OnInit {
       null,
       this._usuarioService.id,
       this._usuarioService.id
-    );
+    );    
 
     this.nuevoProyecto.emit( proyecto );
     

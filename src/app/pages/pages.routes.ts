@@ -8,6 +8,7 @@ import { CrmComponent } from "./crm/crm.component";
 import { CalendarioComponent } from "./calendario/calendario.component";
 import { UsuariosComponent } from "./usuarios/usuarios.component";
 import { LoginGuardGuard } from "../services/guards/login-guard.guard";
+import { CatalogoProductosComponent } from "./catalogo-productos/catalogo-productos.component";
 
 
 const pagesRoutes:Routes = [
@@ -18,6 +19,7 @@ const pagesRoutes:Routes = [
         children: [
             { path: 'dashboard', component: DashboardComponent },
             { path: 'progress', component: ProgressComponent },
+            { path: 'catalogoProductos', component: CatalogoProductosComponent},
             { path: 'graficas1', component: Graficas1Component },
             { path: 'crm', component: CrmComponent },
             { path: 'calendario', component: CalendarioComponent },

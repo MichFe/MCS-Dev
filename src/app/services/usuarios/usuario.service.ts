@@ -42,8 +42,9 @@ export class UsuarioService {
     // Realizamos petición de login al backend
     return this.http.post(url, usuario).pipe(
       map((resp: any) => {
-        // Guardamos los datos del usuario y su token
-        this.guardarStorage(resp.id, resp.token, resp.usuario);
+        // Guardamos los datos del usuario, su token e id
+        this.guardarStorage(resp.id, resp.token, resp.usuario);        
+        
         return true;
         // ---->
       }),
@@ -99,6 +100,7 @@ export class UsuarioService {
 
     this.usuario = usuario;
     this.token = token;
+    this.id = id;
   }
   //------------------------------------------------------------------
   // FIN de Función para guardar datos del usuario en localstorage

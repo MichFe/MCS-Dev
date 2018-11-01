@@ -114,6 +114,7 @@ export class CrmComponent implements OnInit {
     this.infScrollChats=false;
     this.infScrollClientes=true;
     this.chats = [];
+    this.proyectos=[];
     this.proyectoActual = {};
   }
 
@@ -138,8 +139,14 @@ export class CrmComponent implements OnInit {
 
   agregarProyecto(proyecto) {
     this._proyectoService.postProyecto(proyecto).subscribe(
-      resp => {
+      (resp:any) => {
+        
         this.obtenerProyectos(this.clienteActual._id, 1);
+        swal(
+          'Registro de proyecto exitoso',
+          'El proyecto ' + resp.proyecto.nombre + 'se ha guardado de manera exitosa.',
+          'success'
+        )
       },
       error => {
         swal(
@@ -158,7 +165,7 @@ export class CrmComponent implements OnInit {
       (resp: any) => {
       this.clientes = resp.clientes;
 
-      this.buscarCliente();
+      this.clientesFiltrados=this.clientes;
       this.cambiarColorIniciales();
       this.totalClientes = resp.totalClientes;
       this.infScrollClientes = true;
@@ -244,11 +251,36 @@ export class CrmComponent implements OnInit {
   }
 
   buscarCliente() {
-    this.clientesFiltrados = this.clientes.filter((cliente: any) => {
-      let nombreCliente: string = cliente.nombre;
 
-      return nombreCliente.includes(this.terminoBusqueda);
-    });
+    if(!this.terminoBusqueda){
+      this.obtenerClientes(0);
+      return;
+    }  
+  
+    this._clientesServicio.buscarCliente(this.terminoBusqueda)
+        .subscribe(
+          (resp:any)=>{
+
+            if(resp.cliente.length==0){
+              swal(
+                'Busqueda no concluyente',
+                'No se encontraron clientes que coincidan con la busqueda: ' + this.terminoBusqueda,
+                'warning'
+              );
+              return;
+            }
+            
+            this.clientesFiltrados = resp.cliente;
+          },
+          (error)=>{
+            swal(
+              'Busqueda de cliente fallida',
+              'Error al buscar cliente',
+              'error'
+            );
+          }
+        );
+
   }
 
   recordAudio() {
@@ -437,7 +469,7 @@ export class CrmComponent implements OnInit {
           this.clientes.push(cliente);
         });
 
-        this.buscarCliente();
+        this.clientesFiltrados=this.clientes;
         this.cambiarColorIniciales();
 
         this.infScrollClientes = true;

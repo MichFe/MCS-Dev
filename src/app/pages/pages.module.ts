@@ -4,13 +4,11 @@ import { CommonModule, registerLocaleData } from "@angular/common";
 //Modulos
 import { SharedModule } from "../shared/shared.module";
 import { FormsModule } from '@angular/forms';
+import { PipesModule } from "../pipes/pipes.module";
 
 //Locales
 import localeEsMx from "@angular/common/locales/es-MX";
 registerLocaleData(localeEsMx, "es-Mx");
-
-//Pipes
-import { MesPipe } from "../pipes/mes.pipe";
 
 //Pages
 import { PagesComponent } from "./pages.component";
@@ -31,10 +29,10 @@ import { NuevoEventoComponent } from './modal/nuevo-evento/nuevo-evento.componen
 
 //Routes
 import { PAGES_ROUTES } from "./pages.routes";
-import { InicialesPipe } from "../pipes/iniciales.pipe";
 
 //Directivas
 import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-scroll.directive";
+import { ProfileComponent } from './profile/profile.component';
 
 
 @NgModule({
@@ -42,14 +40,13 @@ import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-
     CommonModule,
     SharedModule,
     FormsModule,
-    PAGES_ROUTES
+    PAGES_ROUTES,
+    PipesModule
   ],
   providers:[
     { provide: LOCALE_ID, useValue: 'es-Mx' }
   ],
   declarations: [
-    MesPipe,
-    InicialesPipe,
     DashboardComponent,
     Graficas1Component,
     ProgressComponent,
@@ -63,7 +60,8 @@ import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-
     NuevoEventoComponent,
     UsuariosComponent,
     InfiniteScrollDirective,
-    CatalogoProductosComponent
+    CatalogoProductosComponent,
+    ProfileComponent
   ],
   exports: [
     DashboardComponent,

@@ -329,7 +329,7 @@ export class CrmComponent implements OnInit {
 
     //Construyendo mensaje
     let chat: any = {
-      usuario: this._usuarioService.usuario,
+      usuario: this._usuarioService.usuario._id,
       // usuario:{
       //   img:null,
       //   nombre: 'Michelle Felix',

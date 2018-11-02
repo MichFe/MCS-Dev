@@ -9,6 +9,7 @@ import { CalendarioComponent } from "./calendario/calendario.component";
 import { UsuariosComponent } from "./usuarios/usuarios.component";
 import { LoginGuardGuard } from "../services/guards/login-guard.guard";
 import { CatalogoProductosComponent } from "./catalogo-productos/catalogo-productos.component";
+import { ProfileComponent } from "./profile/profile.component";
 
 
 const pagesRoutes:Routes = [
@@ -24,6 +25,7 @@ const pagesRoutes:Routes = [
             { path: 'crm', component: CrmComponent },
             { path: 'calendario', component: CalendarioComponent },
             { path: 'colaboradores', component: UsuariosComponent },
+            { path: 'perfil', component: ProfileComponent},
             { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
         ]
     },

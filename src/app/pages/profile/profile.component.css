@@ -1,0 +1,12 @@
+.pointer{
+    cursor: pointer;
+}
+
+.disabled{
+    cursor: not-allowed;
+}
+
+.w150{
+    width: 150px;
+    border-radius: 5px;
+}

@@ -198,7 +198,7 @@
                    
                     <div *ngIf="chat.usuario._id==_usuarioService.usuario._id" class="chat-img">
                       
-                      <img [src]="chat.usuario.img" *ngIf="chat.usuario.img!='' && chat.usuario.img!=null">
+                      <img [src]="chat.usuario.img | imagen" *ngIf="chat.usuario.img!='' && chat.usuario.img!=null">
                     
                       <div class="iniciales-cliente align-content-center"
                              *ngIf="!chat.usuario.img || chat.usuario.img=='null'"
@@ -217,7 +217,7 @@
                     </div>
 
                     <div *ngIf="chat.usuario._id!=_usuarioService.usuario._id" class="chat-img">
-                      <img [src]="chat.usuario.img" *ngIf="chat.usuario.img!='' && chat.usuario.img!=null">
+                      <img [src]="chat.usuario.img | imagen" *ngIf="chat.usuario.img!='' && chat.usuario.img!=null">
                     
                       <div class="iniciales-cliente align-content-center"
                              *ngIf="!chat.usuario.img && chat.usuario.img==null"

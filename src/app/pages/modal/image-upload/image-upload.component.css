@@ -1,0 +1,8 @@
+.w150{
+    width: 150px;
+    border-radius: 5px;
+}
+
+.disabled{
+    cursor: not-allowed;
+}

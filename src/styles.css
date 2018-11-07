@@ -10,6 +10,24 @@
     .pointer{
         cursor: pointer;
     }
+
+    .size-100{
+        height: 100px;
+        width: 100px;
+        object-fit: cover;
+    }
+
+    .size-30{
+        height: 30px;
+        width: 30px;
+        object-fit: cover;
+    }
+
+    .size-70{
+        height: 70px;
+        width: 70px;
+        object-fit: cover;
+    }
 }
 
 @media print {

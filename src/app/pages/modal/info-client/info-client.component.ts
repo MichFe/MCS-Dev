@@ -1,6 +1,8 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
 import { Cliente } from "../../../models/cliente.model";
 import { UsuarioService } from '../../../services/usuarios/usuario.service';
+import { ImageUploadService } from '../image-upload/image-upload.service';
+declare var $:any;
 
 
 @Component({
@@ -29,10 +31,27 @@ export class InfoClientComponent implements OnInit, OnChanges {
   nuevoCorreo: string;
 
   constructor(
-    public _usuarioService:UsuarioService
+    public _usuarioService: UsuarioService,
+    public _imageUploadService: ImageUploadService
   ) {}
 
   ngOnInit() {}
+
+  actualizarImagen( cliente ){
+
+    this._imageUploadService.notificacion.subscribe( (resp)=>{
+
+      this.cliente=resp.cliente;
+            
+    });
+
+    this._imageUploadService.inicializarModal('cliente', cliente._id);
+    $("#infoCliente").modal('toggle');
+    $("#cargarImagen").modal("toggle");
+
+    
+
+  }
 
   resetearModal() {
     this.editando = false;
@@ -40,22 +59,18 @@ export class InfoClientComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-   
     this.nombre = this.cliente.nombre;
     this.telefono = this.cliente.telefono;
     this.direccion = this.cliente.direccion;
     this.email = this.cliente.email;
-    
   }
 
   guardarCambios() {
+    this.nombre = this.nuevoNombre;
+    this.telefono = this.nuevoTelefono;
+    this.direccion = this.nuevaDireccion;
+    this.email = this.nuevoCorreo;
 
-    this.nombre=this.nuevoNombre;
-    this.telefono=this.nuevoTelefono;
-    this.direccion=this.nuevaDireccion;
-    this.email=this.nuevoCorreo;
-    
-    
     let clienteActualizado = new Cliente(
       this.nuevoNombre,
       this.nuevoTelefono,
@@ -90,9 +105,9 @@ export class InfoClientComponent implements OnInit, OnChanges {
       this.outAnimation = false;
     }, 500);
 
-    this.nuevoNombre=this.nombre;
-    this.nuevoTelefono=this.telefono;
-    this.nuevaDireccion=this.direccion;
-    this.nuevoCorreo=this.email;
+    this.nuevoNombre = this.nombre;
+    this.nuevoTelefono = this.telefono;
+    this.nuevaDireccion = this.direccion;
+    this.nuevoCorreo = this.email;
   }
 }

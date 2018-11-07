@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Cliente } from '../../../models/cliente.model';
 import { UsuarioService } from '../../../services/usuarios/usuario.service';
+import { ImageUploadService } from '../image-upload/image-upload.service';
 
 declare var $: any;
 
@@ -14,6 +15,9 @@ export class NuevoClienteComponent implements OnInit {
   @Output()
   clienteNuevo: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  imagenCliente: EventEmitter<any> = new EventEmitter();
+
   mensajeRequeridos="Favor de completar el formulario";
   completo:boolean=false;
 
@@ -22,8 +26,12 @@ export class NuevoClienteComponent implements OnInit {
   direccion: string='';
   correo: string='';
 
+  imagenSubir:File;
+  imagenTemporal:string | ArrayBuffer;
+
   constructor(
-    public _usuarioService:UsuarioService
+    public _usuarioService:UsuarioService,
+    public _imageUploadService:ImageUploadService
   ) {
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
@@ -32,11 +40,60 @@ export class NuevoClienteComponent implements OnInit {
 
   ngOnInit() {}
 
+  agregarImagen() {
+
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.accept='image/*';
+
+    let promesa = new Promise( (resolve, reject)=>{
+
+      input.onchange = () =>{
+
+        let file:File=input.files[0];
+
+        if(!file){
+          this.imagenSubir=null;
+          this.imagenTemporal=null;
+          return;
+        }
+
+        if (file.type.indexOf('image') < 0) {
+          swal(
+            'Típo de archivo inválido',
+            'Seleccione una imágen',
+            'error'
+          );
+
+          this.imagenSubir = null;
+          return;
+        }
+
+        this.imagenSubir = file;
+        let reader = new FileReader();
+        let urlImagenTemporal = reader.readAsDataURL(file);
+
+        reader.onloadend = () => this.imagenTemporal = reader.result;
+
+        
+      };
+
+      input.click();
+    });
+
+    promesa.then();
+
+
+
+  }
+
   resetearModal(){
     this.nombre="";
     this.telefono="";
     this.direccion="";
     this.correo="";
+    this.imagenTemporal=null;
+    this.imagenSubir=null;
   }
 
   validarFormulario(){
@@ -73,6 +130,11 @@ export class NuevoClienteComponent implements OnInit {
 
 
     this.clienteNuevo.emit(nuevoCliente);
+
+    if(this.imagenSubir){
+
+      this.imagenCliente.emit(this.imagenSubir);
+    }
 
     $("#nuevoCliente").modal("toggle");
 

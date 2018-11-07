@@ -1,0 +1,64 @@
+<!-- Ejemplo botton -->
+
+<!-- <button *ngIf="!chatProyectos" 
+                          class="btn btn-success btn-block waves-effect waves-light"
+                          data-toggle="modal" 
+                          data-target="#cargarImagen">Agregar Cliente</button> -->
+
+<div class="modal fade" id="cargarImagen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Actualizar imagen de {{ _imageUploadService.tipo }}</h4>
+        <button (click)="resetearModal()" 
+                type="button" 
+                class="close" 
+                data-dismiss="modal" 
+                aria-label="Close"><span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body text-center">
+
+          <img *ngIf="!imagenTemporal" [src]="'default' | imagen:'producto'" class="w150 m-b-20">
+          <img *ngIf="imagenTemporal" [src]="imagenTemporal" class="w150 m-b-20">
+
+
+        <label class="custom-file d-block m-b-20">
+          <input (change)="seleccionImagen( $event )" 
+                 type="file" 
+                 id="file" 
+                 class="custom-file-input pointer">
+          <span *ngIf="imagenSubir" class="custom-file-control pointer text-left">{{ imagenSubir.name }}</span>
+          <span *ngIf="!imagenSubir" class="custom-file-control pointer text-left"></span>
+        </label>
+
+        </div>
+      </div>
+  
+
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button 
+                type="button"
+                class="btn btn-success waves-effect waves-light"
+                (click)="subirImagen()"
+                [ngClass]="{ 'disabled': !hayImagen }"
+                [disabled]="!hayImagen">Subir Imagen</button>
+
+        <button type="button"
+                (click)="resetearModal()" 
+                class="btn btn-danger waves-effect waves-light" 
+                data-dismiss="modal">Cancelar</button>
+        <!-- Fin de botones -->
+
+      </div>
+    </div>
+  </div>
+</div>
+

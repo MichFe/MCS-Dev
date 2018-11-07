@@ -30,8 +30,8 @@
                     <li *ngFor="let cliente of clientesFiltrados; let i=index;"
                         (click)="seleccionarCliente(cliente,i)">
                       <a class="list-cliente">
-                        <img [src]="cliente.imagen" 
-                             class="img-circle"
+                        <img [src]="cliente.img | imagen: 'cliente'" 
+                             class="img-circle size-30"
                              *ngIf="cliente.img">
                         <div class="iniciales-cliente align-content-center"
                              *ngIf="!cliente.img"
@@ -71,9 +71,11 @@
                   <ul class="chatonline style-non cliente-actual m-0">
                     <li data-toggle="modal" data-target="#infoCliente">
                       <a href="javascript:void(0)" class="list-cliente">
-                        <img [src]="clienteActual.imagen" *ngIf="clienteActual.imagen" class="img-circle">
+                        <img [src]="clienteActual.img | imagen: 'cliente'" 
+                             *ngIf="clienteActual.img" 
+                             class="img-circle size-30">
                   
-                        <div class="iniciales-cliente align-content-center" [ngStyle]="{ 'background-color': clienteActual.backgroundColor }" *ngIf="!clienteActual.imagen">
+                        <div class="iniciales-cliente align-content-center" [ngStyle]="{ 'background-color': clienteActual.backgroundColor }" *ngIf="!clienteActual.img">
                           {{ clienteActual.nombre | iniciales }}
                         </div>
                   
@@ -108,7 +110,7 @@
                       <a class="list-cliente">
                         <img [src]="proyecto.img"
                              *ngIf="proyecto.img"
-                             class="img-circle">
+                             class="img-circle size-30">
 
                         <div class="iniciales-cliente align-content-center"
                              *ngIf="!proyecto.img"
@@ -196,9 +198,12 @@
                   <!-- Elemento Chat -->
                   <li *ngFor="let chat of chats" [ngClass]="{'reverse': chat.usuario._id!=_usuarioService.usuario._id}">
                    
-                    <div *ngIf="chat.usuario._id==_usuarioService.usuario._id" class="chat-img">
+                    <div *ngIf="chat.usuario._id==_usuarioService.usuario._id" 
+                         class="chat-img">
                       
-                      <img [src]="chat.usuario.img | imagen" *ngIf="chat.usuario.img!='' && chat.usuario.img!=null">
+                      <img [src]="chat.usuario.img | imagen" 
+                           *ngIf="chat.usuario.img!='' && chat.usuario.img!=null"
+                           class="size-45">
                     
                       <div class="iniciales-cliente align-content-center"
                              *ngIf="!chat.usuario.img || chat.usuario.img=='null'"
@@ -217,7 +222,9 @@
                     </div>
 
                     <div *ngIf="chat.usuario._id!=_usuarioService.usuario._id" class="chat-img">
-                      <img [src]="chat.usuario.img | imagen" *ngIf="chat.usuario.img!='' && chat.usuario.img!=null">
+                      <img [src]="chat.usuario.img | imagen" 
+                           *ngIf="chat.usuario.img!='' && chat.usuario.img!=null"
+                           class="size-45">
                     
                       <div class="iniciales-cliente align-content-center"
                              *ngIf="!chat.usuario.img && chat.usuario.img==null"
@@ -298,7 +305,8 @@
     (cambiosCliente)="guardarCambiosCliente($event)"></app-info-client>
 
   <app-nuevo-cliente
-    (clienteNuevo)="registrarClienteNuevo($event)"></app-nuevo-cliente>
+    (clienteNuevo)="registrarClienteNuevo($event)"
+    (imagenCliente)="imagenNuevoCliente($event)"></app-nuevo-cliente>
 
   <app-cotizacion *ngIf="proyectoActual.nombre!=null"
     [proyecto]="proyectoActual"

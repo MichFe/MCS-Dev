@@ -33,6 +33,8 @@ import { PAGES_ROUTES } from "./pages.routes";
 //Directivas
 import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-scroll.directive";
 import { ProfileComponent } from './profile/profile.component';
+import { ImageUploadComponent } from './modal/image-upload/image-upload.component';
+import { AgregarProductoComponent } from './modal/agregarProducto/agregar-producto/agregar-producto.component';
 
 
 @NgModule({
@@ -61,7 +63,9 @@ import { ProfileComponent } from './profile/profile.component';
     UsuariosComponent,
     InfiniteScrollDirective,
     CatalogoProductosComponent,
-    ProfileComponent
+    ProfileComponent,
+    ImageUploadComponent,
+    AgregarProductoComponent
   ],
   exports: [
     DashboardComponent,

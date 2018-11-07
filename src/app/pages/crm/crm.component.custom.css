@@ -104,6 +104,18 @@ textarea:focus{
     cursor: auto;
 }
 
+ .size-45{
+   width: 45px !important;
+   height: 45px;
+   object-fit: cover;
+ }
+
+ .size-30{
+   width:30px !important;
+   height: 30px;
+   object-fit: cover;
+ }
+
 .btn-audio{
     margin:5px 0px !important;
     border-right: 1px solid #e0940f;

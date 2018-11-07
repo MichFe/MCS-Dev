@@ -29,6 +29,8 @@ div.producto{
     height: 200px;
     text-align: center;
     align-content: center;
+
+    float:left;
 }
 
 .image-container {
@@ -40,9 +42,10 @@ div.producto{
 }
 
 .image {
-  display: block;
   width: 120px;
-  height: auto;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 5px;
 }
 
 
@@ -96,6 +99,8 @@ ul{
 
 .nombre-lista{
     font-size: 10px;
+    line-height: 50px;
+    margin-left: 5px;
 }
 
 .cantidad-lista{
@@ -106,6 +111,9 @@ ul{
     min-width: 20px;
     border-radius: 5px;
     text-align: center;
+
+    height: 16px;
+    line-height: 16px;
 }
 
 .trash-button{
@@ -122,6 +130,38 @@ ul{
 
 .pointer{
     cursor: pointer;
+}
+
+li{
+    height: 60px;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+.size-50{
+    height: 50px;
+    width:50px;
+    object-fit: cover;
+}
+
+.btn-agregar-producto{
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    padding: 0px;
+
+    font-size: 18px;
+    line-height: 50px;
+}
+
+div.list-right-side{
+    margin-top: 17px;
+    margin-bottom: 17px;
 }
 
 

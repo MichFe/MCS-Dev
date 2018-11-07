@@ -9,6 +9,7 @@ import { ProyectoService } from '../../services/proyectos/proyecto.service';
 import { UsuarioService } from '../../services/usuarios/usuario.service';
 import { ChatService } from '../../services/chats/chat.service';
 import { Router } from '@angular/router';
+import { SubirArchivoService } from '../../services/subirArchivo/subir-archivo.service';
 
 @Component({
   selector: "app-crm",
@@ -94,6 +95,8 @@ export class CrmComponent implements OnInit {
   //FIN de Flag variables
   //-------------------------------
 
+  imagenClienteNuevo:File;
+
   constructor(
     private audio: VoiceRecorderService,
     private sanitizer: DomSanitizer,
@@ -102,20 +105,28 @@ export class CrmComponent implements OnInit {
     private _proyectoService: ProyectoService,
     public _usuarioService: UsuarioService,
     private _chatService: ChatService,
-    public router: Router
+    public router: Router,
+    public _subirArchivoService:SubirArchivoService
   ) {
     this.obtenerFechaActual();
 
     this.obtenerClientes(0);
   }
 
-  resetRegresarAVistaCliente(){
+  imagenNuevoCliente(file){
+    this.imagenClienteNuevo=file;
+  }
+
+  resetRegresarAVistaCliente() {
     this.chatProyectos = false;
-    this.infScrollChats=false;
-    this.infScrollClientes=true;
+    this.infScrollChats = false;
+    this.infScrollClientes = true;
     this.chats = [];
-    this.proyectos=[];
+    this.proyectos = [];
     this.proyectoActual = {};
+
+    this.obtenerClientes(0);
+
   }
 
   obtenerFechaActual() {
@@ -139,14 +150,15 @@ export class CrmComponent implements OnInit {
 
   agregarProyecto(proyecto) {
     this._proyectoService.postProyecto(proyecto).subscribe(
-      (resp:any) => {
-        
+      (resp: any) => {
         this.obtenerProyectos(this.clienteActual._id, 1);
         swal(
-          'Registro de proyecto exitoso',
-          'El proyecto ' + resp.proyecto.nombre + 'se ha guardado de manera exitosa.',
-          'success'
-        )
+          "Registro de proyecto exitoso",
+          "El proyecto " +
+            resp.proyecto.nombre +
+            "se ha guardado de manera exitosa.",
+          "success"
+        );
       },
       error => {
         swal(
@@ -163,21 +175,21 @@ export class CrmComponent implements OnInit {
   obtenerClientes(desde) {
     this._clientesServicio.obtenerClientes(desde).subscribe(
       (resp: any) => {
-      this.clientes = resp.clientes;
+        this.clientes = resp.clientes;
 
-      this.clientesFiltrados=this.clientes;
-      this.cambiarColorIniciales();
-      this.totalClientes = resp.totalClientes;
-      this.infScrollClientes = true;
-    },
-      (error) => {
+        this.clientesFiltrados = this.clientes;
+        this.cambiarColorIniciales();
+        this.totalClientes = resp.totalClientes;
+        this.infScrollClientes = true;
+      },
+      error => {
         swal(
           "Error en carga inicial de clientes",
           error.error.mensaje + " | " + error.error.errors.message,
           "error"
         );
       }
-  );
+    );
   }
 
   cambiarColorIniciales() {
@@ -191,7 +203,7 @@ export class CrmComponent implements OnInit {
   }
 
   seleccionarCliente(cliente, index) {
-    this.infScrollClientes=false;
+    this.infScrollClientes = false;
     this.obtenerProyectos(cliente._id, 0);
 
     this.clienteActual = cliente;
@@ -205,6 +217,15 @@ export class CrmComponent implements OnInit {
     this._clientesServicio.guardarCliente(nuevoCliente).subscribe(
       (resp: any) => {
         this.obtenerClientes(0);
+
+        let cliente=resp.cliente;
+
+        this._subirArchivoService.subirArchivo( this.imagenClienteNuevo, 'cliente', cliente._id )
+            .then( resp=>{
+              console.log(resp);
+              
+            });
+
         swal(
           "Registro exitoso",
           "El cliente " +
@@ -212,6 +233,7 @@ export class CrmComponent implements OnInit {
             " se ha guardado correctamente!",
           "success"
         );
+
       },
       error => {
         swal(
@@ -252,35 +274,35 @@ export class CrmComponent implements OnInit {
 
   buscarCliente() {
 
-    if(!this.terminoBusqueda){
+    if (!this.terminoBusqueda){
+      
       this.obtenerClientes(0);
       return;
-    }  
-  
-    this._clientesServicio.buscarCliente(this.terminoBusqueda)
-        .subscribe(
-          (resp:any)=>{
+    }
 
-            if(resp.cliente.length==0){
-              swal(
-                'Busqueda no concluyente',
-                'No se encontraron clientes que coincidan con la busqueda: ' + this.terminoBusqueda,
-                'warning'
-              );
-              return;
-            }
-            
-            this.clientesFiltrados = resp.cliente;
-          },
-          (error)=>{
-            swal(
-              'Busqueda de cliente fallida',
-              'Error al buscar cliente',
-              'error'
-            );
-          }
-        );
+    if (this.terminoBusqueda.length<=3) {
 
+      return;
+    }
+
+    this._clientesServicio.buscarCliente(this.terminoBusqueda).subscribe(
+      (resp: any) => {
+        if (resp.cliente.length == 0) {
+          swal(
+            "Busqueda no concluyente",
+            "No se encontraron clientes que coincidan con la busqueda: " +
+              this.terminoBusqueda,
+            "warning"
+          );
+          return;
+        }
+
+        this.clientesFiltrados = resp.cliente;
+      },
+      error => {
+        swal("Busqueda de cliente fallida", "Error al buscar cliente", "error");
+      }
+    );
   }
 
   recordAudio() {
@@ -352,17 +374,17 @@ export class CrmComponent implements OnInit {
 
     //Guardando chat en base de datos
     this._chatService.guardarChat(chat, this.chats.length).subscribe(
-      (resp) => {
-      this.mostrarChatProyecto(this.proyectoActual);
-    },
-      (error) => {
+      resp => {
+        this.mostrarChatProyecto(this.proyectoActual);
+      },
+      error => {
         swal(
           "Error al cargar postear mensaje",
           error.error.mensaje + " | " + error.error.errors.message,
           "error"
         );
       }
-  );
+    );
     //--------------------------------------------------------
 
     //Agregando el mensaje a arreglo de chats del proyecto
@@ -391,11 +413,8 @@ export class CrmComponent implements OnInit {
     this.chats = [];
     this.totalChatsProyecto = 0;
 
-    this._chatService
-      .obtenerChats(proyecto._id, this.chats.length)
-      .subscribe(
-        (resp: any) => {
-
+    this._chatService.obtenerChats(proyecto._id, this.chats.length).subscribe(
+      (resp: any) => {
         this.totalChatsProyecto = resp.totalChats;
 
         resp.chats.forEach(chat => {
@@ -409,7 +428,7 @@ export class CrmComponent implements OnInit {
         //Habilitamos inf scroll
         this.infScrollChats = true;
       },
-      (error) => {
+      error => {
         swal(
           "Error en carga inicial de mensajes",
           error.error.mensaje + " | " + error.error.errors.message,
@@ -432,57 +451,52 @@ export class CrmComponent implements OnInit {
         .obtenerChats(this.proyectoActual._id, this.chats.length)
         .subscribe(
           (resp: any) => {
+            resp.chats.forEach(chat => {
+              this.chats.unshift(chat);
+            });
 
-          resp.chats.forEach(chat => {
-            this.chats.unshift(chat);
-          });
-
-          //Rehabilitamos infScrollChats
-          this.infScrollChats = true;
-        },
-        (error) => {
-          swal(
-            "Error al cargar clientes",
-            error.error.mensaje + " | " + error.error.errors.message,
-            "error"
-          );
-        }
-      );
+            //Rehabilitamos infScrollChats
+            this.infScrollChats = true;
+          },
+          error => {
+            swal(
+              "Error al cargar clientes",
+              error.error.mensaje + " | " + error.error.errors.message,
+              "error"
+            );
+          }
+        );
     }
   }
 
-  cargarClientes() {    
-    
+  cargarClientes() {
     if (this.clientes.length >= this.totalClientes) {
       return;
     }
 
     this.infScrollClientes = false;
 
-    this._clientesServicio
-      .obtenerClientes(this.clientes.length)
-      .subscribe(
-        (resp: any) => {
+    this._clientesServicio.obtenerClientes(this.clientes.length).subscribe(
+      (resp: any) => {
         // console.log(resp);
-        
+
         resp.clientes.forEach(cliente => {
           this.clientes.push(cliente);
         });
 
-        this.clientesFiltrados=this.clientes;
+        this.clientesFiltrados = this.clientes;
         this.cambiarColorIniciales();
 
         this.infScrollClientes = true;
       },
-      (error)=>{
+      error => {
         swal(
           "Error al cargar clientes",
           error.error.mensaje + " | " + error.error.errors.message,
           "error"
         );
       }
-    );      
-      
+    );
   }
 
   randomColor() {
@@ -495,7 +509,5 @@ export class CrmComponent implements OnInit {
   }
 
   ngOnInit() {}
-
-  
 }
 

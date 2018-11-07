@@ -1,27 +1,33 @@
 <div class="container">
 
+  <!-- Tags de familias -->
   <div class="row familias" >
 
     <div *ngFor="let familia of familias"
-          class="familia-tag">
+          class="familia-tag"
+          (click)="obtenerProductosPorFamilia(familia.nombre)">
       <i class="fa fa-tag"></i> {{ familia.nombre}}
     </div>
 
   </div>
+  <!-- FIN de Tags de familias -->
 
   <div class="row">
-  
+    
+    <!-- Display de productos -->
     <div class="col col-md-9">
-  
+      
+      <!-- Elemento Producto -->
       <div *ngFor="let producto of productos"
            class="producto">
 
+        <!-- Imagen producto -->
         <div class="image-container">
-          <img [src]="producto.img"
-               class="image">
+
+          <img [src]="producto.img | imagen: 'producto'"
+               class="image size-100">
   
           <div class="overlay">
-
             <div class="text">
 
               <button class="btn btn-sm btn-success waves-effect waves-light"
@@ -31,32 +37,59 @@
 
             </div>
           </div>
+
         </div>
+        <!-- FIN de Imagen producto -->
+
+
         <div class="product-name">
           {{ producto.nombre }}
         </div>
 
       </div>
+      <!-- FIN de Elemento Producto -->
+
+      
       
   
     </div>
-  
+    <!-- FIN de Display de productos -->
+
+    <!-- Carrito de compra -->
     <div class="col col-md-3">
       
       <div>Productos</div>
 
       <ul>
         <li *ngFor="let producto of carrito">
-          <img class="img-lista" [src]="producto.img">
+
+          <img class="img-lista size-50" 
+               [src]="producto.img | imagen: 'producto'">
+
           <span class="nombre-lista">{{ producto.nombre }}</span>
-          <div class="right">
+
+          <div class="right list-right-side">
             <span class="cantidad-lista left m-r-5 pointer">{{ producto.cantidad }}</span>
             <span><i class="fa fa-trash trash-button right pointer"></i></span>
-
           </div>
+
         </li>
       </ul>
+
+      
+
     </div>
+    <!-- FIN de Carrito de compra -->
+
   
   </div>
 </div>
+
+<button 
+  class="btn btn-success waves-effect waves-light btn-agregar-producto"
+  data-toggle="modal" 
+  data-target="#nuevoProducto">
+    <i class="fa fa-plus"></i>
+</button>
+
+<app-agregar-producto></app-agregar-producto>

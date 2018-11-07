@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProductoService } from 'src/app/services/productos/producto.service';
 
 @Component({
   selector: "app-catalogo-productos",
@@ -6,7 +7,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ["./catalogo-productos.component.css"]
 })
 export class CatalogoProductosComponent implements OnInit {
-
   //Data
   familias: any[] = [
     { nombre: "Credenzas" },
@@ -16,46 +16,51 @@ export class CatalogoProductosComponent implements OnInit {
     { nombre: "Sillones" },
     { nombre: "Bancas" },
     { nombre: "Bancos" },
-    { nombre: "Mesas" },
     { nombre: "Libreros" },
     { nombre: "Lámparas" },
     { nombre: "Ocasionales" },
     { nombre: "Salas" },
     { nombre: "Cabeceras" },
-    { nombre: "Bases de Cama" },
-    { nombre: "Libreros" }
+    { nombre: "Bases de Cama" }
   ];
 
-  productos = [
-    {
-      codigo: "MDC-05-2",
-      nombre: "Mesa de Centro Gota CH de Parota",
-      familia: "Mesas",
-      img: "../../../assets/images/gallery/chair3.jpg",
-      id:1
-    }
-  ];
+  productos = [ ];
 
-  carrito=[];
+  carrito = [];
 
-  constructor() {}
+  constructor(public _productoService: ProductoService) {}
 
   ngOnInit() {}
 
-  agregarACarrito(producto){
-    let existe=this.carrito.find( this.checkProducto );
-    
-    if(existe){
-      existe.cantidad+=1
-    }else{
-      producto.cantidad=1;
-      this.carrito.push(producto);
-    }
-    
-
+  obtenerProductosPorFamilia(familia: string) {
+    this._productoService.obtenerProductosPorFamilia(familia).subscribe(
+      (resp: any) => {
+        this.productos = resp.productos;
+      },
+      error => {
+        swal(
+          "Error al consultar productos",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
+    );
   }
 
-  checkProducto(producto){
-    return producto.id;
+  agregarACarrito(producto) {
+    let existe = this.checkCarrito(producto);
+
+    if (existe) {
+      existe.cantidad += 1;
+    } else {
+      producto.cantidad = 1;
+      this.carrito.push(producto);
+    }
+  }
+
+  checkCarrito(producto) {
+    return this.carrito.find(elemento => {
+      return elemento._id === producto._id;
+    });
   }
 }

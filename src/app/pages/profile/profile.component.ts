@@ -13,7 +13,7 @@ export class ProfileComponent implements OnInit {
   usuario: Usuario;
   imagenSubir: File;
   hayImagen:boolean=false;
-  imagenTemporal: string;
+  imagenTemporal: string | ArrayBuffer;
 
   constructor(public _usuarioService: UsuarioService) {
     $(()=>{

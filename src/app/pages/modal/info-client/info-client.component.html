@@ -19,8 +19,20 @@
             <div class="form-body">
 
               <div class="text-center">
-                <img *ngIf="cliente.imagen" class="profile img-circle m-b-10" [src]="cliente.imagen">
+                  
+                <img class="profile img-circle size-100" 
+                     [src]="cliente.img | imagen: 'cliente'"
+                     *ngIf="!editando">
+
+
+                <div class="image-container" *ngIf='editando'
+                     (click)="actualizarImagen(cliente)">
+                  <img class="profile img-circle size-100" [src]="cliente.img | imagen: 'cliente'">                  
+                  <div class="after text-center"><i class="fa fa-edit icon-center"></i></div>
+                </div>
+
                 <h3 class="box-title font-bold">{{ cliente.nombre }}</h3>
+
               </div>
               
               <hr class="m-t-0"

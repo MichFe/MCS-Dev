@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class SidebarService {
-
-  menu:any=[
+  menu: any = [
     {
-      modulo: 'Ventas',
-      icono:'mdi mdi-gauge',
-      submenu:[
-        { titulo: 'CRM', url:'/crm' },
-        { titulo: 'Reporte de Ventas', url:'/dashboard' },
-        { titulo: 'Catálogo de Productos', url:'/catalogoProductos'}
+      modulo: "Ventas",
+      icono: "mdi mdi-cash-usd",
+      submenu: [
+        { titulo: "CRM", url: "/crm" },
+        { titulo: "Reporte de Ventas", url: "/dashboard" },
+        { titulo: "Catálogo de Productos", url: "/catalogoProductos" }
       ]
     }
-  ]
+  ];
 
-  constructor() { }
+  constructor() {}
 }

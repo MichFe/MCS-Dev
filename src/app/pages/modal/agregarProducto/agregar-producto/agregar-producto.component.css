@@ -1,30 +1,8 @@
-
-img.profile{
-    width:100px;
-}
-
-label{
-    font-weight: bold;
-}
-
-hr{
-     border: 0; 
-     height: 1px; 
-     background: #278395; 
-     background-image: linear-gradient(to right, #caebf1, #278395, #caebf1);
-}
-
-.size-100{
-    height: 100px;
-    width: 100px;
-    object-fit: cover;
-}
-
 div.image-container .after{
     position: absolute;
     top: 0;
     left: 0;
-    border-radius: 100%;
+    border-radius: 15px;
     width: 100%;
     height: 100%;
     display: none;
@@ -38,6 +16,8 @@ div.image-container .after{
 .image-container {
     position: relative;
     display: inline-block;
+    border-radius: 15px;
+    overflow: hidden;
 }
 
 .image-container:hover .after {
@@ -54,11 +34,3 @@ i.icon-center{
     transform: translateY(-15px);
 
 }
-
-/* h3,label{
-    color:#278395; 
-} */
-
-/* span{
-    color:#2e9bb0;
-} */

@@ -30,7 +30,7 @@ div.producto{
     text-align: center;
     align-content: center;
 
-    float:left;
+    display:inline-block;
 }
 
 .image-container {
@@ -94,13 +94,28 @@ ul{
 .img-lista{
     height: 50px;
     border-radius: 5px;
-    float: left;
+    clear: both;
+}
+
+.info-lista{
+    width:100px;
 }
 
 .nombre-lista{
     font-size: 10px;
-    line-height: 50px;
     margin-left: 5px;
+    margin-bottom:5px;
+}
+
+.precio-lista{
+    font-size: 10px;
+    margin-left: 5px;
+    margin-bottom: 0px
+}
+
+.precio-lista:hover{
+    text-decoration: underline;
+    color: #2e9bb0;
 }
 
 .cantidad-lista{
@@ -133,9 +148,10 @@ ul{
 }
 
 li{
-    height: 60px;
-    padding-top:5px;
-    padding-bottom:5px;
+    min-height: 60px;
+    margin-top:5px;
+    margin-bottom:5px;
+    overflow: auto;
 }
 
 .size-50{
@@ -159,9 +175,29 @@ li{
     line-height: 50px;
 }
 
-div.list-right-side{
-    margin-top: 17px;
-    margin-bottom: 17px;
+.height-50{
+    height: 50px;
 }
 
+.v-center{
+    margin-top:50%;
+    margin-bottom: 50%;
+}
+
+.center{
+    margin-left: 50%;
+    margin-right: 50%;
+}
+
+ul.pagination li{
+    cursor: pointer;
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+.fa-shopping-cart{
+    line-height: 24px;
+}
 

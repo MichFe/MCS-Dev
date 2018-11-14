@@ -35,6 +35,7 @@ import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-
 import { ProfileComponent } from './profile/profile.component';
 import { ImageUploadComponent } from './modal/image-upload/image-upload.component';
 import { AgregarProductoComponent } from './modal/agregarProducto/agregar-producto/agregar-producto.component';
+import { TicketComponent } from './modal/ticket/ticket.component';
 
 
 @NgModule({
@@ -65,7 +66,8 @@ import { AgregarProductoComponent } from './modal/agregarProducto/agregar-produc
     CatalogoProductosComponent,
     ProfileComponent,
     ImageUploadComponent,
-    AgregarProductoComponent
+    AgregarProductoComponent,
+    TicketComponent
   ],
   exports: [
     DashboardComponent,

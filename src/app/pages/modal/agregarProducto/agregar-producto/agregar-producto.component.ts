@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Producto } from '../../../../models/producto.model';
 import { UsuarioService } from '../../../../services/usuarios/usuario.service';
 import { ProductoService } from 'src/app/services/productos/producto.service';
@@ -22,6 +22,9 @@ export class AgregarProductoComponent implements OnInit {
   precio: number;
   usuarioCreador: string;
   usuarioUltimaModificacion: string;
+
+  @Output()
+  actualizarFamilia: EventEmitter<any> = new EventEmitter();
 
   familias: string[] = [
     "Credenzas",
@@ -116,6 +119,10 @@ export class AgregarProductoComponent implements OnInit {
       (resp: any) => {
         //Validamos existencia de imagen
         if (!this.imagenSubir) {
+
+          //Refrescamos familia
+          this.actualizarFamilia.emit(producto.familia);
+
           swal(
             "Producto registrado exitosamente",
             "El producto: " +
@@ -132,7 +139,21 @@ export class AgregarProductoComponent implements OnInit {
 
           this._subirArchivoService
             .subirArchivo(this.imagenSubir, "producto", producto._id)
-            .then()
+            .then(
+              (resp)=>{
+                swal(
+                  "Producto registrado exitosamente",
+                  "El producto: " + producto.nombre + " se registró exitosamente",
+                  "success"
+                );
+
+                //Refrescamos familia
+                this.actualizarFamilia.emit(producto.familia);
+
+                $("#nuevoProducto").modal("toggle");
+                this.resetearModal();
+              }
+            )
             .catch(error => {
               console.log(error);
 
@@ -147,15 +168,9 @@ export class AgregarProductoComponent implements OnInit {
               return;
             });
 
-          swal(
-            "Producto registrado exitosamente",
-            "El producto: " + producto.nombre + " se registró exitosamente",
-            "success"
-          );
-
-          $("#nuevoProducto").modal("toggle");
-          this.resetearModal();
+          
         }
+
       },
       error => {
         swal(

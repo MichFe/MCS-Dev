@@ -15,66 +15,114 @@
   <div class="row">
     
     <!-- Display de productos -->
-    <div class="col col-md-9">
+    <div class="col col-12 col-md-9 text-center">
       
       <!-- Elemento Producto -->
-      <div *ngFor="let producto of productos"
-           class="producto">
-
-        <!-- Imagen producto -->
-        <div class="image-container">
-
-          <img [src]="producto.img | imagen: 'producto'"
-               class="image size-100">
-  
-          <div class="overlay">
-            <div class="text">
-
-              <button class="btn btn-sm btn-success waves-effect waves-light"
-                      (click)="agregarACarrito(producto)">
-                 <i class="fa fa-plus"></i>
+        <div *ngFor="let producto of productos" class="producto">
+        
+          <!-- Imagen producto -->
+          <div class="image-container">
+        
+            <img [src]="producto.img | imagen: 'producto'" class="image size-100">
+        
+            <div class="overlay">
+              <div class="text">
+        
+                <button class="btn btn-sm btn-success waves-effect waves-light" (click)="agregarACarrito(producto)">
+                  <i class="fa fa-plus"></i>
                   add</button>
-
+        
+              </div>
             </div>
+        
           </div>
-
+          <!-- FIN de Imagen producto -->
+        
+        
+          <div class="product-name">
+            {{ producto.nombre }}
+          </div>
+        
+          <div class="product-price">
+            {{ producto.precio | currency: 'MXN'}}
+          </div>
+        
         </div>
-        <!-- FIN de Imagen producto -->
 
-
-        <div class="product-name">
-          {{ producto.nombre }}
-        </div>
-
-      </div>
+      
       <!-- FIN de Elemento Producto -->
 
+      <!-- Componente de paginado   -->
+        <div *ngIf="productos.length>0">
+          <ul class="pagination justify-content-center">
+
+            <li class="page-item pointer"
+                (click)="paginaAnterior()">
+              <a class="page-link" aria-label="Previous">
+                <span aria-hidden="true">«</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+
+            <li *ngFor="let pagina of paginas" 
+                class="page-item pointer"
+                (click)="cargarProductosPagina(pagina.pagina)"
+                [ngClass]="{'active': pagina.active }"><a class="page-link">{{ pagina.pagina }}</a></li>
+
+            <li class="page-item pointer"
+                (click)="paginaSiguiente()">
+              <a class="page-link" aria-label="Next">
+                <span aria-hidden="true">»</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+
+          </ul>
+
+        </div> 
+      <!-- FIN de Componente de paginado   -->
       
-      
-  
     </div>
     <!-- FIN de Display de productos -->
 
     <!-- Carrito de compra -->
-    <div class="col col-md-3">
+    <div class="col col-12 col-md-3">
       
-      <div>Productos</div>
+      <div>
+        Carrito
+        <i class="fa fa-shopping-cart right"></i>
+      </div>
 
-      <ul>
-        <li *ngFor="let producto of carrito">
-
-          <img class="img-lista size-50" 
+      <ul class="m-b-15">
+        <li *ngFor="let producto of carrito; let i=index">
+          
+          <img class="img-lista size-50 left" 
                [src]="producto.img | imagen: 'producto'">
+          
+          <div class="info-lista left">
+            <p class="nombre-lista">{{ producto.nombre }}</p>
+            <p class="precio-lista pointer"
+               (click)="cambiarPrecio(i)">{{ producto.precio | currency: 'MXN' }}</p>
+          </div>
 
-          <span class="nombre-lista">{{ producto.nombre }}</span>
-
-          <div class="right list-right-side">
-            <span class="cantidad-lista left m-r-5 pointer">{{ producto.cantidad }}</span>
-            <span><i class="fa fa-trash trash-button right pointer"></i></span>
+          <div class="right height-50">
+            <span class="cantidad-lista left m-r-5 pointer v-center"
+                  (click)="asignarCantidadManualmente(i)">{{ producto.cantidad }}</span>
+            <span (click)="eliminarElementoDelCarrito(i)">
+              <i class="fa fa-trash trash-button right pointer v-center"></i>
+            </span>
           </div>
 
         </li>
       </ul>
+
+      <div class="botonera"
+           *ngIf="carrito.length>0">
+        <button class="btn btn-success waves-effect waves-light btn-block"
+                data-toggle="modal"
+                data-target="#ticketVenta">Venta</button>
+        <!-- <button class="btn btn-secondary waves-effect-waves-light btn-block">Cotización</button> -->
+      </div>
 
       
 
@@ -92,4 +140,12 @@
     <i class="fa fa-plus"></i>
 </button>
 
-<app-agregar-producto></app-agregar-producto>
+<app-agregar-producto
+  (actualizarFamilia)="obtenerProductosPorFamilia($event)"></app-agregar-producto>
+  
+<app-ticket
+  [carrito]="carrito"
+  [totalCarrito]="totalCarrito"
+  [iva]="ivaCarrito"
+  [incluirIva]="incluirIva"
+  [metodoDePago]="metodoDePago"></app-ticket>

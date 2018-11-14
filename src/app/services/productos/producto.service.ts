@@ -21,9 +21,10 @@ export class ProductoService {
       return this.http.post( url, producto );
   }
 
-  obtenerProductosPorFamilia( familia:string ){
+  obtenerProductosPorFamilia( familia:string, pagina:number = 1 ){
     let token = this._usuarioService.token;
-    let url = URL_SERVICIOS + `/producto/familia/${ familia }?token=${ token }`;
+    let desde = (pagina - 1) * 10;
+    let url = URL_SERVICIOS + `/producto/familia/${ familia }?token=${ token }&desde=${ desde }`;
 
     return this.http.get( url );
 

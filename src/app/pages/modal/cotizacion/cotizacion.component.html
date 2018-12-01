@@ -84,7 +84,7 @@
                           class="text-center clickable"
                           [ngClass]="{'editando': producto.editandoPrecio}"
                           contenteditable="true">$8,000.00</td>
-                      <td class="text-center">{{ producto.precio * producto.cantidad | currency:'MXN' }}</td>
+                      <td class="text-center">{{ (producto.precio * producto.cantidad) - producto.descuento | currency:'MXN' }}</td>
                     </tr>
                   </tbody>
                   <tfoot>

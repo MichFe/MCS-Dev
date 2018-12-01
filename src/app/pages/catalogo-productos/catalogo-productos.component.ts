@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductoService } from 'src/app/services/productos/producto.service';
 import { Producto } from 'src/app/models/producto.model';
+import { ClienteService } from 'src/app/services/clientes/cliente.service';
+import { SubirArchivoService } from 'src/app/services/subirArchivo/subir-archivo.service';
 
 declare var $:any;
 
@@ -14,10 +16,13 @@ export class CatalogoProductosComponent implements OnInit {
   totalProductos: number;
   familiaActual: string;
   totalCarrito: number;
+  totalDescuento: number;
   ivaCarrito: number;
+  paginaActual: number;
+  productoAEditar: any = {};
+  imagenClienteNuevo: File;
 
   incluirIva: string;
-  metodoDePago: string;
 
   //Paginado
   paginas: any[] = [
@@ -48,10 +53,105 @@ export class CatalogoProductosComponent implements OnInit {
 
   carrito = [];
 
-  constructor(public _productoService: ProductoService) {}
+  constructor(
+    public _productoService: ProductoService,
+    public _clienteService: ClienteService,
+    public _subirArchivoService: SubirArchivoService
+    ) {}
 
   ngOnInit() {}
 
+  imagenNuevoCliente(file) {
+    this.imagenClienteNuevo = file;
+  }
+
+  registrarClienteNuevo(nuevoCliente) {
+    this._clienteService.guardarCliente(nuevoCliente).subscribe(
+      (resp: any) => {
+
+        let cliente = resp.cliente;
+
+        this._subirArchivoService.subirArchivo(this.imagenClienteNuevo, 'cliente', cliente._id)
+          .then(resp => {
+            console.log(resp);
+
+          });
+
+        swal(
+          "Registro exitoso",
+          "El cliente " +
+          resp.cliente.nombre +
+          " se ha guardado correctamente!",
+          "success"
+        );
+
+      },
+      error => {
+        swal(
+          "Registro de cliente fallido",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
+    );
+
+  }
+
+  agregarDescuento(index) {
+    swal("Descuento", "Selecciona $ ó %", "info", {
+      buttons: {
+        monto: {
+          text: "$",
+          value: "monto"
+        },
+        porcentaje: {
+          text: "%",
+          value: "porcentaje"
+        }
+      }
+    }).then(tipo => {
+      swal({
+        content: {
+          element: "input",
+          attributes: {
+            type: "number"
+          }
+        },
+        text: "Ingresa el descuento en " + tipo,
+        buttons: [true, "Aceptar"]
+      }).then(descuento => {
+        if (tipo == "monto") {
+          if (descuento > this.carrito[index].precio) {
+            swal(
+              "Descuento",
+              "El descuento, no puede ser mayor que el precio",
+              "error"
+            );
+            return;
+          }
+          this.carrito[index].descuento = descuento;
+          this.calcularSubTotalCarrito();
+        } else {
+          if (descuento >= 0 && descuento <= 100) {
+            this.carrito[index].descuento =
+              this.carrito[index].precio * (descuento / 100);
+              this.calcularSubTotalCarrito();
+          } else {
+            swal(
+              "Descuento",
+              "El porcentaje debe ser un valor entre 0 y 100",
+              "error"
+            );
+          }
+        }
+      });
+    });
+  }
+
+  editarProducto(producto: Producto) {
+    this.productoAEditar = producto;
+    $("#editarProducto").modal("toggle");
+  }
 
   asignarCantidadManualmente(i) {
     swal({
@@ -82,6 +182,7 @@ export class CatalogoProductosComponent implements OnInit {
     this.paginas.forEach(pagina => {
       if (paginaClickeada === pagina.pagina) {
         pagina.active = true;
+        this.paginaActual = pagina.pagina;
       } else {
         pagina.active = false;
       }
@@ -151,9 +252,10 @@ export class CatalogoProductosComponent implements OnInit {
     this.paginas[0].active = true;
   }
 
-  obtenerProductosPorFamilia(familia: string) {
+  obtenerProductosPorFamilia(familia: string, pagina: number = 1) {
     this.familiaActual = familia;
-    this._productoService.obtenerProductosPorFamilia(familia).subscribe(
+
+    this._productoService.obtenerProductosPorFamilia(familia, pagina).subscribe(
       (resp: any) => {
         this.productos = resp.productos;
         this.totalProductos = resp.totalProductos;
@@ -200,18 +302,23 @@ export class CatalogoProductosComponent implements OnInit {
 
   calcularSubTotalCarrito() {
     this.totalCarrito = 0;
+    this.totalDescuento = 0;
 
     this.carrito.forEach(producto => {
       let cantidad = producto.cantidad;
       let precio = producto.precio;
+      let descuento = Number(producto.descuento);
 
       let total = cantidad * precio;
       producto.total = total;
 
       this.totalCarrito += total;
+      if(descuento){
+        this.totalDescuento += descuento;
+      }
     });
 
-    this.ivaCarrito = this.totalCarrito * 0.16;
+    this.ivaCarrito = (this.totalCarrito - this.totalDescuento) * 0.16;
   }
 
   cambiarPrecio(indiceCarrito) {

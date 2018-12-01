@@ -5,7 +5,7 @@
 
     <div *ngFor="let familia of familias"
           class="familia-tag"
-          (click)="obtenerProductosPorFamilia(familia.nombre)">
+          (click)="obtenerProductosPorFamilia(familia.nombre,1)">
       <i class="fa fa-tag"></i> {{ familia.nombre}}
     </div>
 
@@ -28,9 +28,15 @@
             <div class="overlay">
               <div class="text">
         
-                <button class="btn btn-sm btn-success waves-effect waves-light" (click)="agregarACarrito(producto)">
+                <button class="btn btn-sm btn-success waves-effect waves-light m-b-10" (click)="agregarACarrito(producto)">
                   <i class="fa fa-plus"></i>
                   add</button>
+                
+                <button class="btn btn-sm btn-warning waves-effect waves-light" (click)="editarProducto(producto)">
+                  <i class="fa fa-edit"></i>
+                  edit</button>
+
+                
         
               </div>
             </div>
@@ -40,7 +46,7 @@
         
         
           <div class="product-name">
-            {{ producto.nombre }}
+            {{ producto.codigo }}
           </div>
         
           <div class="product-price">
@@ -100,12 +106,18 @@
                [src]="producto.img | imagen: 'producto'">
           
           <div class="info-lista left">
-            <p class="nombre-lista">{{ producto.nombre }}</p>
+            <p class="nombre-lista fw-500">{{ producto.nombre }}</p>
             <p class="precio-lista pointer"
                (click)="cambiarPrecio(i)">{{ producto.precio | currency: 'MXN' }}</p>
+            <p *ngIf="producto.descuento" 
+               class="descuento-lista"> -{{ producto.descuento | currency: 'MXN' }}</p>
           </div>
 
           <div class="right height-50">
+            <span class="descuento-lista left m-r-5 pointer v-center"
+                  (click)="agregarDescuento(i)">
+              <i class="fa fa-usd"></i>
+            </span>
             <span class="cantidad-lista left m-r-5 pointer v-center"
                   (click)="asignarCantidadManualmente(i)">{{ producto.cantidad }}</span>
             <span (click)="eliminarElementoDelCarrito(i)">
@@ -140,12 +152,18 @@
     <i class="fa fa-plus"></i>
 </button>
 
-<app-agregar-producto
-  (actualizarFamilia)="obtenerProductosPorFamilia($event)"></app-agregar-producto>
+<app-agregar-producto></app-agregar-producto>
+<app-editar-producto
+  [producto]="productoAEditar"
+  (actualizarFamilia)="obtenerProductosPorFamilia($event, paginaActual)"></app-editar-producto>
   
 <app-ticket
   [carrito]="carrito"
   [totalCarrito]="totalCarrito"
-  [iva]="ivaCarrito"
-  [incluirIva]="incluirIva"
-  [metodoDePago]="metodoDePago"></app-ticket>
+  [totalDescuento]="totalDescuento"
+  [iva]="ivaCarrito"></app-ticket>
+
+  <app-nuevo-cliente
+    (clienteNuevo)="registrarClienteNuevo($event)"
+    (imagenCliente)="imagenNuevoCliente($event)"
+    [toggleTicketModal]="true"></app-nuevo-cliente>

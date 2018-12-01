@@ -14,6 +14,13 @@ export class ProductoService {
     public _usuarioService:UsuarioService
   ) { }
 
+  actualizarProducto( producto ){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/producto/${ producto._id }?token=${ token }`;
+
+    return this.http.put( url, producto );
+  }
+
   registrarProducto( producto:Producto){
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/producto?token=${ token }`;

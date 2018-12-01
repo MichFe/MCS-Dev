@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { Cliente } from '../../../models/cliente.model';
 import { UsuarioService } from '../../../services/usuarios/usuario.service';
 import { ImageUploadService } from '../image-upload/image-upload.service';
@@ -11,6 +11,9 @@ declare var $: any;
   styleUrls: ["./nuevo-cliente.component.css"]
 })
 export class NuevoClienteComponent implements OnInit {
+
+  @Input()
+  toggleTicketModal:boolean=false;
 
   @Output()
   clienteNuevo: EventEmitter<any> = new EventEmitter();
@@ -94,6 +97,16 @@ export class NuevoClienteComponent implements OnInit {
     this.correo="";
     this.imagenTemporal=null;
     this.imagenSubir=null;
+    
+    if(this.toggleTicketModal){
+      $("#nuevoCliente").on("hidden.bs.modal", function(event) {
+        // Open your second one in here
+        $("#ticketVenta").modal('toggle');
+
+        $("#nuevoCliente").off("hidden.bs.modal");
+      });
+
+    }
   }
 
   validarFormulario(){

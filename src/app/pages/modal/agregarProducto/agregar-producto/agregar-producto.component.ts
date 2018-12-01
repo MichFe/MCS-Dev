@@ -22,6 +22,7 @@ export class AgregarProductoComponent implements OnInit {
   precio: number;
   usuarioCreador: string;
   usuarioUltimaModificacion: string;
+  imageLoading:boolean = false;
 
   @Output()
   actualizarFamilia: EventEmitter<any> = new EventEmitter();
@@ -67,6 +68,7 @@ export class AgregarProductoComponent implements OnInit {
     this.imagenSubir = null;
     this.imagenTemporal = null;
     this.producto = null;
+    this.imageLoading = false;
   }
 
   agregarImagen() {
@@ -74,12 +76,19 @@ export class AgregarProductoComponent implements OnInit {
     input.type = "file";
     input.accept = "image/*";
 
+    input.onclick = () => {
+      this.imageLoading = true;
+    };
+
+          
     input.onchange = () => {
-      let file: File = input.files[0];
+      
+      let file: File = input.files[0];      
 
       if (!file) {
         this.imagenSubir = null;
         this.imagenTemporal = null;
+
         return;
       }
 
@@ -94,7 +103,10 @@ export class AgregarProductoComponent implements OnInit {
       let reader = new FileReader();
       let urlImagenTemporal = reader.readAsDataURL(file);
 
-      reader.onloadend = () => (this.imagenTemporal = reader.result);
+      reader.onloadend = () => {
+        this.imagenTemporal = reader.result;
+        this.imageLoading = false;
+      };
     };
 
     input.click();
@@ -119,8 +131,8 @@ export class AgregarProductoComponent implements OnInit {
       (resp: any) => {
         //Validamos existencia de imagen
         if (!this.imagenSubir) {
-
           //Refrescamos familia
+          
           this.actualizarFamilia.emit(producto.familia);
 
           swal(
@@ -139,21 +151,19 @@ export class AgregarProductoComponent implements OnInit {
 
           this._subirArchivoService
             .subirArchivo(this.imagenSubir, "producto", producto._id)
-            .then(
-              (resp)=>{
-                swal(
-                  "Producto registrado exitosamente",
-                  "El producto: " + producto.nombre + " se registró exitosamente",
-                  "success"
-                );
+            .then(resp => {
+              swal(
+                "Producto registrado exitosamente",
+                "El producto: " + producto.nombre + " se registró exitosamente",
+                "success"
+              );
 
-                //Refrescamos familia
-                this.actualizarFamilia.emit(producto.familia);
+              //Refrescamos familia
+              this.actualizarFamilia.emit(producto.familia);
 
-                $("#nuevoProducto").modal("toggle");
-                this.resetearModal();
-              }
-            )
+              $("#nuevoProducto").modal("toggle");
+              this.resetearModal();
+            })
             .catch(error => {
               console.log(error);
 
@@ -167,10 +177,7 @@ export class AgregarProductoComponent implements OnInit {
               this.resetearModal();
               return;
             });
-
-          
         }
-
       },
       error => {
         swal(

@@ -28,6 +28,10 @@
         width: 70px;
         object-fit: cover;
     }
+
+    .fw-500{
+        font-weight: 500;
+    }
 }
 
 @media print {

@@ -36,6 +36,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { ImageUploadComponent } from './modal/image-upload/image-upload.component';
 import { AgregarProductoComponent } from './modal/agregarProducto/agregar-producto/agregar-producto.component';
 import { TicketComponent } from './modal/ticket/ticket.component';
+import { EditarProductoComponent } from './modal/editar-producto/editar-producto.component';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { TicketComponent } from './modal/ticket/ticket.component';
     ProfileComponent,
     ImageUploadComponent,
     AgregarProductoComponent,
-    TicketComponent
+    TicketComponent,
+    EditarProductoComponent
   ],
   exports: [
     DashboardComponent,

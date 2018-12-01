@@ -34,3 +34,8 @@ i.icon-center{
     transform: translateY(-15px);
 
 }
+
+i.icon-center-spinner{
+    font-size: 30px;
+    line-height: 100px;
+}

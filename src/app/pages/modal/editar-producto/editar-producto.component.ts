@@ -122,6 +122,58 @@ export class EditarProductoComponent implements OnInit {
     input.click();
   }
 
+  eliminarProucto(){
+
+    swal(
+      "Confirmar eliminación",
+      "Se eliminará el producto, ¿Esta seguro de que desea continuar?",
+      "warning",
+      {
+        buttons:{
+          aceptar: {
+            text: "Aceptar",
+            value: true
+        },
+        cancelar:{
+          text:"Cancelar",
+          value: false
+        }
+      }
+    }
+    ).then(
+      (eliminar)=>{
+        if(eliminar){
+          this._productoService.eliminarProductoPorId(this.producto._id).subscribe(
+            (resp: any) => {
+
+              this.actualizarFamilia.emit(resp.producto.familia);
+              swal(
+                "Producto Eliminado",
+                "Producto: " + resp.producto.nombre + ", eliminado exitosamente",
+                "success"
+              );
+
+              $("#editarProducto").modal("toggle");
+
+            },
+            (error) => {
+              swal(
+                "Error al eliminar producto",
+                error.error.mensaje + " | " + error.error.errors.message,
+                "error"
+              );
+            }
+          );
+        }else{
+          return;
+        }
+      }
+    )
+
+    
+    
+  }
+
   validarFormulario() { }
 
   actualizarProducto(forma) {

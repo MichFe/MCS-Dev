@@ -37,4 +37,11 @@ export class ProductoService {
 
   }
 
+  eliminarProductoPorId(id:string){
+    let token = this._usuarioService.token;
+    let url= URL_SERVICIOS + `/producto/${ id }?token=${ token }`;
+
+    return this.http.delete( url );
+  }
+
 }

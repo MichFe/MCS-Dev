@@ -16,47 +16,51 @@
     
     <!-- Display de productos -->
     <div class="col col-12 col-md-9 text-center">
-      
-      <!-- Elemento Producto -->
-        <div *ngFor="let producto of productos" class="producto">
-        
-          <!-- Imagen producto -->
-          <div class="image-container">
-        
-            <img [src]="producto.img | imagen: 'producto'" class="image size-100">
-        
-            <div class="overlay">
-              <div class="text">
-        
-                <button class="btn btn-sm btn-success waves-effect waves-light m-b-10" (click)="agregarACarrito(producto)">
-                  <i class="fa fa-plus"></i>
-                  add</button>
-                
-                <button class="btn btn-sm btn-warning waves-effect waves-light" (click)="editarProducto(producto)">
-                  <i class="fa fa-edit"></i>
-                  edit</button>
+      <div class="row">
 
-                
-        
-              </div>
-            </div>
-        
-          </div>
-          <!-- FIN de Imagen producto -->
-        
-        
-          <div class="product-name">
-            {{ producto.codigo }}
-          </div>
-        
-          <div class="product-price">
-            {{ producto.precio | currency: 'MXN'}}
-          </div>
-        
-        </div>
+<!-- Elemento Producto -->
+<div *ngFor="let producto of productos" class="producto">
 
+  <!-- Imagen producto -->
+  <div class="image-container">
+
+    <img [src]="producto.img | imagen: 'producto'" class="image size-100">
+
+    <div class="overlay">
+      <div class="text">
+
+        <button class="btn btn-sm btn-success waves-effect waves-light m-b-10" (click)="agregarACarrito(producto)">
+          <i class="fa fa-plus"></i>
+          add</button>
+
+        <button class="btn btn-sm btn-warning waves-effect waves-light" (click)="editarProducto(producto)">
+          <i class="fa fa-edit"></i>
+          edit</button>
+
+
+
+      </div>
+    </div>
+
+  </div>
+  <!-- FIN de Imagen producto -->
+
+
+  <div class="product-name">
+    {{ producto.codigo }}
+  </div>
+
+  <div class="product-price wrap">
+    {{ producto.precio | currency: 'MXN'}}
+  </div>
+
+</div>
+
+
+<!-- FIN de Elemento Producto -->
+
+      </div>
       
-      <!-- FIN de Elemento Producto -->
 
       <!-- Componente de paginado   -->
         <div *ngIf="productos.length>0">
@@ -161,7 +165,8 @@
   [carrito]="carrito"
   [totalCarrito]="totalCarrito"
   [totalDescuento]="totalDescuento"
-  [iva]="ivaCarrito"></app-ticket>
+  [iva]="ivaCarrito"
+  (vaciarCarrito)="resetearCarrito($event)"></app-ticket>
 
   <app-nuevo-cliente
     (clienteNuevo)="registrarClienteNuevo($event)"

@@ -61,6 +61,12 @@ export class CatalogoProductosComponent implements OnInit {
 
   ngOnInit() {}
 
+  resetearCarrito(){
+    
+    this.carrito=[];
+
+  }
+
   imagenNuevoCliente(file) {
     this.imagenClienteNuevo = file;
   }

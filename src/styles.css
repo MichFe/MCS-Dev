@@ -32,6 +32,10 @@
     .fw-500{
         font-weight: 500;
     }
+
+    .w-120{
+        width:120px;
+    }
 }
 
 @media print {

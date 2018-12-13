@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CarritoService } from 'src/app/services/carrito/carrito.service';
 import { VentasService } from 'src/app/ventas/ventas.service';
 import { UsuarioService } from 'src/app/services/usuarios/usuario.service';
@@ -26,6 +26,9 @@ export class TicketComponent implements OnInit {
   @Input()
   iva: number;
 
+  @Output()
+  vaciarCarrito: EventEmitter<any> = new EventEmitter();
+
   //Variables
   tipoPago: string;
   seleccionIva: boolean = false;
@@ -51,6 +54,7 @@ export class TicketComponent implements OnInit {
 
   ngOnInit() {
     // this.carrito=this._carritoService.carrito;
+
   }
 
   abrirRegistroDeCliente(event) {
@@ -117,7 +121,19 @@ export class TicketComponent implements OnInit {
   }
 
   resetearModal() {
+
+    this.clienteNombre="";
+    this.clientes=[];
+    this.proyectos=[];
+    this.tipoPago="";
+    this.efectivo=0;
+    this.seleccionIva=false;
+    this.anticipo=false;
+
+    this.vaciarCarrito.emit();
+
     this.ventaConfirmada=false;
+
   }
 
   imprimirTicket() {
@@ -138,6 +154,7 @@ export class TicketComponent implements OnInit {
 
   generarVenta() {
 
+    //Valida que se ha seleccionado un cliente o retorna
     if (!this.cliente) {
       swal(
         "Cliente",
@@ -147,6 +164,7 @@ export class TicketComponent implements OnInit {
       return;
     }
 
+    //Valida que se ha seleccionado un tipo de pago o retorna
     if (!this.tipoPago) {
       swal(
         "Metodo de pago",
@@ -156,6 +174,7 @@ export class TicketComponent implements OnInit {
       return;
     }
 
+    //Valida que se haya seleccionado un monto o retorna 
     if (!this.efectivo) {
       swal("Monto Recibido", "Favor de ingresar el monto recibido", "warning");
       return;
@@ -184,6 +203,16 @@ export class TicketComponent implements OnInit {
     }
 
     venta.montoPagado = this.efectivo;
+
+    //Valida que el anticipo no sea de 0 pesos
+    if ( this.efectivo < venta.total && this.efectivo == 0 ){
+      swal(
+        "Venta invalida",
+        "No es posible registrar una venta con un monto de $0",
+        "warning"
+      );
+      return;
+    }
 
     if (this.efectivo < venta.total) {
       swal(

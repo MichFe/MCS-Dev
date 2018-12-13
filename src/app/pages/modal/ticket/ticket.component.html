@@ -15,10 +15,15 @@
       <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
         <div class="card-body">
 
-          <!-- Metodo de pago -->
-          <form class="form-horizontal p-t-20"
-                      ngNativeValidate 
-                      #forma="ngForm">
+          <!-- Saldo de la venta -->
+          <h3 *ngIf="seleccionIva && !ventaConfirmada">Total: {{ (totalCarrito - totalDescuento + iva) | currency:'MXN' }}</h3> 
+          <h3 *ngIf="!seleccionIva && !ventaConfirmada">Total: {{ (totalCarrito - totalDescuento) | currency:'MXN' }}</h3>
+
+          <!-- Metodo de pago --> 
+          <form *ngIf="!ventaConfirmada"
+                class="form-horizontal p-t-20"
+                ngNativeValidate 
+                #forma="ngForm">
 
             <div class="form-group row m-t-20">
               <label class="col-sm-3 control-label">Cliente*</label>
@@ -118,7 +123,9 @@
           <!-- FIN de Metodo de pago -->
 
           <!-- Documento ticket -->
-          <div id="documento-ticket" class="container print-content">
+          <div id="documento-ticket"
+               *ngIf="ventaConfirmada"
+               class="container print-content">
 
             <!-- Header de cotizacion -->
             <div class="row m-b-5">
@@ -128,6 +135,7 @@
                   <p>Paseo de los Insurgentes 2403, 37300 León, Gto.</p>
                   <p>Teléfono: +52 (477) 290-54-01</p>
                   <p>ventas@mobla.com.mx</p>
+                  <p>{{ clienteNombre }}</p>
                   
                   <hr>
 
@@ -172,7 +180,7 @@
                 <!-- sin Iva   -->
                 <div *ngIf="tipoPago==='efectivo' && seleccionIva===false">
                   <p class="borde"><span class="fw-500 left">Efectivo: </span>  <span class="fw-500 right">{{ efectivo | currency:'MXN'}}</span></p>
-                  <p *ngIf="!anticipo" class="borde sin-borde-top fw-500"><span class="left">Cambio: </span> <span class="right">{{ (efectivo - totalCarrito + totalDescuento) | currency:'MXN' }}</span></p>
+                  <p *ngIf="!anticipo && ( (efectivo - totalCarrito + totalDescuento) > 0 )" class="borde sin-borde-top fw-500"><span class="left">Cambio: </span> <span class="right">{{ (efectivo - totalCarrito + totalDescuento) | currency:'MXN' }}</span></p>
                 
                   <p *ngIf="anticipo" class="borde sin-borde-top fw-500"><span class="left">Saldo: </span> <span class="right">{{ saldo | currency:'MXN' }}</span></p>
                 </div>
@@ -181,8 +189,9 @@
                 <!-- con Iva -->
                 <div *ngIf="tipoPago==='efectivo' && seleccionIva===true">
                   <p class="borde"><span class="fw-500 left">Efectivo: </span> <span class="right fw-500">{{ efectivo | currency:'MXN'}}</span></p>
-                  <p *ngIf="!anticipo" class="borde sin-borde-top fw-500"><span class="left">Cambio: </span> <span class="right">{{ efectivo - (totalCarrito - totalDescuento +
-                      iva) | currency:'MXN' }}</span></p>
+                  <p *ngIf="!anticipo && ( (efectivo - (totalCarrito - totalDescuento + iva)) > 0 )" class="borde sin-borde-top fw-500"><span class="left">Cambio: </span> <span class="right">
+                    {{ efectivo - (totalCarrito - totalDescuento + iva) | currency:'MXN' }}
+                  </span></p>
 
                   <p *ngIf="anticipo" class="borde sin-borde-top fw-500"><span class="left">Saldo: </span> <span class="right">{{ saldo | currency:'MXN' }}</span></p>
 
@@ -283,12 +292,21 @@
 
         <!-- Botones -->
 
-        <button [ngClass]="{'disabled': !ventaConfirmada}" type="button" class="btn btn-success waves-effect waves-light" (click)="imprimirTicket()">Imprimir</button>
+        <button [ngClass]="{'disabled': !ventaConfirmada}"
+                *ngIf="ventaConfirmada" 
+                type="button" 
+                class="btn btn-success waves-effect waves-light" 
+                (click)="imprimirTicket()">Imprimir</button>
 
-        <button type="button" class="btn btn-warning waves-effect waves-light" 
-                (click)="generarVenta()">Confirmar Venta</button>
+        <button type="button" 
+                *ngIf="!ventaConfirmada"
+                class="btn btn-warning waves-effect waves-light" 
+                (click)="generarVenta()">Pagar</button>
 
-        <button type="button" (click)="resetearModal()" class="btn btn-danger waves-effect waves-light" data-dismiss="modal">Salir</button>
+        <!-- <button type="button" 
+                (click)="resetearModal()" 
+                class="btn btn-danger waves-effect waves-light" 
+                data-dismiss="modal">Salir</button> -->
         <!-- Fin de botones -->
 
       </div>

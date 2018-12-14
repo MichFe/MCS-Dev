@@ -205,7 +205,7 @@ export class TicketComponent implements OnInit {
     venta.montoPagado = this.efectivo;
 
     //Valida que el anticipo no sea de 0 pesos
-    if ( this.efectivo < venta.total && this.efectivo == 0 ){
+    if ( this.efectivo < venta.total && this.efectivo <= 0 ){
       swal(
         "Venta invalida",
         "No es posible registrar una venta con un monto de $0",

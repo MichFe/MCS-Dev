@@ -21,6 +21,8 @@ export class CatalogoProductosComponent implements OnInit {
   paginaActual: number;
   productoAEditar: any = {};
   imagenClienteNuevo: File;
+  productoNombre:string;
+  busquedaActiva:boolean=false;
 
   incluirIva: string;
 
@@ -57,14 +59,43 @@ export class CatalogoProductosComponent implements OnInit {
     public _productoService: ProductoService,
     public _clienteService: ClienteService,
     public _subirArchivoService: SubirArchivoService
-    ) {}
+  ) {}
 
   ngOnInit() {}
 
-  resetearCarrito(){
-    
-    this.carrito=[];
+  buscarProducto(termino) {
 
+    if (this.productoNombre.length == 0) {
+      this.productos = [];
+      this.busquedaActiva = false;
+      return;
+    }
+
+    if( this.productoNombre.length < 3 ){
+      return;
+    }
+
+    
+
+    this._productoService.buscarProducto(termino).subscribe(
+      (resp:any) => {
+        this.busquedaActiva=true;
+        this.familiaActual="";
+        this.productos=resp.producto;
+        this.totalProductos=this.productos.length;
+      },
+      error => {
+        swal(
+          "Error al buscar producto",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
+    );
+  }
+
+  resetearCarrito() {
+    this.carrito = [];
   }
 
   imagenNuevoCliente(file) {
@@ -74,23 +105,21 @@ export class CatalogoProductosComponent implements OnInit {
   registrarClienteNuevo(nuevoCliente) {
     this._clienteService.guardarCliente(nuevoCliente).subscribe(
       (resp: any) => {
-
         let cliente = resp.cliente;
 
-        this._subirArchivoService.subirArchivo(this.imagenClienteNuevo, 'cliente', cliente._id)
+        this._subirArchivoService
+          .subirArchivo(this.imagenClienteNuevo, "cliente", cliente._id)
           .then(resp => {
             console.log(resp);
-
           });
 
         swal(
           "Registro exitoso",
           "El cliente " +
-          resp.cliente.nombre +
-          " se ha guardado correctamente!",
+            resp.cliente.nombre +
+            " se ha guardado correctamente!",
           "success"
         );
-
       },
       error => {
         swal(
@@ -100,7 +129,6 @@ export class CatalogoProductosComponent implements OnInit {
         );
       }
     );
-
   }
 
   agregarDescuento(index) {
@@ -141,7 +169,7 @@ export class CatalogoProductosComponent implements OnInit {
           if (descuento >= 0 && descuento <= 100) {
             this.carrito[index].descuento =
               this.carrito[index].precio * (descuento / 100);
-              this.calcularSubTotalCarrito();
+            this.calcularSubTotalCarrito();
           } else {
             swal(
               "Descuento",
@@ -222,6 +250,7 @@ export class CatalogoProductosComponent implements OnInit {
       .obtenerProductosPorFamilia(this.familiaActual, pagina)
       .subscribe(
         (resp: any) => {
+          this.busquedaActiva=false;
           this.productos = resp.productos;
           this.totalProductos = resp.totalProductos;
           this.activarPaginaActual(pagina);
@@ -258,8 +287,10 @@ export class CatalogoProductosComponent implements OnInit {
     this.paginas[0].active = true;
   }
 
-  obtenerProductosPorFamilia(familia: string, pagina: number = 1) {
+  obtenerProductosPorFamilia(familia: string, pagina: number = 1) {    
     this.familiaActual = familia;
+    this.busquedaActiva=false;
+    $("#productoInput").val("");
 
     this._productoService.obtenerProductosPorFamilia(familia, pagina).subscribe(
       (resp: any) => {
@@ -319,7 +350,7 @@ export class CatalogoProductosComponent implements OnInit {
       producto.total = total;
 
       this.totalCarrito += total;
-      if(descuento){
+      if (descuento) {
         this.totalDescuento += descuento;
       }
     });

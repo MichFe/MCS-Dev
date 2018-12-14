@@ -44,6 +44,15 @@ div.producto{
     box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.4)
 }
 
+.right-border{
+    border-right: 1px solid lightgrey;
+}
+
+.select-familia{
+    width: 100%;
+    
+}
+
 .image-container {
     position: relative;
     width:140px;

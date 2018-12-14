@@ -1,23 +1,35 @@
 <div class="container">
 
-  <!-- Tags de familias -->
-  <div class="row familias" >
-
-    <div *ngFor="let familia of familias"
-          class="familia-tag"
-          (click)="obtenerProductosPorFamilia(familia.nombre,1)">
-      <i class="fa fa-tag"></i> {{ familia.nombre}}
-    </div>
-
-  </div>
-  <!-- FIN de Tags de familias -->
-
   <div class="row">
     
     <!-- Display de productos -->
-    <div class="col col-12 col-md-9 text-center">
+    <div class="col col-12 col-md-8 text-center right-border">
+
+      <!-- Buscador de productos -->
+      <input name="productoNombre"
+                           id="productoInput"
+                           (keyup)="buscarProducto(productoNombre)" 
+                               [(ngModel)]="productoNombre" 
+                               type="string" 
+                               class="form-control m-b-10" 
+                               placeholder="Ingresa el nombre del producto">
+      <!-- FIN de Buscador de productos -->
+
+      <!-- Selector de familia de productos -->
+      <div class="m-b-20">
+        <select class="select-familia form-control" 
+                name="familiaActual"
+                [(ngModel)]="familiaActual"
+                (change)="obtenerProductosPorFamilia(familiaActual,1)">
+          <option *ngFor="let familia of familias" 
+                  [value]="familia.nombre">{{ familia.nombre }}</option>
+        </select>
+      </div>
+      <!-- FIN Selector de familia de productos -->
+
       <div class="row">
 
+        
 <!-- Elemento Producto -->
 <div *ngFor="let producto of productos" class="producto">
 
@@ -61,9 +73,9 @@
 
       </div>
       
-
+      
       <!-- Componente de paginado   -->
-        <div *ngIf="productos.length>0">
+        <div *ngIf="productos.length>0 && !busquedaActiva">
           <ul class="pagination justify-content-center">
 
             <li class="page-item pointer"
@@ -96,7 +108,7 @@
     <!-- FIN de Display de productos -->
 
     <!-- Carrito de compra -->
-    <div class="col col-12 col-md-3">
+    <div class="col col-12 col-md-4">
       
       <div>
         Carrito
@@ -166,7 +178,7 @@
   [totalCarrito]="totalCarrito"
   [totalDescuento]="totalDescuento"
   [iva]="ivaCarrito"
-  (vaciarCarrito)="resetearCarrito($event)"></app-ticket>
+  (vaciarCarrito)="resetearCarrito()"></app-ticket>
 
   <app-nuevo-cliente
     (clienteNuevo)="registrarClienteNuevo($event)"

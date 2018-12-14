@@ -44,4 +44,12 @@ export class ProductoService {
     return this.http.delete( url );
   }
 
+  buscarProducto(termino) {
+    let token = this._usuarioService.token;
+
+    let url = URL_SERVICIOS + '/busqueda/coleccion/producto/' + termino + '?token=' + token;
+
+    return this.http.get(url);
+  }
+
 }

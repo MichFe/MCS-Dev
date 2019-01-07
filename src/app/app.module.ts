@@ -7,11 +7,11 @@ import { APP_ROUTES } from './app.routes';
 //Modulos
 import { PagesModule } from './pages/pages.module';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 //Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [

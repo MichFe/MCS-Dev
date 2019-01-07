@@ -19,6 +19,10 @@ import { CrmComponent } from './crm/crm.component';
 import { CalendarioComponent } from './calendario/calendario.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { CatalogoProductosComponent } from './catalogo-productos/catalogo-productos.component';
+import { ProfileComponent } from './profile/profile.component';
+import { ReporteVentasComponent } from './reporte-ventas/reporte-ventas.component';
+import { ElementoVentasComponent } from './reporte-ventas/elemento-ventas/elemento-ventas.component';
+import { ElementoCuentasCobrarComponent } from './reporte-ventas/elemento-cuentas-cobrar/elemento-cuentas-cobrar.component';
 
 //Modals
 import { ModalComponent } from './modal/modal.component';
@@ -26,17 +30,18 @@ import { InfoClientComponent } from './modal/info-client/info-client.component';
 import { CotizacionComponent } from './modal/cotizacion/cotizacion.component';
 import { NuevoClienteComponent } from './modal/nuevo-cliente/nuevo-cliente.component';
 import { NuevoEventoComponent } from './modal/nuevo-evento/nuevo-evento.component';
+import { ImageUploadComponent } from './modal/image-upload/image-upload.component';
+import { AgregarProductoComponent } from './modal/agregarProducto/agregar-producto/agregar-producto.component';
+import { TicketComponent } from './modal/ticket/ticket.component';
+import { EditarProductoComponent } from './modal/editar-producto/editar-producto.component';
+import { DescripcionProductoComponent } from './modal/descripcion-producto/descripcion-producto.component';
 
 //Routes
 import { PAGES_ROUTES } from "./pages.routes";
 
 //Directivas
 import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-scroll.directive";
-import { ProfileComponent } from './profile/profile.component';
-import { ImageUploadComponent } from './modal/image-upload/image-upload.component';
-import { AgregarProductoComponent } from './modal/agregarProducto/agregar-producto/agregar-producto.component';
-import { TicketComponent } from './modal/ticket/ticket.component';
-import { EditarProductoComponent } from './modal/editar-producto/editar-producto.component';
+
 
 
 @NgModule({
@@ -69,7 +74,11 @@ import { EditarProductoComponent } from './modal/editar-producto/editar-producto
     ImageUploadComponent,
     AgregarProductoComponent,
     TicketComponent,
-    EditarProductoComponent
+    EditarProductoComponent,
+    DescripcionProductoComponent,
+    ReporteVentasComponent,
+    ElementoVentasComponent,
+    ElementoCuentasCobrarComponent
   ],
   exports: [
     DashboardComponent,

@@ -45,4 +45,41 @@ export class SubirArchivoService {
 
   }
 
+  subirAudio(archivo: File, coleccion: string, id: string) {
+
+    return new Promise((resolve, reject) => {      
+
+      let formData = new FormData();
+      let xhr = new XMLHttpRequest();
+
+      formData.append('audio', archivo, id+".mp3");
+
+      xhr.onreadystatechange = () => {
+
+        if (xhr.readyState === 4) {
+
+          if (xhr.status === 200) {
+            // console.log('Imagen subida');
+            resolve(JSON.parse(xhr.response));
+
+          } else {
+            // console.log('Fallo la subida');
+            reject(xhr.response);
+
+          }
+
+        }
+      };
+
+      let url = URL_SERVICIOS + '/uploadAudio/' + coleccion + '/' + id;
+
+      xhr.open('PUT', url, true);
+      xhr.send(formData);
+
+    });
+
+
+
+  }
+
 }

@@ -10,6 +10,7 @@ export class VoiceRecorderService {
 
   recordedAudio:any;
   recordedAudioUrl:any;
+  audioPlay:any;
 
   grabarAudio(stopButton){
 
@@ -26,10 +27,11 @@ export class VoiceRecorderService {
       });
 
       mediaRecorder.addEventListener("stop", () => {
-        const audioBlob = new Blob(audioChunks);
+        const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg-3; codecs=opus'  });
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
-        this.recordedAudio=audio;
+        this.recordedAudio=audioBlob;
+        this.audioPlay=audio;
         this.recordedAudioUrl=audioUrl;
         
       });

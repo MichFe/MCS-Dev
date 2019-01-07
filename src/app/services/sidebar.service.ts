@@ -10,7 +10,7 @@ export class SidebarService {
       icono: "mdi mdi-cash-usd",
       submenu: [
         { titulo: "CRM", url: "/crm" },
-        { titulo: "Reporte de Ventas", url: "/dashboard" },
+        { titulo: "Reporte de Ventas", url: "/reporteVentas" },
         { titulo: "Catálogo de Productos", url: "/catalogoProductos" }
       ]
     }

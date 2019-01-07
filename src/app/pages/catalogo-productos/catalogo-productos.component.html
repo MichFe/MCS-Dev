@@ -116,7 +116,8 @@
       </div>
 
       <ul class="m-b-15">
-        <li *ngFor="let producto of carrito; let i=index">
+        <li *ngFor="let producto of carrito; let i=index"
+            class="item-carrito">
           
           <img class="img-lista size-50 left" 
                [src]="producto.img | imagen: 'producto'">
@@ -129,15 +130,20 @@
                class="descuento-lista"> -{{ producto.descuento | currency: 'MXN' }}</p>
           </div>
 
-          <div class="right height-50">
-            <span class="descuento-lista left m-r-5 pointer v-center"
-                  (click)="agregarDescuento(i)">
-              <i class="fa fa-usd"></i>
+          <div class="botonera-item-lista right">
+            <span class="left m-r-5 pointer">
+              <i class="descripcion-lista fa fa-info-circle"
+                 [ngClass]="{'no-descripcion-lista': !producto.descripcion}"
+                 (click)="abrirModalDescripcion(i)"></i>
             </span>
-            <span class="cantidad-lista left m-r-5 pointer v-center"
+            <span class="left m-r-5 pointer"
+                  (click)="agregarDescuento(i)">
+              <i class="descuento-lista fa fa-usd"></i>
+            </span>
+            <span class="cantidad-lista left m-r-5 pointer"
                   (click)="asignarCantidadManualmente(i)">{{ producto.cantidad }}</span>
             <span (click)="eliminarElementoDelCarrito(i)">
-              <i class="fa fa-trash trash-button right pointer v-center"></i>
+              <i class="fa fa-trash trash-button right pointer"></i>
             </span>
           </div>
 
@@ -184,3 +190,7 @@
     (clienteNuevo)="registrarClienteNuevo($event)"
     (imagenCliente)="imagenNuevoCliente($event)"
     [toggleTicketModal]="true"></app-nuevo-cliente>
+
+  <app-descripcion-producto
+    (guardarDescripcion)="agregarDescripcion($event)"
+    [descripcion]="(indiceDeProductoLista>=0)?carrito[indiceDeProductoLista].descripcion:''"></app-descripcion-producto>

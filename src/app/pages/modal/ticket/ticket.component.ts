@@ -37,7 +37,7 @@ export class TicketComponent implements OnInit {
   cliente: Cliente;
   clientes: any[] = [];
   proyectos: any[] = [];
-  proyectoSeleccionado: any = {};
+  proyectoSeleccionado: string;
   anticipo: boolean = false;
   saldo: number = 0;
   ventaConfirmada:boolean = false;
@@ -180,7 +180,7 @@ export class TicketComponent implements OnInit {
       return;
     }
 
-    this.fecha = new Date();
+    this.fecha = new Date();    
 
     let venta = {
       subtotal: this.totalCarrito,
@@ -194,8 +194,13 @@ export class TicketComponent implements OnInit {
       montoPagado: null,
       saldoPendiente: 0,
       estatus: "Liquidada",
-      proyecto: this.proyectoSeleccionado
+      proyecto: null,
+      unidadDeNegocio: this._usuarioService.usuario.unidadDeNegocio
     };
+
+    if (this.proyectoSeleccionado.length>0){
+      venta.proyecto = this.proyectoSeleccionado;
+    }
 
     if (this.seleccionIva) {
       venta.iva = this.iva;

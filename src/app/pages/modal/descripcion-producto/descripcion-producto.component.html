@@ -1,0 +1,44 @@
+<div class="modal fade" id="descripcionProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Descripción de producto</h4>
+        <button (click)="resetearModal()" 
+                type="button" 
+                class="close" 
+                data-dismiss="modal" 
+                aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- FIN Modal header -->
+
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0 m-t-20">
+        <div class="form-group">
+          <label>Ingresa las especificaciones del producto:</label>
+          <textarea class="form-control" 
+                    rows="5"
+                    name="descripcion"
+                    [(ngModel)]="descripcion"></textarea>
+        </div>
+      </div>
+      <!-- Fin de Modal Body -->
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <!-- Botones vista edición -->
+        <button (click)="guardarCambios()"
+                class="btn btn-warning waves-effect waves-light"
+                data-dismiss="modal">Guardar</button>
+        <button (click)="resetearModal()" 
+                class="btn btn-danger waves-effect waves-light"
+                data-dismiss="modal">Cancelar</button>
+        <!-- Fin de botones vista edición -->
+      </div>
+      <!-- FIN Modal Footer -->
+    </div>
+  </div>
+</div>

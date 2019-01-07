@@ -7,13 +7,14 @@
 <!-- ============================================================== -->
 <section id="wrapper" 
          class="login-register login-sidebar" 
-         style="background-image:url(assets/images/background/login-register.jpg);">
+         style="background-image:url(assets/images/background/login-register.jpg);"
+        (window:resize)="validarMovil()">
 <!-- ============================================================== -->
 <!-- FIN de Imagen de background para el Login -->
 <!-- ============================================================== -->
  
-  <div class="login-box card" [ngClass]="{'mobile-box': movil==true}">
-    <div class="card-body" [ngClass]="{'mobile-login': movil==true}">
+  <div class="login-box card" [ngClass]="{'mobile-box': movil===true}">
+    <div class="card-body" [ngClass]="{'mobile-login': movil===true}">
       
       <!-- ============================================================== -->
       <!-- Logo de la empresa para el Login -->

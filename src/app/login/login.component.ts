@@ -7,7 +7,6 @@ import swal from 'sweetalert'
 
 declare function init_plugins();
 
-
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
@@ -23,10 +22,9 @@ export class LoginComponent implements OnInit {
     private _usuarioService: UsuarioService,
     private router: Router
   ) {
-    window.addEventListener("resize", ()=>{
-      this.validarMovil();
-    })
   }
+
+
 
   ngOnInit() {
     init_plugins();
@@ -40,10 +38,13 @@ export class LoginComponent implements OnInit {
   }
 
   validarMovil() {
+    
     if (window.innerWidth <= 600 && window.innerHeight <= 850) {
       this.movil = true;
+      
     } else {
       this.movil = false;
+      
     }
   }
 
@@ -55,7 +56,7 @@ export class LoginComponent implements OnInit {
     //---->
 
     //Construyendo el objeto usuario con los valores del formulario
-    let usuario = new Usuario(null, forma.value.email, forma.value.password);
+    let usuario = new Usuario(null, forma.value.email, forma.value.password, null);
     //---->
 
     // Enviando los datos de acceso a través de nuestro servicio login y recibiendo
@@ -65,7 +66,7 @@ export class LoginComponent implements OnInit {
       .subscribe(correcto => {
         
         if (correcto) {
-          this.router.navigate(["/dashboard"]);
+          this.router.navigate(["/reporteVentas"]);
         } else {
           swal(
             "Error en Login:",

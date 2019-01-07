@@ -98,7 +98,7 @@ export class CrmComponent implements OnInit {
   imagenClienteNuevo:File;
 
   constructor(
-    private audio: VoiceRecorderService,
+    public audio: VoiceRecorderService,
     private sanitizer: DomSanitizer,
     private shared: SharedService,
     private _clientesServicio: ClienteService,
@@ -274,19 +274,26 @@ export class CrmComponent implements OnInit {
 
   buscarCliente() {
 
+    //Reseteamos lista de clientes cuando limpiamos el campo de busqueda
     if (!this.terminoBusqueda){
       
       this.obtenerClientes(0);
+      //Habilitamos infinite scroll de clientes
+      this.infScrollClientes=true;
       return;
     }
 
+    //Evitamos busquedas con terminos menores a 3 caracteres
     if (this.terminoBusqueda.length<=3) {
 
       return;
     }
 
+    //Ejecutamos la consulta
     this._clientesServicio.buscarCliente(this.terminoBusqueda).subscribe(
       (resp: any) => {
+
+        //Manejamos el caso en el que no hay coincidencias con el termino
         if (resp.cliente.length == 0) {
           swal(
             "Busqueda no concluyente",
@@ -297,6 +304,9 @@ export class CrmComponent implements OnInit {
           return;
         }
 
+        //Deshabilitamos infinite scroll de clientes
+        this.infScrollClientes = false;
+        //Cargamos los clientes que hacen match con el termino
         this.clientesFiltrados = resp.cliente;
       },
       error => {
@@ -316,10 +326,10 @@ export class CrmComponent implements OnInit {
   }
 
   playAudio() {
-    if (!this.audio.recordedAudio) {
+    if (!this.audio.audioPlay) {
       return;
     }
-    this.audio.recordedAudio.play();
+    this.audio.audioPlay.play();
   }
 
   scrollBottom(element) {
@@ -361,7 +371,7 @@ export class CrmComponent implements OnInit {
       proyectoId: this.proyectoActual._id,
       fecha: this.fechaActual,
       mensaje: this.mensaje,
-      audio: this.sanitizer.bypassSecurityTrustUrl(this.audio.recordedAudioUrl),
+      audio: null,
       img: null
     };
     //--------------------------------------------------------
@@ -374,8 +384,30 @@ export class CrmComponent implements OnInit {
 
     //Guardando chat en base de datos
     this._chatService.guardarChat(chat, this.chats.length).subscribe(
-      resp => {
-        this.mostrarChatProyecto(this.proyectoActual);
+      (resp:any) => {
+
+        //Si es de tipo audio, manejamos la carga del audio
+        if(tipo==='audio'){
+          this._subirArchivoService.subirAudio(this.audio.recordedAudio, 'chat', resp.chat._id)
+            .then(
+              (resp) => {
+
+                this.mostrarChatProyecto(this.proyectoActual);
+                this.audio.recordedAudio = null;
+                this.audio.recordedAudioUrl = null;
+                this.audio.audioPlay=null;
+              }
+            );
+        }else{
+
+          this.mostrarChatProyecto(this.proyectoActual);
+
+          //Limpiando text area
+          this.mensaje = "";
+
+          
+        }
+        
       },
       error => {
         swal(
@@ -395,12 +427,7 @@ export class CrmComponent implements OnInit {
     //Actualizando arreglo de chats actuales en chat body
     //--------------------------------------------------------
 
-    //Limpiando text area
-    this.mensaje = "";
-
-    //Limpiando audio guardado
-    this.audio.recordedAudio = null;
-    this.audio.recordedAudioUrl = null;
+    
 
     //Llamando Scroll
 

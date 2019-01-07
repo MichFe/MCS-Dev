@@ -147,9 +147,25 @@ ul{
     color: #2e9bb0;
 }
 
+.descripcion-lista{
+    float: left;
+    font-size: 15px;
+    color: blue;
+}
+
+.no-descripcion-lista{
+    color: gray;
+}
+
+.botonera-item-lista{
+    height: 15px;
+    margin-top: 17.5px;
+    margin-bottom: 17.5px;
+}
+
 .descuento-lista{
     float: left;
-    font-size: 10px;
+    font-size: 15px;
     color: darkorange;
     width: 10px;
 }
@@ -194,6 +210,13 @@ li{
     height: 50px;
     width:50px;
     object-fit: cover;
+}
+
+.item-carrito{
+    -webkit-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    padding: 5px;
 }
 
 .btn-agregar-producto{

@@ -23,6 +23,7 @@ export class CatalogoProductosComponent implements OnInit {
   imagenClienteNuevo: File;
   productoNombre:string;
   busquedaActiva:boolean=false;
+  indiceDeProductoLista:number;
 
   incluirIva: string;
 
@@ -131,6 +132,26 @@ export class CatalogoProductosComponent implements OnInit {
     );
   }
 
+  agregarDescripcion(descripcion){
+
+    this.carrito[this.indiceDeProductoLista].descripcion=descripcion;
+    
+    swal(
+      "Descripción guardada",
+      "La descripción del producto se ha guardado exitosamente",
+      "success"
+    );
+    
+
+  }
+
+  abrirModalDescripcion(index){
+    
+    this.indiceDeProductoLista=index;    
+    $("#descripcionProducto").modal('toggle');
+
+  }
+
   agregarDescuento(index) {
     swal("Descuento", "Selecciona $ ó %", "info", {
       buttons: {
@@ -210,6 +231,7 @@ export class CatalogoProductosComponent implements OnInit {
 
   eliminarElementoDelCarrito(i) {
     this.carrito.splice(i, 1);
+    this.calcularSubTotalCarrito();
   }
 
   activarPaginaActual(paginaClickeada) {

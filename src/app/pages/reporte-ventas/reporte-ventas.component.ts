@@ -1,52 +1,42 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 declare var $: any;
 
 @Component({
-  selector: 'app-reporte-ventas',
-  templateUrl: './reporte-ventas.component.html',
-  styleUrls: ['./reporte-ventas.component.css']
+  selector: "app-reporte-ventas",
+  templateUrl: "./reporte-ventas.component.html",
+  styleUrls: ["./reporte-ventas.component.css"]
 })
-export class ReporteVentasComponent implements OnInit, OnDestroy {
-
+export class ReporteVentasComponent implements OnInit {
   //Variables
-  sparkResize:any;
+  sparkResize: any;
 
   //Data
-  ventasAnuales: any = [2, 3, 4, 4, 3, 2]; 
+  ventasAnuales: any = [2, 3, 4, 4, 3, 2];
   ventasMensuales: any = [1, 2, 5, 3];
-  ventasSemanales: any = [ 5, 3, 1, 4];
-  ventasDiarias: any = [ 3, 2, 5, 7 ];
+  ventasSemanales: any = [5, 3, 1, 4];
+  ventasDiarias: any = [3, 2, 5, 7];
 
   ventasPie: any = [10, 5, 3];
 
   //functions
-  actualizarAnchoDegraficas = function(){
+  actualizarAnchoDegraficas2 = function() {
     this.configurarGraficas();
   }.bind(this);
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-
-    // Evento para cambiar ancho de las gráficas cuando cambia el ancho de la ventana
-    window.addEventListener("resize", this.actualizarAnchoDegraficas);
-
     // Carga inicial de gráficas
     this.configurarGraficas();
-    
   }
 
-  ngOnDestroy() {
 
-    // Se elimina el evento cuando se destruye el componente
-    window.removeEventListener("resize", this.actualizarAnchoDegraficas);
-    
+  actualizarAnchoDegraficas(){
+    this.configurarGraficas();
   }
 
-  
-  configurarGraficas(){  
-
-    //Configuración de las gráficas 
+  configurarGraficas() {
+    //Configuración de las gráficas
     $("#spark1").sparkline(this.ventasAnuales, {
       type: "line",
       width: "100%",
@@ -59,47 +49,66 @@ export class ReporteVentasComponent implements OnInit, OnDestroy {
     });
 
     $("#spark2").sparkline(this.ventasMensuales, {
-      type: 'line',
-      width: '100%',
-      height: '50',
-      lineColor: '#fff',
-      fillColor: '#009efb',
-      maxSpotColor: '#009efb',
-      highlightLineColor: 'rgba(0, 0, 0, 0.2)',
-      highlightSpotColor: '#009efb'
+      type: "line",
+      width: "100%",
+      height: "50",
+      lineColor: "#fff",
+      fillColor: "#009efb",
+      maxSpotColor: "#009efb",
+      highlightLineColor: "rgba(0, 0, 0, 0.2)",
+      highlightSpotColor: "#009efb"
     });
 
     $("#spark3").sparkline(this.ventasSemanales, {
-      type: 'line',
-      width: '100%',
-      height: '50',
-      lineColor: '#fff',
-      fillColor: '#02e7a6',
-      maxSpotColor: '#02e7a6',
-      highlightLineColor: 'rgba(0, 0, 0, 0.2)',
-      highlightSpotColor: '#02e7a6'
+      type: "line",
+      width: "100%",
+      height: "50",
+      lineColor: "#fff",
+      fillColor: "#02e7a6",
+      maxSpotColor: "#02e7a6",
+      highlightLineColor: "rgba(0, 0, 0, 0.2)",
+      highlightSpotColor: "#02e7a6"
     });
 
     $("#spark4").sparkline(this.ventasDiarias, {
-      type: 'line',
-      width: '100%',
-      height: '50',
-      lineColor: '#fff',
-      fillColor: '#ffbc34',
-      maxSpotColor: '#ffbc34',
-      highlightLineColor: 'rgba(0, 0, 0, 0.2)',
-      highlightSpotColor: '#ffbc34'
+      type: "line",
+      width: "100%",
+      height: "50",
+      lineColor: "#fff",
+      fillColor: "#ffbc34",
+      maxSpotColor: "#ffbc34",
+      highlightLineColor: "rgba(0, 0, 0, 0.2)",
+      highlightSpotColor: "#ffbc34"
     });
 
     $("#sparkPie").sparkline(this.ventasAnuales, {
       type: "pie",
       width: "200px",
       height: "200px",
-      sliceColors:[
-
+      sliceColors: [
+        "#55efc4",
+        "#00b894",
+        "#ffeaa7",
+        "#fdcb6e",
+        "#81ecec",
+        "#00cec9",
+        "#fab1a0",
+        "#e17055",
+        "#74b9ff",
+        "#0984e3",
+        "#ff7675",
+        "#d63031",
+        "#a29bfe",
+        "#6c5ce7",
+        "#fd79a8",
+        "#e84393",
+        "#dfe6e9",
+        "#b2bec3",
+        "#636e72",
+        "#2d3436"
       ],
-      offset: '90',
-      borderColor: '#fff',
+      offset: "180",
+      borderColor: "#fff",
       // lineColor: "#fff",
       // fillColor: "#7460ee",
       // maxSpotColor: "#7460ee",
@@ -118,7 +127,5 @@ export class ReporteVentasComponent implements OnInit, OnDestroy {
         }
       }
     });
-    
   }
-
 }

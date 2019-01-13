@@ -1,0 +1,17 @@
+.bordered-card-10{
+    border-radius: 10px;
+}
+
+.table-container{
+    position:  relative;
+}
+
+.top5-table{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+th{
+    text-align: center;
+}

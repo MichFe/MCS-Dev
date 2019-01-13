@@ -5,7 +5,7 @@
     <div class="row">
       <!-- Column -->
       <div class="col-lg-3 col-md-6">
-        <div class="card bg-primary">
+        <div class="card bg-primary bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
@@ -14,14 +14,14 @@
               </div>
            
             </div>
-            <div id="spark1"></div>
+            <div id="sparkYear"></div>
           </div>
         </div>
       </div>
       <!-- Column -->
       <!-- Column -->
       <div class="col-lg-3 col-md-6">
-        <div class="card bg-info">
+        <div class="card bg-info bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
@@ -30,14 +30,14 @@
               </div>
              
             </div>
-            <div id="spark2"></div>
+            <div id="sparkMonth"></div>
           </div>
         </div>
       </div>
       <!-- Column -->
       <!-- Column -->
       <div class="col-lg-3 col-md-6">
-        <div class="card bg-success">
+        <div class="card bg-success bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
@@ -46,14 +46,14 @@
               </div>
             
             </div>
-            <div id="spark3"></div>
+            <div id="sparkWeek"></div>
           </div>
         </div>
       </div>
       <!-- Column -->
       <!-- Column -->
       <div class="col-lg-3 col-md-6">
-        <div class="card bg-warning">
+        <div class="card bg-warning bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
@@ -62,7 +62,7 @@
               </div>
              
             </div>
-            <div id="spark4"></div>
+            <div id="sparkDay"></div>
           </div>
         </div>
       </div>
@@ -71,13 +71,13 @@
   <!-- FIN de Widget mini Gráficas -->
 
 
-  <!-- Elemento Principal -->
+  <!-- Elemento Gráficas de Pie -->
   <div class="row">
 
     <!-- Elemento de ventas -->
       <div class="col col-md-6 text-center">
         <h4 class="">Ventas Anuales</h4>
-        <div id="sparkPie"></div>
+        <div id="sparkPieSales"></div>
 
         <div class="card">
           <div class="card-body">
@@ -102,12 +102,117 @@
     
     <!-- Elemento de cuentas por cobrar -->
       <div class="col col-md-6 text-center">
+        <h4 class="">Cuentas Por Cobrar</h4>
+        <div id="sparkPieCredito"></div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
+                <h3>80%</h3>
+                <h6 class="card-subtitle">Liquidadas: $80,000 / $100,000</h6>
+              </div>
+              <div class="col-12">
+                <div class="progress">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 80%; height: 6px;" aria-valuenow="25"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         <app-elemento-cuentas-cobrar></app-elemento-cuentas-cobrar>
       </div>
     <!-- Elemento de cuentas por cobrar -->
 
 
   </div>
-  <!-- FIN de Elemento Principal -->
+  <!-- FIN de ElementoGráficas de Pie -->
+
+  <!-- Top 5 ventas -->
+  <div class="row">
+    
+    <!-- <div class="col col-md-12 text-center">
+      
+      <ul>
+        <li>Sillón Murcielago 10 $120,000</li>
+        <li>Sillas01 4 $85,000</li>
+      </ul>
+    </div> -->
+    
+    <div class="col col-md-12 text-center">
+        <h4>Ventas</h4>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Total</th>
+            <th>Pagado</th>
+            <th>Tienda</th>
+            <th>Vendedor</th>
+          </tr>
+        </thead>
+    
+        <tbody>
+          <tr *ngFor="let venta of ventas">
+            <td>{{ venta.cliente.nombre }}</td>
+            <td>{{ venta.total | currency:'MXN' }}</td>
+            <td>
+              <span>{{ (venta.montoPagado/venta.total) | percent }}</span>
+              <div class="progress">
+                <div class="progress-bar bg-success" 
+                     role="progressbar" 
+                     style="height: 6px;"
+                     [ngStyle]="{
+                       'width': ((venta.montoPagado/venta.total)*100)+'%'
+                      }"
+                     aria-valuenow="25"
+                     aria-valuemin="0" 
+                     aria-valuemax="100"></div>
+              </div>
+            </td>
+            <td>{{ venta.unidadDeNegocio }}</td>
+            <td>{{ venta.vendedor.nombre }}</td>
+          </tr>
+        </tbody>
+
+      </table>
+
+      <!-- Componente de paginado   -->
+      <div>
+        <ul class="pagination justify-content-center">
+      
+          <li class="page-item pointer" (click)="paginaAnterior()">
+            <a class="page-link" aria-label="Previous">
+              <span aria-hidden="true">«</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+      
+          <li *ngFor="let pagina of paginas" class="page-item pointer" (click)="obtenerVentas(pagina.pagina)"
+            [ngClass]="{'active': pagina.active }"><a class="page-link">{{ pagina.pagina }}</a></li>
+      
+          <li class="page-item pointer" (click)="paginaSiguiente()">
+            <a class="page-link" aria-label="Next">
+              <span aria-hidden="true">»</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+      
+        </ul>
+      
+      </div>
+      <!-- FIN de Componente de paginado   -->
+    </div>
+
+  </div>
+  <!-- FIN de Top 5 ventas -->
   
-</div>
+
+    
+    
+
+  </div>
+  

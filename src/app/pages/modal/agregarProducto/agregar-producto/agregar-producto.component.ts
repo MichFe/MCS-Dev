@@ -42,7 +42,10 @@ export class AgregarProductoComponent implements OnInit {
     "Salas",
     "Cabeceras",
     "Bases de Cama",
-    "Libreros"
+    "Libreros",
+    "Cuadros",
+    "Tapetes",
+    "Accesorios"
   ];
 
   formaValida: boolean = false;

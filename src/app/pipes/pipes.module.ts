@@ -3,6 +3,7 @@ import { MesPipe } from './mes.pipe';
 import { InicialesPipe } from './iniciales.pipe';
 import { ImagenPipe } from './imagen.pipe';
 import { AudioPipe } from './audio.pipe';
+import { ProgressbarPipe } from './progressbar.pipe';
 
 @NgModule({
   imports: [],
@@ -10,13 +11,15 @@ import { AudioPipe } from './audio.pipe';
     MesPipe,
     InicialesPipe,
     ImagenPipe,
-    AudioPipe
+    AudioPipe,
+    ProgressbarPipe
   ],
   exports: [
     MesPipe,
     InicialesPipe,
     ImagenPipe,
-    AudioPipe
+    AudioPipe,
+    ProgressbarPipe
   ]
 })
 export class PipesModule { }

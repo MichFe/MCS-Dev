@@ -22,6 +22,10 @@ li>a{
     padding:5px;
 }
 
+.imagen-chat{
+    border-radius: 5px;
+    max-height: 200px;
+}
 
 .list-cliente:hover{
     background-color: #caebf1;

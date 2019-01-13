@@ -10,6 +10,7 @@ import { UsuarioService } from '../../services/usuarios/usuario.service';
 import { ChatService } from '../../services/chats/chat.service';
 import { Router } from '@angular/router';
 import { SubirArchivoService } from '../../services/subirArchivo/subir-archivo.service';
+import { ImageUploadService } from '../modal/image-upload/image-upload.service';
 
 @Component({
   selector: "app-crm",
@@ -25,6 +26,9 @@ export class CrmComponent implements OnInit {
 
   infScrollChats: boolean = false;
   infScrollClientes: boolean = false;
+  imagenChat:File;
+  imagenChatTemporal: string | ArrayBuffer;
+  imagenChatTemporalUrl:string;
 
   //Variable de termino de busqueda para buscador de clientes
   terminoBusqueda: string = "";
@@ -106,11 +110,87 @@ export class CrmComponent implements OnInit {
     public _usuarioService: UsuarioService,
     private _chatService: ChatService,
     public router: Router,
-    public _subirArchivoService:SubirArchivoService
+    public _subirArchivoService:SubirArchivoService,
+    public _imageUploadService:ImageUploadService
   ) {
     this.obtenerFechaActual();
 
     this.obtenerClientes(0);
+  }
+
+  cargarImagenChat(evento){
+
+    //Creamos input invisible
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+
+    //Creamos una promesa agregando el evento onchange al input y disparando el evento click en el input
+    let promesa = new Promise((resolve,reject)=>{
+
+      input.onchange = ()=>{
+        //Obtenemos la imagen
+        let file: File = input.files[0];
+
+        //Si no hay imagen borramos imagen temporal y salimos de la funcion
+        if (!file) {
+          this.imagenChat = null;
+          this.imagenChatTemporal = null,
+          this.imagenChatTemporalUrl = null;
+          return;
+        }
+
+        //Si el tipo de archivo no es imagen mostramos mensaje de error y salimos de la funcion
+        if (file.type.indexOf('image') < 0) {
+          swal(
+            'Típo de archivo inválido',
+            'Seleccione una imágen',
+            'error'
+          );
+
+          this.imagenChat = null;
+          this.imagenChatTemporal = null,
+          this.imagenChatTemporalUrl = null;
+          return;
+        }
+
+        let reader = new FileReader();        
+        this.imagenChat = file;
+        reader.onloadend = () => this.imagenChatTemporal = reader.result;
+        this.imagenChatTemporalUrl = URL.createObjectURL(file);
+        
+
+        //Avisamos a la promesa de que se ha completado mediante resolve
+        resolve();
+      }
+
+      input.click();
+    });
+
+    promesa.then(
+      (resolve)=>{
+        //Mensaje de confirmación de carga de imagen
+        swal("Confirmación:","Esta seguro de que desea envíar esta imagen",{
+          buttons: ['Cancelar', 'Ok'],
+          icon: this.imagenChatTemporalUrl
+        })
+          .then(
+            (enviar) => {
+              
+              //Manejamos caso de confirmación de carga
+              if (enviar) {
+                this.agregarChat(evento,'imagen');
+                
+              //Manejamos cancelación de carga
+              }else{
+                this.imagenChat=null;
+                this.imagenChatTemporal=null,
+                this.imagenChatTemporalUrl=null;
+              }
+
+          });
+      }
+    );
   }
 
   imagenNuevoCliente(file){
@@ -338,13 +418,21 @@ export class CrmComponent implements OnInit {
 
   agregarChat(event, tipo) {
     //Previniendo comportamiento por default del botón enter
+    
     if (event.keyCode == 13) {
       event.preventDefault();
     }
     //------------------------------------------------------
 
     //Evitando el envío de mensajes de texto vacios
-    if (this.mensaje.trim().length <= 0 && tipo != "audio") {
+    if (this.mensaje.trim().length <= 0 && tipo != "audio" && tipo !="imagen") {
+      return;
+    }
+    //------------------------------------------------------
+
+    //Evitando el envío de mensajes de imagen vacios--------
+    if( !this.imagenChat && tipo =='imagen'){      
+
       return;
     }
     //------------------------------------------------------
@@ -382,6 +470,12 @@ export class CrmComponent implements OnInit {
     }
     //--------------------------------------------------------
 
+    //Eliminando ruta de imagen en mensajes de texto--------------
+    if(tipo != "imagen"){
+      chat.img=null;
+    }
+    //------------------------------------------------------------
+
     //Guardando chat en base de datos
     this._chatService.guardarChat(chat, this.chats.length).subscribe(
       (resp:any) => {
@@ -399,11 +493,26 @@ export class CrmComponent implements OnInit {
               }
             );
         }else{
+          if (tipo ==='imagen'){
+            
+            this._subirArchivoService.subirArchivo(this.imagenChat,'chat', resp.chat._id)
+            .then(
+              (resp)=>{
+                this.mostrarChatProyecto(this.proyectoActual);
+                this.imagenChat=null;
+                this.imagenChatTemporal=null;
+                this.imagenChatTemporalUrl=null;
+              }
+            );
 
-          this.mostrarChatProyecto(this.proyectoActual);
+          }else{
+            this.mostrarChatProyecto(this.proyectoActual);
 
-          //Limpiando text area
-          this.mensaje = "";
+            //Limpiando text area
+            this.mensaje = "";
+          }
+
+          
 
           
         }

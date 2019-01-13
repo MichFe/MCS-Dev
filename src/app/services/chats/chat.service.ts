@@ -13,7 +13,7 @@ export class ChatService {
     private _usuarioService: UsuarioService
   ) { }
 
-  guardarChat(chat, chatsCargados){
+  guardarChat(chat, chatsCargados?){
     let token = this._usuarioService.token;
     let url= URL_SERVICIOS + '/chat?token='+ token + '&chatCargados=' + chatsCargados;
 

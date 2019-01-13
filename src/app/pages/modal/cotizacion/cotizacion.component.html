@@ -86,37 +86,48 @@
                           contenteditable="true">$8,000.00</td>
                       <td class="text-center">{{ (producto.precio * producto.cantidad) - producto.descuento | currency:'MXN' }}</td>
                     </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <th><strong>SUBTOTAL</strong></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th [ngClass]="{'no-print': totalDescuento==0}"></th>
-                      <th></th>
-                      <th class="text-center">{{ totalImporte | currency:'MXN' }}</th>
-                    </tr>
-                    <tr [ngClass]="{'oculto': totalDescuento==0}">
-                      <th><strong>DESCUENTO</strong></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th [ngClass]="{'no-print': totalDescuento==0}"></th>
-                      <th></th>
-                      <th class="text-center">{{ totalDescuento | currency:'MXN' }}</th>
-                    </tr>
-                    <tr>
-                      <th><strong>TOTAL</strong></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th [ngClass]="{'no-print': totalDescuento==0}"></th>
-                      <th></th>
-                      <th class="text-center">{{ totalImporte - totalDescuento | currency:'MXN' }}</th>
-                    </tr>
-                  </tfoot>
 
+                    <tr class="no-print">
+                      <td colspan="42" 
+                          class="add-product-row pointer"
+                          (click)="agregarProducto()">
+                        <i class="fa fa-plus"></i>
+                      </td>
+                    </tr>
+
+                    
+                  </tbody>
+
+                </table>
+
+                <table class="table">
+                  <tr>
+                    <th><strong>SUBTOTAL</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ totalImporte | currency:'MXN' }}</th>
+                  </tr>
+                  <tr [ngClass]="{'oculto': totalDescuento==0}">
+                    <th><strong>DESCUENTO</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ totalDescuento | currency:'MXN' }}</th>
+                  </tr>
+                  <tr>
+                    <th><strong>TOTAL</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ totalImporte - totalDescuento | currency:'MXN' }}</th>
+                  </tr>
                 </table>
                 
               </div>

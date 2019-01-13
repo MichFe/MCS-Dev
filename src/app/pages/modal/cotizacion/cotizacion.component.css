@@ -26,6 +26,22 @@ img.product-image{
     height: 50px;
 }
 
+.add-product-row{
+    text-align: center;
+}
+
+.add-product-row:hover{
+    background-color: #caebf1;
+}
+
+.add-product-row:hover i{
+    font-weight: bold;
+}
+
+.add-product-row i{
+    color: cornflowerblue;
+}
+
 .oculto{
     display: none;
 }
@@ -39,4 +55,5 @@ img.product-image{
     .no-print {
         display: none;
     }
+    
 }

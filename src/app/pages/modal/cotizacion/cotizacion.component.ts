@@ -71,6 +71,30 @@ export class CotizacionComponent implements OnInit {
 
   resetearModal() {}
 
+  agregarProducto(){
+    let nuevoProducto = {
+      nombre: "Nombre de producto",
+      descripcion: "Descripción del producto",
+      precio: 0,
+      cantidad: 0,
+      descuento: 0,
+      factorDescuento: 0,
+      importe: 0,
+      editandoCantidad: false,
+      editandoPrecio: false,
+      editandoDescuento: false
+    }
+
+    this.productos.push(nuevoProducto);
+    
+  }
+
+  eliminarProducto(i){
+
+    this.productos.splice(i,1);
+    
+  }
+
   imprimirCotizacion() {
     let cotizacion = document.getElementById("documento-cotizacion");
     let domClone = cotizacion.cloneNode(true);

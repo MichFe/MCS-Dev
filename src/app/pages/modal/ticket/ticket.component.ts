@@ -197,14 +197,21 @@ export class TicketComponent implements OnInit {
       proyecto: null,
       unidadDeNegocio: this._usuarioService.usuario.unidadDeNegocio
     };
-
-    if (this.proyectoSeleccionado.length>0){
+    
+    //Si se ha seleccionado un proyecto se registra en el objeto venta
+    if (this.proyectoSeleccionado){
       venta.proyecto = this.proyectoSeleccionado;
     }
 
+    //Si se a elegido una venta con iva, se registra en el objeto venta
     if (this.seleccionIva) {
       venta.iva = this.iva;
       venta.total = this.totalCarrito + this.iva;
+    }
+
+    //Validamos descuentos y los aplicamos a la venta
+    if(this.totalDescuento){
+      venta.total -= this.totalDescuento;
     }
 
     venta.montoPagado = this.efectivo;

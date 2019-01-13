@@ -123,7 +123,8 @@
                [src]="producto.img | imagen: 'producto'">
           
           <div class="info-lista left">
-            <p class="nombre-lista fw-500">{{ producto.nombre }}</p>
+            <p class="nombre-lista fw-500 pointer"
+               (click)="cambiarNombre(i)">{{ producto.nombre }}</p>
             <p class="precio-lista pointer"
                (click)="cambiarPrecio(i)">{{ producto.precio | currency: 'MXN' }}</p>
             <p *ngIf="producto.descuento" 
@@ -193,4 +194,4 @@
 
   <app-descripcion-producto
     (guardarDescripcion)="agregarDescripcion($event)"
-    [descripcion]="(indiceDeProductoLista>=0)?carrito[indiceDeProductoLista].descripcion:''"></app-descripcion-producto>
+    [descripcion]="descripcionProductoLista"></app-descripcion-producto>

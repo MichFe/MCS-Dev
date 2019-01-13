@@ -24,6 +24,7 @@ export class CatalogoProductosComponent implements OnInit {
   productoNombre:string;
   busquedaActiva:boolean=false;
   indiceDeProductoLista:number;
+  descripcionProductoLista:string='';
 
   incluirIva: string;
 
@@ -49,7 +50,10 @@ export class CatalogoProductosComponent implements OnInit {
     { nombre: "Ocasionales" },
     { nombre: "Salas" },
     { nombre: "Cabeceras" },
-    { nombre: "Bases de Cama" }
+    { nombre: "Bases de Cama" },
+    { nombre: "Cuadros" },
+    { nombre: "Tapetes" },
+    { nombre: "Accesorios" }
   ];
 
   productos = [];
@@ -145,9 +149,31 @@ export class CatalogoProductosComponent implements OnInit {
 
   }
 
-  abrirModalDescripcion(index){
+  leerDescripcionProducto(){
+    let indice=this.indiceDeProductoLista;
     
-    this.indiceDeProductoLista=index;    
+    if(this.carrito[indice].descripcion){
+      let descripcion=this.carrito[this.indiceDeProductoLista].descripcion;
+      console.log(descripcion);
+      return descripcion;
+    }else{
+      console.log('No hay descripcion');
+      return '';
+      
+    }
+
+  }
+
+  abrirModalDescripcion(index){
+    this.indiceDeProductoLista=index;
+    let descripcion = this.carrito[index].descripcion;
+
+    if (descripcion){
+      this.descripcionProductoLista=descripcion;
+    }else{
+      this.descripcionProductoLista='';
+    }
+        
     $("#descripcionProducto").modal('toggle');
 
   }
@@ -184,7 +210,7 @@ export class CatalogoProductosComponent implements OnInit {
             );
             return;
           }
-          this.carrito[index].descuento = descuento;
+          this.carrito[index].descuento = Number(descuento);
           this.calcularSubTotalCarrito();
         } else {
           if (descuento >= 0 && descuento <= 100) {
@@ -332,22 +358,35 @@ export class CatalogoProductosComponent implements OnInit {
   }
 
   agregarACarrito(producto: Producto) {
-    let existe = this.checkCarrito(producto);
+    //Eliminamos la validacion de productos repetidos para poder agregar varias
+    //veces los productos sobre diseño y cambiar su info directamente en el carrito
+    // let existe = this.checkCarrito(producto);
 
-    if (existe) {
-      existe.cantidad += 1;
-    } else {
-      let productoCarrito = {
-        codigo: producto.codigo,
-        nombre: producto.nombre,
-        familia: producto.familia,
-        precio: producto.precio,
-        img: producto.img,
-        _id: producto._id,
-        cantidad: 1
-      };
-      this.carrito.push(productoCarrito);
-    }
+    // if (existe) {
+    //   existe.cantidad += 1;
+    // } else {
+    //   let productoCarrito = {
+    //     codigo: producto.codigo,
+    //     nombre: producto.nombre,
+    //     familia: producto.familia,
+    //     precio: producto.precio,
+    //     img: producto.img,
+    //     _id: producto._id,
+    //     cantidad: 1
+    //   };
+    //   this.carrito.push(productoCarrito);
+    // }
+
+    let productoCarrito = {
+      codigo: producto.codigo,
+      nombre: producto.nombre,
+      familia: producto.familia,
+      precio: producto.precio,
+      img: producto.img,
+      _id: producto._id,
+      cantidad: 1
+    };
+    this.carrito.push(productoCarrito);
 
     //Actualizamos subtotales de cada producto en el carrito
     this.calcularSubTotalCarrito();
@@ -378,6 +417,23 @@ export class CatalogoProductosComponent implements OnInit {
     });
 
     this.ivaCarrito = (this.totalCarrito - this.totalDescuento) * 0.16;
+  }
+
+  cambiarNombre(indiceCarrito){
+    swal({
+      content: {
+        element: "input"
+      },
+      text: "Asigna un nuevo nombre",
+      buttons: [true, "Aceptar"]
+    })
+      .then(nombre => {
+        if (!nombre) {
+          return;
+        }
+        this.carrito[indiceCarrito].nombre = nombre;
+      })
+      .catch();
   }
 
   cambiarPrecio(indiceCarrito) {

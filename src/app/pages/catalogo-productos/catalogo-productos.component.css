@@ -134,6 +134,12 @@ ul{
     font-size: 10px;
     margin-left: 5px;
     margin-bottom:5px;
+
+    width: 150px;
+}
+
+.nombre-lista:hover{
+    color: #2e9bb0;
 }
 
 .precio-lista{
@@ -213,6 +219,8 @@ li{
 }
 
 .item-carrito{
+    overflow: auto;
+
     -webkit-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
     -moz-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
     box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);

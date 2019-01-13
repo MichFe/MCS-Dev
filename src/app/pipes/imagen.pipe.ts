@@ -32,6 +32,10 @@ export class ImagenPipe implements PipeTransform {
         url += "/producto/" + img;
       break;
 
+      case 'chat':
+        url += '/chat/' + img;
+      break;
+
       default:
         console.log('El tipo de imagen utilizado en el pipe no existe');
         url += '/usuario/default'     

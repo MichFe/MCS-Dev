@@ -4,13 +4,14 @@
   <!-- Widget mini Gráficas -->
     <div class="row">
       <!-- Column -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-4 col-12">
         <div class="card bg-primary bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
-                <h4 class="card-title text-white">Ventas Anuales</h4>
-                <h6 class="card-subtitle text-white">$9432</h6>
+                <h4 class="card-title text-white pointer hover-highlight"
+                    (click)="changeYear()">Ventas {{ year }}</h4>
+                <h6 class="card-subtitle text-white">{{ totalVentasAnuales | currency:'MXN' }}</h6>
               </div>
            
             </div>
@@ -20,13 +21,14 @@
       </div>
       <!-- Column -->
       <!-- Column -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-4 col-12">
         <div class="card bg-info bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
-                <h4 class="card-title text-white">Ventas Mensuales</h4>
-                <h6 class="card-subtitle text-white">$9432</h6>
+                <h4 class="card-title text-white pointer hover-highlight"
+                    (click)="cambiarMes()">Ventas {{ mesesArray[month] }}</h4>
+                <h6 class="card-subtitle text-white">{{ ((ventasAnuales)?ventasAnuales[month]:0) | currency:'MXN' }}</h6>
               </div>
              
             </div>
@@ -35,30 +37,16 @@
         </div>
       </div>
       <!-- Column -->
+      
       <!-- Column -->
-      <div class="col-lg-3 col-md-6">
-        <div class="card bg-success bordered-card-10">
-          <div class="card-body">
-            <div class="d-flex">
-              <div>
-                <h4 class="card-title text-white">Ventas Semanales</h4>
-                <h6 class="card-subtitle text-white">$9432</h6>
-              </div>
-            
-            </div>
-            <div id="sparkWeek"></div>
-          </div>
-        </div>
-      </div>
-      <!-- Column -->
-      <!-- Column -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-4 col-12">
         <div class="card bg-warning bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
-                <h4 class="card-title text-white">Ventas del Día</h4>
-                <h6 class="card-subtitle text-white">$9432</h6>
+                <h4 class="card-title text-white pointer hover-highlight"
+                    (click)="cambiarDia()">Ventas del Día {{day}}</h4>
+                <h6 class="card-subtitle text-white">{{ ((ventasMensuales)?ventasMensuales[day]:0) | currency:'MXN' }}</h6>
               </div>
              
             </div>
@@ -76,19 +64,21 @@
 
     <!-- Elemento de ventas -->
       <div class="col col-md-6 text-center">
-        <h4 class="">Ventas Anuales</h4>
-        <div id="sparkPieSales"></div>
-
+        
         <div class="card">
           <div class="card-body">
-            <div class="row">
+              <h4 class="card-title">Ventas Anuales: {{ year }}</h4>
+            <div id="sparkPieSales"></div>
+            <div class="row m-t-10">
               <div class="col-12">
-                <h3>53.3%</h3>
-                <h6 class="card-subtitle">Ventas: $83,000 / $150,000</h6>
+                <h3>{{ (totalVentasAnuales/150000) | percent}}</h3>
+                <h6 class="card-subtitle">Ventas: {{ totalVentasAnuales | currency:'MXN' }} / $150,000</h6>
               </div>
               <div class="col-12">
                 <div class="progress">
-                  <div class="progress-bar bg-success" role="progressbar" style="width: 53.3%; height: 6px;" aria-valuenow="25"
+                  <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
+                  'width': ((totalVentasAnuales/150000)*100)+'%'
+                  }" aria-valuenow="25"
                     aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
@@ -102,19 +92,21 @@
     
     <!-- Elemento de cuentas por cobrar -->
       <div class="col col-md-6 text-center">
-        <h4 class="">Cuentas Por Cobrar</h4>
-        <div id="sparkPieCredito"></div>
-
+        
         <div class="card">
           <div class="card-body">
-            <div class="row">
+              <h4 class="">Cuentas Por Cobrar</h4>
+              <div id="sparkPieCredito"></div>
+            <div class="row m-t-10">
               <div class="col-12">
-                <h3>80%</h3>
-                <h6 class="card-subtitle">Liquidadas: $80,000 / $100,000</h6>
+                <h3>{{ ventasPorCobrar[0]/(ventasPorCobrar[1]+ventasPorCobrar[0]) | percent }}</h3>
+                <h6 class="card-subtitle">Liquidadas: {{ ventasPorCobrar[0] | currency:'MXN' }} / {{ (ventasPorCobrar[0] + ventasPorCobrar[1]) | currency:'MXN' }}</h6>
               </div>
               <div class="col-12">
                 <div class="progress">
-                  <div class="progress-bar bg-success" role="progressbar" style="width: 80%; height: 6px;" aria-valuenow="25"
+                  <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
+                  'width': ((ventasPorCobrar[0]/ventasPorCobrar[1])*100)+'%'
+                  }" aria-valuenow="25"
                     aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
@@ -131,6 +123,19 @@
   </div>
   <!-- FIN de ElementoGráficas de Pie -->
 
+  <!-- Elemento grafica de barras de ventas mensuales -->
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card text-center">
+        <div class="card-title">Ventas {{ year }}</div>
+        <div class="card-body">
+          <canvas id="chart-bar-ventasMensuales" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN de Elemento grafica de barras de ventas mensuales -->
+
   <!-- Top 5 ventas -->
   <div class="row">
     
@@ -144,41 +149,48 @@
     
     <div class="col col-md-12 text-center">
         <h4>Ventas</h4>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Cliente</th>
-            <th>Total</th>
-            <th>Pagado</th>
-            <th>Tienda</th>
-            <th>Vendedor</th>
-          </tr>
-        </thead>
-    
-        <tbody>
-          <tr *ngFor="let venta of ventas">
-            <td>{{ venta.cliente.nombre }}</td>
-            <td>{{ venta.total | currency:'MXN' }}</td>
-            <td>
-              <span>{{ (venta.montoPagado/venta.total) | percent }}</span>
-              <div class="progress">
-                <div class="progress-bar bg-success" 
-                     role="progressbar" 
-                     style="height: 6px;"
-                     [ngStyle]="{
-                       'width': ((venta.montoPagado/venta.total)*100)+'%'
-                      }"
-                     aria-valuenow="25"
-                     aria-valuemin="0" 
-                     aria-valuemax="100"></div>
-              </div>
-            </td>
-            <td>{{ venta.unidadDeNegocio }}</td>
-            <td>{{ venta.vendedor.nombre }}</td>
-          </tr>
-        </tbody>
 
-      </table>
+      <div class="table-responsive">
+        <table class="table table-hover" data-mobile-responsive="true">
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Total</th>
+              <th>Saldo Pend.</th>
+              <th>Pagado</th>
+              <th>Tienda</th>
+              <th>Vendedor</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+        
+          <tbody>
+            <tr *ngFor="let venta of ventas"
+                [ngClass]="{
+                  'table-success': venta.estatus==='Liquidada',
+                  'table-warning': venta.estatus==='Saldo Pendiente'
+                }">
+              <td>{{ venta.cliente.nombre }}</td>
+              <td>{{ venta.total | currency:'MXN' }}</td>
+              <td>{{ venta.saldoPendiente | currency:'MXN' }}</td>
+              <td>
+                <span>{{ (venta.montoPagado/venta.total) | percent }}</span>
+                <div class="progress">
+                  <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
+                               'width': ((venta.montoPagado/venta.total)*100)+'%'
+                              }"
+                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </td>
+              <td>{{ venta.unidadDeNegocio }}</td>
+              <td>{{ venta.vendedor.nombre }}</td>
+              <td>{{ venta.fecha | date }}</td>
+            </tr>
+          </tbody>
+        
+        </table>
+      </div>
+     
 
       <!-- Componente de paginado   -->
       <div>

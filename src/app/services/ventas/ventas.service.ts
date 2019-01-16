@@ -21,4 +21,42 @@ export class VentasService {
 
   }
 
+  obtenerVentasMensuales(year:number){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/ventasMensuales/${ year }?token=${ token }`;
+
+    return this.http.get(url);
+
+  }
+
+  obtenerVentasDiarias(year:number, month:number){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/ventasDiarias/${year}/${month}?token=${token}`;
+
+    return this.http.get(url);
+  }
+
+  obtenerSaldoPendienteYMontoPagado(){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/saldoPendiente?token=${token}`;
+
+    return this.http.get(url);
+  }
+
+  obtenerListaDeClientesConSaldoPendiente(){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/clientesConSaldo?token=${token}`;
+
+    return this.http.get(url);
+  }
+
+  obtenerVentasConSaldoPendienteDeUnCliente(clienteId:string){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/ventasConSaldo/${clienteId}?token=${token}`;
+
+    return this.http.get(url);
+  }
+
+
+
 }

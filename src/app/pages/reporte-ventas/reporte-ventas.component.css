@@ -15,3 +15,8 @@
 th{
     text-align: center;
 }
+
+.hover-highlight:hover{
+    font-weight: 500;
+    /* color:#2e9bb0 !important; */
+}

@@ -11,6 +11,7 @@ import { LoginGuardGuard } from "../services/guards/login-guard.guard";
 import { CatalogoProductosComponent } from "./catalogo-productos/catalogo-productos.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { ReporteVentasComponent } from "./reporte-ventas/reporte-ventas.component";
+import { CuentasPorCobrarComponent } from "./cuentas-por-cobrar/cuentas-por-cobrar.component";
 
 
 const pagesRoutes:Routes = [
@@ -28,6 +29,7 @@ const pagesRoutes:Routes = [
             { path: 'colaboradores', component: UsuariosComponent },
             { path: 'perfil', component: ProfileComponent},
             { path: 'reporteVentas', component: ReporteVentasComponent },
+            { path: 'cuentasPorCobrar', component: CuentasPorCobrarComponent },
             { path: '', redirectTo: '/reporteVentas', pathMatch: 'full' },
         ]
     },

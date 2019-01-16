@@ -1,0 +1,90 @@
+<div class="container">
+
+  <div class="row">
+
+    <!-- Tabla de clientes con saldo pendiente -->
+    <div class="col col-md-6 text-center">
+      <div class="card">
+        <div class="card-title">
+          Clientes con saldo pendiente
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Saldo</th>
+                </tr>
+              </thead>
+          
+              <tbody>
+                <tr *ngFor="let cliente of clientesConSaldoPendiente; let i=index"
+                    class="pointer"
+                    (click)="cargarVentasConSaldoDelCliente(cliente.cliente._id, i)"
+                    [ngClass]="{'cliente-activo': clientesConSaldoPendiente[i].activo }">
+                  <td>{{ cliente.fechaMasAntigua | date }}</td>
+                  <td>{{ cliente.cliente.nombre }}</td>
+                  <td>{{ cliente.saldoPendiente | currency:'MXN' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN de Tabla de clientes con saldo pendiente -->
+
+    <!-- Detalle de cuenta seleccionada -->
+    <div class="col col-md-6 borde-izquierdo">
+      <div class="card">
+        <div class="card-title text-center">
+          Detalle de cuenta <span *ngIf="clienteActual">de {{ clienteActual }}</span>
+        </div>
+        <div class="card-body">
+
+          <ul *ngFor="let venta of ventasConSaldo; let i=index">
+            <span class="venta-title">
+              Venta {{ i + 1 }}
+            </span>
+
+            <p class="venta-subtitle">
+              Productos:
+            </p>
+
+            <li *ngFor="let producto of venta.carrito">
+              <img [src]="producto.img | imagen:'producto'"
+                   class="img-producto">
+              {{ producto.nombre }} x {{ producto.cantidad }}
+            </li>
+
+            <p class="venta-footer right">
+              Total: {{ venta.total | currency:'MXN' }}
+            </p>
+
+            <p class="venta-footer right">
+              Monto Pagado: {{ venta.montoPagado | currency:'MXN' }}
+            </p>
+
+            <p class="venta-footer right">
+              Saldo pendiente: {{ venta.saldoPendiente | currency:'MXN' }}
+            </p>
+
+            <button class="btn btn-success btn-block">Registrar Pago</button>
+
+            <p class="venta-footer small">
+              Vendido por {{ venta.vendedor.nombre }}
+            </p>
+          </ul>
+        </div>
+      </div>
+
+
+    </div>
+    <!-- FIN de Detalle de cuenta seleccionada -->
+
+  </div>
+
+</div>

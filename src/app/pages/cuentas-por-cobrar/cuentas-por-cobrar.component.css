@@ -1,0 +1,53 @@
+th{
+    text-align: center;
+}
+
+.borde-izquierdo{
+    border-left: 1px solid lightgrey;
+}
+
+.cliente-activo{
+    background-color:#caebf1;
+}
+
+ul{
+    list-style: none;
+    padding: 5px;
+    margin-bottom: 10px;
+
+    -webkit-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+}
+
+li{
+    padding: 5px;
+}
+
+.venta-title{
+    font-weight: 500;
+}
+
+.venta-subtitle{
+    margin-top: 5px;
+    margin-bottom:0px;
+}
+
+.venta-footer{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.right{
+    text-align: right;
+    padding-right: 10px;
+}
+
+.img-producto{
+    border-radius: 5px;
+    clear: both;
+
+     height: 50px;
+    width:50px;
+    object-fit: cover;
+}

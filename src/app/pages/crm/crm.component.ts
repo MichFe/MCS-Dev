@@ -11,6 +11,10 @@ import { ChatService } from '../../services/chats/chat.service';
 import { Router } from '@angular/router';
 import { SubirArchivoService } from '../../services/subirArchivo/subir-archivo.service';
 import { ImageUploadService } from '../modal/image-upload/image-upload.service';
+import { URL_SERVICIOS } from 'src/app/config/config';
+import { RegistroLecturaService } from 'src/app/services/registroLectura/registro-lectura.service';
+
+declare var $:any;
 
 @Component({
   selector: "app-crm",
@@ -46,6 +50,11 @@ export class CrmComponent implements OnInit {
   totalChatsProyecto: number;
   totalClientes: number;
 
+  imagenAgrandada:any;
+  finDeChats:boolean=false;
+
+  registroLectura:any[];
+
   //------------------------------
   // FIN de Variables Generales
   //------------------------------
@@ -77,7 +86,7 @@ export class CrmComponent implements OnInit {
 
   clientesFiltrados: any[] = [];
 
-  proyectos: any = [];
+  proyectos: any[] = [];
   proyectoActual: any = {};
 
   chats: any[] = [];
@@ -111,11 +120,104 @@ export class CrmComponent implements OnInit {
     private _chatService: ChatService,
     public router: Router,
     public _subirArchivoService:SubirArchivoService,
-    public _imageUploadService:ImageUploadService
+    public _imageUploadService:ImageUploadService,
+    public _registroLectura: RegistroLecturaService
   ) {
     this.obtenerFechaActual();
 
     this.obtenerClientes(0);
+  }
+
+  eliminarProyecto(proyectoId){
+    let valorAnteriorInfScrollChats = this.infScrollChats;
+    this.infScrollChats=false;
+    //Mensaje de confirmación de carga de imagen
+    swal("Confirmación:", "Esta seguro de que desea eliminar el proyecto?", {
+      buttons: ['Cancelar', 'Ok'],
+    })
+      .then(
+      (eliminar) => {
+
+        if(eliminar){
+          this._proyectoService.eliminarProyecto(proyectoId).subscribe(
+            (resp) => {
+
+              swal(
+                "Proyecto eliminado exitosamente",
+                "El proyecto: " + this.proyectoActual.nombre + ", se ha eliminado exitosamente",
+                "success"
+              );
+
+              this.obtenerProyectos(this.clienteActual._id, 0);
+              this.chats = [];
+              this.proyectoActual = {};
+              this.infScrollChats=valorAnteriorInfScrollChats;
+            },
+            error => {
+              this.infScrollChats = valorAnteriorInfScrollChats;
+              swal(
+                "Error al eliminar mensaje",
+                error.error.mensaje + " | " + error.error.errors.message,
+                "error"
+              );
+            }
+          );
+        }else{
+          this.infScrollChats = valorAnteriorInfScrollChats;
+          return;
+        }
+      });
+
+
+    
+  }
+
+  eliminarChat(chatId){
+
+    //Mensaje de confirmación de carga de imagen
+    swal("Confirmación:", "Esta seguro de que desea eliminar el mensaje", {
+      buttons: ['Cancelar', 'Ok'],
+    })
+      .then(
+        (eliminar) => {
+
+          //Manejamos caso de confirmación de carga
+          if (eliminar) {
+
+            this._chatService.eliminarChat(chatId).subscribe(
+              (resp) => {
+
+                this.mostrarChatProyecto(this.proyectoActual);
+
+                swal(
+                  "Mensaje eliminado exitosamente",
+                  "El mensaje se ha eliminado exitosamente",
+                  "success"
+                );
+              },
+              error => {
+                swal(
+                  "Error al eliminar mensaje",
+                  error.error.mensaje + " | " + error.error.errors.message,
+                  "error"
+                );
+              }
+            );
+
+          } else {
+            return;
+          }
+
+        });
+
+
+    
+  }
+
+  mostrarImagenDeChat(urlImagen:string){
+    this.imagenAgrandada = urlImagen;
+
+    $('#imageDisplay').modal('toggle');
   }
 
   cargarImagenChat(evento){
@@ -217,6 +319,7 @@ export class CrmComponent implements OnInit {
     this._proyectoService.getProyectos(clienteId, pagina).subscribe(
       (resp: any) => {
         this.proyectos = resp.proyectos;
+        this.obtenerTotalMensajesPorProyecto(clienteId);
       },
       error => {
         swal(
@@ -228,6 +331,56 @@ export class CrmComponent implements OnInit {
     );
   }
 
+  obtenerTotalMensajesPorProyecto(clienteId){
+
+    this._chatService.obtenertotalDeMensajesPorProyecto(clienteId).subscribe(
+      (resp:any)=>{
+
+        this.agregarAProyectosTotalDeMensajes(resp.conteoMensajes);      
+        this.agregarAProyectosMensajesLeidos();
+      }
+    );
+  }
+
+  agregarAProyectosMensajesLeidos(){
+    //Seteo los mensajes leidos a cero
+    this.proyectos.forEach((proyecto, i)=>{
+      this.proyectos[i].mensajesLeidos = 0;
+    });
+
+    let indexProyecto;
+
+    this.proyectos.forEach((proyecto, index)=>{
+      indexProyecto = index;
+      
+      this.registroLectura.forEach((registro)=>{
+
+        if(proyecto._id==registro.proyectoId){
+          
+          this.proyectos[indexProyecto].mensajesLeidos = registro.chatsLeidos;
+
+        }
+
+      });
+
+    });    
+
+  }
+
+  agregarAProyectosTotalDeMensajes(registros:any[]){
+
+    registros.forEach((registro)=>{
+
+      this.proyectos.forEach((proyecto,i)=>{
+        if(proyecto._id==registro._id){
+          this.proyectos[i].totalMensajes=registro.conteoMensajes;
+        }
+      });
+
+    });
+
+  }
+
   agregarProyecto(proyecto) {
     this._proyectoService.postProyecto(proyecto).subscribe(
       (resp: any) => {
@@ -236,7 +389,7 @@ export class CrmComponent implements OnInit {
           "Registro de proyecto exitoso",
           "El proyecto " +
             resp.proyecto.nombre +
-            "se ha guardado de manera exitosa.",
+            " se ha guardado de manera exitosa.",
           "success"
         );
       },
@@ -252,10 +405,84 @@ export class CrmComponent implements OnInit {
     // this.proyectos.push(proyecto);
   }
 
+  obtenerMensajesTotalesPorCliente(){
+
+    this._chatService.obtenerTotalDeMensajesPorCliente().subscribe(
+      (resp:any)=>{
+        this.agregarAClientesTotalDeMensajes(resp.conteoDeMensajes);
+      }
+    );
+  }
+
+  agregarAClientesTotalDeMensajes(totalMensajes:any[]){
+
+    //Reseteo a cero el total de mensajes de los clientes
+    this.clientes.forEach((cliente, i) => {
+      this.clientes[i].totalMensajes = 0;
+    });
+
+    //Por cada total de mensajes por cliente devuelto por el server
+    //buscamos el cliente en la lista y le agregamos su total de mensajes
+    totalMensajes.forEach((registroCliente)=>{
+
+      this.clientes.forEach( (cliente,i)=>{
+          if(cliente._id==registroCliente._id){
+            this.clientes[i].totalMensajes=registroCliente.conteoMensajes;
+          }
+      });
+
+    });
+    
+
+  }
+  
+
+  obtenerRegistroLecturaPorCliente(){
+    this._registroLectura.obtenerRegistroLectura().subscribe(
+      (resp:any)=>{
+        
+        this.registroLectura = resp.registroLectura.registroLecturaProyectos;
+        this.agregarAClientesMensajesLeidos(resp.registroLectura.registroLecturaProyectos);
+
+      },
+      (error:any)=>{
+        //Si el error es 400, quiere decir que no hay registro de lectura para ese cliente
+        //Por lo que agregamos mensajesLeidos=0 a todos los clientes
+        if(error.status==400){
+          this.agregarAClientesMensajesLeidos([]);
+        }
+      }
+    );
+  }
+
+  agregarAClientesMensajesLeidos(registroLectura:any[]){
+
+    //Pongo en ceros el contador de mensajes leidos de todos los clientes
+    this.clientes.forEach((cliente,i)=>{
+      this.clientes[i].mensajesLeidos=0;
+    });
+
+
+    registroLectura.forEach( (registro)=>{
+      
+      //Por cada registro reviso el arreglo de clientes y si los chats son de un proyecto
+      //Del cliente se suman a los mensajes leidos del cliente
+      this.clientes.forEach((cliente,i)=>{
+        if(cliente._id==registro.clienteId){
+          this.clientes[i].mensajesLeidos+=registro.chatsLeidos;
+        }
+      });
+
+      
+    });
+  }
+
   obtenerClientes(desde) {
     this._clientesServicio.obtenerClientes(desde).subscribe(
       (resp: any) => {
         this.clientes = resp.clientes;
+        this.obtenerRegistroLecturaPorCliente();
+        this.obtenerMensajesTotalesPorCliente();
 
         this.clientesFiltrados = this.clientes;
         this.cambiarColorIniciales();
@@ -302,7 +529,6 @@ export class CrmComponent implements OnInit {
 
         this._subirArchivoService.subirArchivo( this.imagenClienteNuevo, 'cliente', cliente._id )
             .then( resp=>{
-              console.log(resp);
               
             });
 
@@ -512,8 +738,9 @@ export class CrmComponent implements OnInit {
             this.mensaje = "";
           }
 
-          
-
+        //Actualizando fecha de ultimo mensaje en el cliente para ordenarlos
+          this.clienteActual.fechaUltimoMensaje = chat.fecha;
+          this._clientesServicio.actualizarCliente(this.clienteActual).subscribe();
           
         }
         
@@ -553,16 +780,19 @@ export class CrmComponent implements OnInit {
       (resp: any) => {
         this.totalChatsProyecto = resp.totalChats;
 
+        
         resp.chats.forEach(chat => {
           this.chats.unshift(chat);
         });
-
+        
         let chatBody = document.getElementById("chatBody");
         setTimeout(() => {
           this.scrollBottom(chatBody);
         });
         //Habilitamos inf scroll
         this.infScrollChats = true;
+        this.registrarLecturaDeMensajes(proyecto._id, resp.totalChats);
+
       },
       error => {
         swal(
@@ -577,10 +807,83 @@ export class CrmComponent implements OnInit {
     // this.shared.proyectoSeleccionado = this.proyectos[index];
   }
 
+  registrarLecturaDeMensajes(proyectoId, totalChats){
+
+    //Construimos el objeto lectura base (registro de lectura de los chats del proyecto actual)
+    let registroLecturaProyecto = {
+      clienteId: this.clienteActual._id,
+      proyectoId: proyectoId,
+      chatsLeidos: totalChats
+    };
+
+    //definimos una variable donde guardaremos el registro completo que devuelve la BD
+    let registroLecturaBD:any;
+
+    this._registroLectura.obtenerRegistroLectura().subscribe(
+      (resp:any)=>{
+        //Si exitse un registro lo guardamos en la variable que creamos anteriormente
+        registroLecturaBD = resp.registroLectura;
+
+        let existeRegistroPrevioDeProyecto: boolean = false;
+
+        //Validamos si hay un registro previo para el proyecto en cuestion y de ser asi, lo reemplazamos 
+        registroLecturaBD.registroLecturaProyectos.forEach((proyecto, index) => {
+          if (proyecto.proyectoId == proyectoId) {
+            registroLecturaBD.registroLecturaProyectos[index].chatsLeidos = totalChats;
+            existeRegistroPrevioDeProyecto = true;
+          }
+        });
+
+        //Si no hay registro previo lo anexamos al array
+        if (!existeRegistroPrevioDeProyecto) {
+          registroLecturaBD.registroLecturaProyectos.push(registroLecturaProyecto);
+        }
+
+        //Actualizamos la BD con los valores de la nueva lectura
+        this._registroLectura.actualizarRegistroLectura(registroLecturaBD).subscribe(
+          (resp) => {
+
+          },
+          (err) => {
+
+          });
+        
+      },
+      (err)=>{
+        //Si el error es 400 quiere decir que no existe un registro
+        //Así que creamos el registro
+        if(err.status==400){
+
+          //Creamos la entrada para nuestra base de datos
+          let nuevoRegistroDeLectura={
+            usuario: this._usuarioService.id,
+            registroLecturaProyectos:[]
+          };
+
+          //Agregamos el registro del proyecto al array
+          nuevoRegistroDeLectura.registroLecturaProyectos.push(registroLecturaProyecto);
+
+          //Creamos el nuevo registro mediante nuestro servicio
+          this._registroLectura.crearRegistroLectura(nuevoRegistroDeLectura).subscribe(
+            (resp:any)=>{
+              this._registroLectura.registroLectura = resp.registroDeLectura;
+              return;
+            }
+          );
+        }
+
+      });
+
+      
+
+  }
+
   cargarMensajes() {
     //Deshabilitamos infScrollChats
     this.infScrollChats = false;
+    this.finDeChats = false;
     if (this.chats.length >= this.totalChatsProyecto) {
+      this.finDeChats = true;
       return;
     } else {
       this._chatService
@@ -614,7 +917,6 @@ export class CrmComponent implements OnInit {
 
     this._clientesServicio.obtenerClientes(this.clientes.length).subscribe(
       (resp: any) => {
-        // console.log(resp);
 
         resp.clientes.forEach(cliente => {
           this.clientes.push(cliente);

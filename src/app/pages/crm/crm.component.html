@@ -38,15 +38,19 @@
                              [ngStyle]="{ 'background-color': cliente.backgroundColor }">
                           {{ cliente.nombre | iniciales }}
                         </div>
-                        <span>
+                        <span class="nombre-cliente">
                           {{ cliente.nombre }}
-                          <small 
+                          <!-- <small 
                             [ngClass]="{
                               'text-success': cliente.estatus=='Activo', 
                               'text-muted':cliente.estatus=='Inactivo'
                             }">
                               {{ cliente.estatus }}
-                          </small>
+                          </small> -->
+                        </span>
+                        <span class="badge-pill badge-success nuevosMensajes"
+                              *ngIf="(cliente.totalMensajes>cliente.mensajesLeidos)">
+                          {{ cliente.totalMensajes - cliente.mensajesLeidos }}
                         </span>
                       </a>
                     </li>
@@ -105,31 +109,34 @@
                 <div class="chat-clientes" *ngIf="chatProyectos">
                   
                   <ul class="chatonline style-none">
+
                     <li *ngFor="let proyecto of proyectos; let i=index;"
                         (click)="mostrarChatProyecto(proyecto)">
-                      <a class="list-cliente">
-                        <img [src]="proyecto.img"
-                             *ngIf="proyecto.img"
-                             class="img-circle size-30">
+                        <a class="list-cliente">
+                            <img [src]="proyecto.img" *ngIf="proyecto.img" class="img-circle size-30">
+                        
+                            <div class="iniciales-cliente align-content-center" *ngIf="!proyecto.img" [ngStyle]="{ 'background-color': proyecto.backgroundColor }">
+                        
+                              {{ proyecto.nombre | iniciales }}
+                        
+                            </div>
+                            <span>
+                              {{ proyecto.nombre }}
+                              <small [ngClass]="{
+                                                      'text-warning': (proyecto.estatus!='Entregado' && proyecto.estatus!='Cerrado'), 
+                                                      'text-success': proyecto.estatus=='Entregado',
+                                                      'text-danger': proyecto.estatus=='Cancelado'
+                                                    }">
+                                {{ proyecto.estatus }}
+                              </small>
+                            </span>
 
-                        <div class="iniciales-cliente align-content-center"
-                             *ngIf="!proyecto.img"
-                             [ngStyle]="{ 'background-color': proyecto.backgroundColor }">
-
-                          {{ proyecto.nombre | iniciales }}
-
-                        </div>
-                        <span>
-                          {{ proyecto.nombre }}
-                          <small [ngClass]="{
-                              'text-warning': (proyecto.estatus!='Entregado' && proyecto.estatus!='Cerrado'), 
-                              'text-success': proyecto.estatus=='Entregado',
-                              'text-danger': proyecto.estatus=='Cancelado'
-                            }">
-                            {{ proyecto.estatus }}
-                          </small>
-                        </span>
-                      </a>
+                            <span class="badge-pill badge-success nuevosMensajes" *ngIf="(proyecto.totalMensajes>proyecto.mensajesLeidos)">
+                              {{ proyecto.totalMensajes - proyecto.mensajesLeidos }}
+                            </span>
+                          
+                        </a>
+                      
                     </li>
                   
                     <li class="p-20"></li>
@@ -166,15 +173,24 @@
             <div class="chat-right-aside chat-historial col col-lg-9 col-md-9 col-sm-12 col-12">
               
               <div *ngIf="proyectoActual.nombre" class="row">
-                <div class="col col-12 col-sm-9 col-md-9">
+                <div class="col col-12 col-sm-12 col-md-12">
                   <h3>Historial del proyecto: {{ proyectoActual.nombre }}</h3>
                 </div>
 
-                <div class="col col-12 col-sm-3 col-md-3">
-                  <button class="btn btn-info waves-effect waves-light float-right"
+                <div class="col col-12 col-sm-12 col-md-12">
+                  <button class="btn btn-info waves-effect waves-light"
                           type="button"
                           data-toggle="modal" 
-                          data-target="#cotizacion">Cotización <i class="fa fa-file-text-o"></i></button>
+                          data-target="#cotizacion">
+                          Cotización 
+                          <i class="fa fa-file-text-o"></i>
+                  </button>
+                  
+                  <button class="btn btn-danger waves-effect waves-light float-right"
+                          (click)="eliminarProyecto(proyectoActual._id)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                
                 </div>
               </div>
 
@@ -183,7 +199,8 @@
                 <hr>
 
               <!-- Chat Body -->
-              <div id="chatBody" infiniteScroll [habilitado]="infScrollChats" [boxId]="'chatBody'" (scrollUp)="cargarMensajes()" class="chat-rbox">
+              <div id="chatBody" infiniteScroll [habilitado]="infScrollChats" [boxId]="'chatBody'" (scrollUp)="cargarMensajes()" class="chat-rbox"
+                   [ngClass]="{'stop-scrolling': !infScrollChats && !finDeChats}">
                 <ul class="chat-list p-20">
                   <!--chat Row -->
 
@@ -220,7 +237,8 @@
                       <h5>{{ chat.usuario.nombre }}</h5>
                       <div *ngIf="!chat.audio && !chat.img" class="box bg-mensaje">{{ chat.mensaje }}</div>
                       <audio controls [src]="chat.audio | audio" *ngIf="chat.audio">Audio</audio>
-                      <img *ngIf="chat.img" [src]="chat.img | imagen:'chat'" class="imagen-chat">
+                      <img *ngIf="chat.img" [src]="chat.img | imagen:'chat'" class="pointer imagen-chat"
+                          (click)="mostrarImagenDeChat(chat.img)">
                     </div>
 
                     <div *ngIf="chat.usuario._id!=_usuarioService.usuario._id" class="chat-img">
@@ -237,7 +255,11 @@
                       </div>
                     </div>
 
-                    <div class="chat-time">{{ chat.fecha | date: 'MMM d, y, h:mm a' }}</div>
+                    <div class="chat-time">{{ chat.fecha | date: 'MMM d, y, h:mm a' }} 
+                      <i class="fa fa-trash pointer eliminarMensaje"
+                         (click)="eliminarChat(chat._id)"></i>
+                    </div>
+
                   </li>
                   <!-- FIN de Elemento Chat -->
                 </ul>
@@ -319,3 +341,6 @@
   <app-cotizacion *ngIf="proyectoActual.nombre!=null"
     [proyecto]="proyectoActual"
     [cliente]="clienteActual"></app-cotizacion>
+
+  <app-image-display-modal
+    [imagen]="imagenAgrandada"></app-image-display-modal>

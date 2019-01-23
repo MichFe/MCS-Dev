@@ -26,6 +26,9 @@ li>a{
     border-radius: 5px;
     max-height: 200px;
 }
+.list-cliente{
+    position: relative;
+}
 
 .list-cliente:hover{
     background-color: #caebf1;
@@ -197,3 +200,25 @@ textarea:focus{
   border-radius: 10px;
 }
 
+.eliminarMensaje:hover{
+    color: red;
+}
+
+.stop-scrolling {
+  overflow: hidden;
+}
+
+.nuevosMensajes{
+    font-size: 13px;
+    color: white;
+
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translate(0,-50%);
+}
+
+.nombre-cliente{
+    display: block;
+    max-width: 170px;
+}

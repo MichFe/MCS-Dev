@@ -28,5 +28,12 @@ export class ProyectoService {
     return this.http.post( url, proyecto );
   }
 
+  eliminarProyecto( id ){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/proyecto/${id}?token=${token}`;
+
+    return this.http.delete(url);
+  }
+
   
 }

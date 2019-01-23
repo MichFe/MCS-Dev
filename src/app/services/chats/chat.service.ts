@@ -30,4 +30,27 @@ export class ChatService {
   
   }
 
+  eliminarChat(id){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/chat/${ id }?token=${token}`;
+
+    return this.http.delete(url);
+  }
+
+  obtenerTotalDeMensajesPorCliente() {
+    let token = this._usuarioService.token;
+
+    let url = URL_SERVICIOS + `/chat/conteoChats/cliente?token=${token}`;
+
+    return this.http.get(url);
+  }
+
+  obtenertotalDeMensajesPorProyecto(clienteId){
+    let token = this._usuarioService.token;
+    let url= URL_SERVICIOS + `/chat/conteoChats/proyectos/${ clienteId }?token=${ token }`;
+
+    return this.http.get(url);
+    
+  }
+
 }

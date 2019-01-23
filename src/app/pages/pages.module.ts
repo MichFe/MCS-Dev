@@ -42,6 +42,7 @@ import { PAGES_ROUTES } from "./pages.routes";
 //Directivas
 import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-scroll.directive";
 import { CuentasPorCobrarComponent } from './cuentas-por-cobrar/cuentas-por-cobrar.component';
+import { ImageDisplayModalComponent } from './modal/image-display-modal/image-display-modal.component';
 
 
 
@@ -80,7 +81,8 @@ import { CuentasPorCobrarComponent } from './cuentas-por-cobrar/cuentas-por-cobr
     ReporteVentasComponent,
     ElementoVentasComponent,
     ElementoCuentasCobrarComponent,
-    CuentasPorCobrarComponent
+    CuentasPorCobrarComponent,
+    ImageDisplayModalComponent
   ],
   exports: [
     DashboardComponent,

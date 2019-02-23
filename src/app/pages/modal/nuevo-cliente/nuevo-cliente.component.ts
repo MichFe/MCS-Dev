@@ -15,6 +15,9 @@ export class NuevoClienteComponent implements OnInit {
   @Input()
   toggleTicketModal:boolean=false;
 
+  @Input()
+  toggleModalVentaDetalle:boolean=false;
+
   @Output()
   clienteNuevo: EventEmitter<any> = new EventEmitter();
 
@@ -102,6 +105,16 @@ export class NuevoClienteComponent implements OnInit {
       $("#nuevoCliente").on("hidden.bs.modal", function(event) {
         // Open your second one in here
         $("#ticketVenta").modal('toggle');
+
+        $("#nuevoCliente").off("hidden.bs.modal");
+      });
+
+    }
+
+    if (this.toggleModalVentaDetalle) {
+      $("#nuevoCliente").on("hidden.bs.modal", function (event) {
+        // Open your second one in here
+        $("#modalDetalleVenta").modal('toggle');
 
         $("#nuevoCliente").off("hidden.bs.modal");
       });

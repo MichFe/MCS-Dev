@@ -5,6 +5,7 @@ import { UsuarioService } from 'src/app/services/usuarios/usuario.service';
 import { ClienteService } from 'src/app/services/clientes/cliente.service';
 import { Cliente } from 'src/app/models/cliente.model';
 import { ProyectoService } from 'src/app/services/proyectos/proyecto.service';
+import { CobroService } from 'src/app/services/cobros/cobro.service';
 
 declare var $: any;
 
@@ -31,6 +32,7 @@ export class TicketComponent implements OnInit {
 
   //Variables
   tipoPago: string;
+  unidadDeNegocio: string = this._usuarioService.usuario.unidadDeNegocio;
   seleccionIva: boolean = false;
   efectivo: number;
   clienteNombre: string;
@@ -41,6 +43,7 @@ export class TicketComponent implements OnInit {
   anticipo: boolean = false;
   saldo: number = 0;
   ventaConfirmada:boolean = false;
+  fechaString:string;
 
   fecha = new Date();
 
@@ -49,12 +52,51 @@ export class TicketComponent implements OnInit {
     public _ventasService: VentasService,
     public _usuarioService: UsuarioService,
     public _clienteService: ClienteService,
-    public _proyectoService: ProyectoService
+    public _proyectoService: ProyectoService,
+    private _cobrosService: CobroService
   ) {}
 
   ngOnInit() {
     // this.carrito=this._carritoService.carrito;
+    this.fecha=new Date();
+    this.cargarFechaString();
+    
+    
+  }
 
+  cargarFechaString(){
+    let year = this.fecha.getFullYear();
+    let mes = this.fecha.getMonth();
+    let dia = this.fecha.getDate();
+    mes = mes + 1;
+    let mesString: string;
+    let diaString: string;
+
+    if (mes < 10) {
+      mesString = '0' + mes;
+    } else {
+      mesString = String(mes);
+    }
+
+    if (dia < 10) {
+      diaString = '0' + dia;
+    } else {
+      diaString = String(dia);
+    }
+
+    this.fechaString = `${year}-${mesString}-${diaString}`;
+      
+  }
+
+  cambiarFecha(){
+    this.fecha=new Date();
+    
+    let horas=this.fecha.getHours();
+    let minutos = this.fecha.getMinutes();
+    
+    let fechaArray=this.fechaString.split('-');
+    this.fecha = new Date(Number(fechaArray[0]), Number(fechaArray[1])-1, Number(fechaArray[2]),horas,minutos);
+    
   }
 
   abrirRegistroDeCliente(event) {
@@ -180,8 +222,6 @@ export class TicketComponent implements OnInit {
       return;
     }
 
-    this.fecha = new Date();    
-
     let venta = {
       subtotal: this.totalCarrito,
       cliente: this.cliente._id,
@@ -195,7 +235,7 @@ export class TicketComponent implements OnInit {
       saldoPendiente: 0,
       estatus: "Liquidada",
       proyecto: null,
-      unidadDeNegocio: this._usuarioService.usuario.unidadDeNegocio
+      unidadDeNegocio: this.unidadDeNegocio
     };
     
     //Si se ha seleccionado un proyecto se registra en el objeto venta
@@ -214,7 +254,7 @@ export class TicketComponent implements OnInit {
       venta.total -= this.totalDescuento;
     }
 
-    venta.montoPagado = this.efectivo;
+    venta.montoPagado = 0;
 
     //Valida que el anticipo no sea de 0 pesos
     if ( this.efectivo < venta.total && this.efectivo <= 0 ){
@@ -245,19 +285,23 @@ export class TicketComponent implements OnInit {
         }
       ).then(anticipo => {
         if (anticipo) {
-          venta.saldoPendiente = venta.total - venta.montoPagado;
-          this.saldo = venta.saldoPendiente;
+          venta.saldoPendiente = venta.total;
+          this.saldo = venta.total - this.efectivo;
           venta.estatus = "Saldo Pendiente";
           this.anticipo = anticipo;
 
           this._ventasService.generarVenta(venta).subscribe(
             (resp: any) => {
               this.ventaConfirmada=true;
-            swal(
-              "Venta exitosa",
-              "La venta se a registrado exitosamente",
-              "success"
-            );
+
+              this.registrarPago(resp.venta, this.efectivo);
+
+              swal(
+                "Venta exitosa",
+                "La venta se ha registrado exitosamente",
+                "success"
+              );
+
           },
           (error)=>{
             swal(
@@ -278,11 +322,15 @@ export class TicketComponent implements OnInit {
       this._ventasService.generarVenta(venta).subscribe(
         (resp: any) => {
           this.ventaConfirmada = true;
+
+          this.registrarPago(resp.venta, this.efectivo);
+
           swal(
             "Venta exitosa",
             "La venta se ha registrado exitosamente",
             "success"
-          )
+          );
+          
       },
       (error)=>{
         swal(
@@ -293,4 +341,29 @@ export class TicketComponent implements OnInit {
       });
     }
   }
+
+  registrarPago(venta, monto){
+
+    let cobro = {
+      venta: venta._id,
+      cliente: venta.cliente,
+      monto: monto,
+      tipoDePago: venta.tipoDePago,
+      fecha: this.fecha
+    };
+
+    this._cobrosService.registrarCobro(cobro)
+      .subscribe(
+        (resp) => {
+          
+        },
+        (error) => {
+          swal(
+            "Error al registrar pago",
+            error.error.mensaje + " | " + error.error.errors.message,
+            "error"
+          );
+        });
+  }
+
 }

@@ -1,6 +1,16 @@
 <div class="container">
 
   <div class="row">
+    <div class="col col-md-12">
+      <div class="card">
+        <div class="card-title text-center fw-500">
+          Total saldo pendiente: {{ totalSaldoPendiente |currency:'MXN' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
 
     <!-- Tabla de clientes con saldo pendiente -->
     <div class="col col-md-6 text-center">
@@ -8,10 +18,29 @@
         <div class="card-title">
           Clientes con saldo pendiente
         </div>
+        
+        <!-- Filtro de clientes por nombre -->
+        <div class="form-group row">
+          <!-- <label class="col-sm-3 control-label">Buscar Cliente</label> -->
+          <div class="col col-md-12">
+            <div class="input-group">
+              <div class="input-group-addon"><i class="ti-search"></i></div>
+              <input name="clienteNombre"
+                           id="clienteInput"
+                           (keyup)="filtrarClientes()" 
+                               [(ngModel)]="clienteNombre" 
+                               type="string" 
+                               class="form-control" 
+                               placeholder="Ingresa el nombre del cliente"
+                               required>
+            </div>
+          </div>
+        </div>
+        <!-- FIN de Filtro de clientes por nombre -->
 
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Fecha</th>
@@ -22,7 +51,7 @@
           
               <tbody>
                 <tr *ngFor="let cliente of clientesConSaldoPendiente; let i=index"
-                    class="pointer"
+                    class="pointer fila-cliente"
                     (click)="cargarVentasConSaldoDelCliente(cliente.cliente._id, i)"
                     [ngClass]="{'cliente-activo': clientesConSaldoPendiente[i].activo }">
                   <td>{{ cliente.fechaMasAntigua | date }}</td>
@@ -72,11 +101,47 @@
               Saldo pendiente: {{ venta.saldoPendiente | currency:'MXN' }}
             </p>
 
-            <button class="btn btn-success btn-block">Registrar Pago</button>
+            <button class="btn btn-success btn-block"
+                    (click)="registrarPago(venta)">Registrar Pago</button>
+
+            <p class="venta-footer small pointer txt-color-blue" (click)="obtenerCobros(venta._id, i)">
+              Mostrar/Ocultar historial de pago <i [ngClass]="{
+                'ti-arrow-down': venta.cobros,
+                'ti-arrow-right': !venta.cobros
+              }"></i>
+            </p>
+
+            <div class="table-responsive"
+                 *ngIf="venta.cobros">
+              <table class="table table-hover text-center" data-mobile-responsive="true">
+                
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                    <th>Eliminar</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let cobro of venta.cobros"
+                      [ngClass]="{
+                        'table-warning': cobro.monto<0,
+                        'table-success': cobro.monto>0
+                      }">
+                    <td>{{ cobro.fecha | date }}</td>
+                    <td>{{ cobro.monto | currency:'MXN' }}</td>
+                    <td class="pointer color-red"
+                        (click)="eliminarPago(cobro)"><i class="fa fa-trash"></i></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
             <p class="venta-footer small">
               Vendido por {{ venta.vendedor.nombre }}
             </p>
+
           </ul>
         </div>
       </div>
@@ -88,3 +153,7 @@
   </div>
 
 </div>
+
+<app-modal-registro-cobro
+  [venta]="ventaSeleccionada"
+  (actualizarVentasDelCliente)="actualizarData()"></app-modal-registro-cobro>

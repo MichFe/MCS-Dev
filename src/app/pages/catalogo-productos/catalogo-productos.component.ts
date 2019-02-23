@@ -112,11 +112,16 @@ export class CatalogoProductosComponent implements OnInit {
       (resp: any) => {
         let cliente = resp.cliente;
 
-        this._subirArchivoService
-          .subirArchivo(this.imagenClienteNuevo, "cliente", cliente._id)
-          .then(resp => {
-            console.log(resp);
-          });
+        if(this.imagenClienteNuevo){
+
+          this._subirArchivoService
+            .subirArchivo(this.imagenClienteNuevo, "cliente", cliente._id)
+            .then(resp => {
+              console.log(resp);
+            });
+
+        }
+        
 
         swal(
           "Registro exitoso",

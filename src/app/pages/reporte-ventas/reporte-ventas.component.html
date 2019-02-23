@@ -1,33 +1,54 @@
 <div class="container"
      (window:resize)="actualizarAnchoDegraficas()">
 
-  <!-- Widget mini Gráficas -->
-    <div class="row">
-      <!-- Column -->
-      <div class="col-lg-4 col-12">
-        <div class="card bg-primary bordered-card-10">
-          <div class="card-body">
-            <div class="d-flex">
-              <div>
-                <h4 class="card-title text-white pointer hover-highlight"
-                    (click)="changeYear()">Ventas {{ year }}</h4>
-                <h6 class="card-subtitle text-white">{{ totalVentasAnuales | currency:'MXN' }}</h6>
-              </div>
-           
-            </div>
-            <div id="sparkYear"></div>
+      <div class="form-group row m-t-20">
+        <div class="col-sm-12">
+          <div class="input-group">
+            <div class="input-group-addon"><i class="ti-location-pin"></i></div>
+            <select class="form-control custom-select" data-placeholder="Selecciona una tienda/expo" name="unidadDeNegocioActual"
+              (change)="actualizarData()"
+              [(ngModel)]="unidadDeNegocioActual" required>
+              <option value="Tienda León">Tienda León</option>
+              <option value="Tienda Guadalajara">Tienda Guadalajara</option>
+              <option value="Expo GDL">Expo GDL</option>
+              <option value="Expo CDMX">Expo CDMX</option>
+              <option value="Todas">Todas</option>
+            </select>
+            <!-- <input (keyup)="validarFormulario()" name="correo" [(ngModel)]="correo" type="email" class="form-control" placeholder="Correo electrónico"> -->
           </div>
         </div>
       </div>
-      <!-- Column -->
-      <!-- Column -->
+
+  <!-- Widget mini Gráficas -->
+    <div class="row">
+
+      <!-- Column Ventas Diarias -->
+      <div class="col-lg-4 col-12">
+        <div class="card bg-warning bordered-card-10">
+          <div class="card-body">
+            <div class="d-flex">
+              <div>
+                <h4 class="card-title text-white pointer hover-highlight" (click)="cambiarDia()">
+                  {{day}} {{ mesesArray[month] }} {{ year }}
+                </h4>
+                <h6 class="card-subtitle text-white">{{ ((ventasMensuales)?ventasMensuales[day]:0) | currency:'MXN' }}</h6>
+              </div>
+      
+            </div>
+            <div id="sparkDay"></div>
+          </div>
+        </div>
+      </div>
+      <!-- FIN de Column Ventas Diarias -->
+
+      <!-- Column Ventas Mensuales -->
       <div class="col-lg-4 col-12">
         <div class="card bg-info bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
                 <h4 class="card-title text-white pointer hover-highlight"
-                    (click)="cambiarMes()">Ventas {{ mesesArray[month] }}</h4>
+                    (click)="cambiarMes()">{{ mesesArray[month] }}</h4>
                 <h6 class="card-subtitle text-white">{{ ((ventasAnuales)?ventasAnuales[month]:0) | currency:'MXN' }}</h6>
               </div>
              
@@ -36,27 +57,61 @@
           </div>
         </div>
       </div>
-      <!-- Column -->
-      
-      <!-- Column -->
+      <!-- FIN de Column Ventas Mensuales -->
+
+      <!-- Column Ventas Anuales -->
       <div class="col-lg-4 col-12">
-        <div class="card bg-warning bordered-card-10">
+        <div class="card bg-primary bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
-                <h4 class="card-title text-white pointer hover-highlight"
-                    (click)="cambiarDia()">Ventas del Día {{day}}</h4>
-                <h6 class="card-subtitle text-white">{{ ((ventasMensuales)?ventasMensuales[day]:0) | currency:'MXN' }}</h6>
+                <h4 class="card-title text-white pointer hover-highlight" (click)="changeYear()">
+                  {{ year }}</h4>
+                <h6 class="card-subtitle text-white">{{ totalVentasAnuales | currency:'MXN' }}</h6>
               </div>
-             
+      
             </div>
-            <div id="sparkDay"></div>
+            <div id="sparkYear"></div>
           </div>
         </div>
       </div>
-      <!-- Column -->
+      <!-- FIN de Column Ventas Anuales-->
+      
     </div>
   <!-- FIN de Widget mini Gráficas -->
+
+  <!-- Metas de venta mensuales -->
+  <div class="row"
+       *ngIf="(unidadDeNegocioActual!='0' && unidadDeNegocioActual!='Todas')">
+    <div class="col col-md-12">
+      <div class="card text-center">
+        <div class="card-title">
+          <h4>Metas de Venta {{ year }}</h4>
+        </div>
+        <div class="card-body">
+
+              <ul class="lista-metas">
+                <li *ngFor="let mes of mesesArray; let i=index;"
+                    class="meta-mes pointer"
+                    [ngClass]="{'meta-mes-actual': (mes==mesesArray[month])}"
+                    (click)="cambiarMeta(i)">
+                  <p class="m-0 fw-500"
+                     [ngClass]="{'texto-meta-actual1': (mes==mesesArray[month])}">{{ mes }}</p>
+                  <p class="card-subtitle m-0 fs-15"
+                     [ngClass]="{'texto-meta-actual2': (mes==mesesArray[month])}">{{ ((ventasAnuales[i])?ventasAnuales[i]:0) | currency:'MXN' }} / {{ metasMensuales[i] | currency:'MXN' }}</p>
+                  <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
+                              'width': (( ((ventasAnuales)?ventasAnuales[i]:0)/metasMensuales[i])*100)+'%'
+                            }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </li>
+              </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN de Metas de venta mensuales -->
 
 
   <!-- Elemento Gráficas de Pie -->
@@ -69,15 +124,16 @@
           <div class="card-body">
               <h4 class="card-title">Ventas Anuales: {{ year }}</h4>
             <div id="sparkPieSales"></div>
-            <div class="row m-t-10">
+            <div class="row m-t-10"
+                 *ngIf="(unidadDeNegocioActual!='0' && unidadDeNegocioActual!='Todas')">
               <div class="col-12">
-                <h3>{{ (totalVentasAnuales/150000) | percent}}</h3>
-                <h6 class="card-subtitle">Ventas: {{ totalVentasAnuales | currency:'MXN' }} / $150,000</h6>
+                <h3>Progreso meta anual: {{ (totalVentasAnuales/metaAnual) | percent}}</h3>
+                <h6 class="card-subtitle">Ventas: {{ totalVentasAnuales | currency:'MXN' }} / {{ metaAnual | currency:'MXN' }}</h6>
               </div>
               <div class="col-12">
                 <div class="progress">
                   <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
-                  'width': ((totalVentasAnuales/150000)*100)+'%'
+                  'width': ((totalVentasAnuales/metaAnual)*100)+'%'
                   }" aria-valuenow="25"
                     aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
@@ -105,7 +161,7 @@
               <div class="col-12">
                 <div class="progress">
                   <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
-                  'width': ((ventasPorCobrar[0]/ventasPorCobrar[1])*100)+'%'
+                  'width': ((ventasPorCobrar[0]/(ventasPorCobrar[1]+ventasPorCobrar[0]))*100)+'%'
                   }" aria-valuenow="25"
                     aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
@@ -127,7 +183,7 @@
   <div class="row">
     <div class="col col-md-12">
       <div class="card text-center">
-        <div class="card-title">Ventas {{ year }}</div>
+        <div class="card-title"><h4>Ventas {{ year }}</h4></div>
         <div class="card-body">
           <canvas id="chart-bar-ventasMensuales" height="100"></canvas>
         </div>
@@ -137,7 +193,8 @@
   <!-- FIN de Elemento grafica de barras de ventas mensuales -->
 
   <!-- Top 5 ventas -->
-  <div class="row">
+  <div class="row"
+       *ngIf="ventas.length>0">
     
     <!-- <div class="col col-md-12 text-center">
       
@@ -148,48 +205,48 @@
     </div> -->
     
     <div class="col col-md-12 text-center">
-        <h4>Ventas</h4>
 
-      <div class="table-responsive">
-        <table class="table table-hover" data-mobile-responsive="true">
-          <thead>
-            <tr>
-              <th>Cliente</th>
-              <th>Total</th>
-              <th>Saldo Pend.</th>
-              <th>Pagado</th>
-              <th>Tienda</th>
-              <th>Vendedor</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-        
-          <tbody>
-            <tr *ngFor="let venta of ventas"
-                [ngClass]="{
-                  'table-success': venta.estatus==='Liquidada',
-                  'table-warning': venta.estatus==='Saldo Pendiente'
-                }">
-              <td>{{ venta.cliente.nombre }}</td>
-              <td>{{ venta.total | currency:'MXN' }}</td>
-              <td>{{ venta.saldoPendiente | currency:'MXN' }}</td>
-              <td>
-                <span>{{ (venta.montoPagado/venta.total) | percent }}</span>
-                <div class="progress">
-                  <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
-                               'width': ((venta.montoPagado/venta.total)*100)+'%'
-                              }"
-                    aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </td>
-              <td>{{ venta.unidadDeNegocio }}</td>
-              <td>{{ venta.vendedor.nombre }}</td>
-              <td>{{ venta.fecha | date }}</td>
-            </tr>
-          </tbody>
-        
-        </table>
+      <div class="card">
+        <div class="card-title"><h4>Tabla de Ventas</h4></div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover" data-mobile-responsive="true">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Total</th>
+                  <th>Pagado</th>
+                  <th>Saldo</th>
+                </tr>
+              </thead>
+          
+              <tbody>
+                <tr *ngFor="let venta of ventas" class="pointer" [ngClass]="{
+                            'table-success': venta.estatus==='Liquidada',
+                            'table-warning': venta.estatus==='Saldo Pendiente'
+                          }" (click)="verDetalleDeVenta(venta)">
+                  <td>{{ venta.fecha | date }}</td>
+                  <td>{{ venta.cliente.nombre }}</td>
+                  <td>{{ venta.total | currency:'MXN' }}</td>
+                  <td>
+                    <span>{{ venta.montoPagado | currency:'MXN' }} ({{ (venta.montoPagado/venta.total) | percent }})</span>
+                    <div class="progress">
+                      <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
+                              'width': ((venta.montoPagado/venta.total)*100)+'%'
+                            }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </td>
+                  <td>{{ venta.saldoPendiente | currency:'MXN' }}</td>
+                </tr>
+              </tbody>
+          
+            </table>
+          </div>
+        </div>
       </div>
+
+     
      
 
       <!-- Componente de paginado   -->
@@ -203,7 +260,7 @@
             </a>
           </li>
       
-          <li *ngFor="let pagina of paginas" class="page-item pointer" (click)="obtenerVentas(pagina.pagina)"
+          <li *ngFor="let pagina of paginas" class="page-item pointer" (click)="obtenerVentas(pagina.pagina,unidadDeNegocioActual)"
             [ngClass]="{'active': pagina.active }"><a class="page-link">{{ pagina.pagina }}</a></li>
       
           <li class="page-item pointer" (click)="paginaSiguiente()">
@@ -227,4 +284,14 @@
     
 
   </div>
-  
+
+  <!-- Modals -->
+<app-modal-detalle-venta
+  [venta]="ventaSeleccionadaTabla"
+  (resetearVenta)="resetearVenta($event)"
+  (recargarTablaVentas)="actualizarData()"></app-modal-detalle-venta> 
+   
+<app-nuevo-cliente
+  [toggleModalVentaDetalle]="true"
+  (clienteNuevo)="registrarClienteNuevo($event)"
+    (imagenCliente)="imagenNuevoCliente($event)"></app-nuevo-cliente>

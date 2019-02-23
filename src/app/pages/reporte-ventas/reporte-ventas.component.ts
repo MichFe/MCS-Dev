@@ -1,6 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { VentasService } from 'src/app/services/ventas/ventas.service';
 import { Chart } from 'chart.js';
+import { ClienteService } from 'src/app/services/clientes/cliente.service';
+import { SubirArchivoService } from 'src/app/services/subirArchivo/subir-archivo.service';
+import { MetasService } from 'src/app/services/metas/metas.service';
+import swal from 'sweetalert';
+import { UsuarioService } from 'src/app/services/usuarios/usuario.service';
 
 declare var $: any;
 
@@ -18,6 +23,10 @@ export class ReporteVentasComponent implements OnInit {
   month:number = 0;
   day:number = this.fechaActual.getDate();
   totalVentasAnuales:number;
+  imagenClienteNuevo: File;
+  ventaSeleccionadaTabla:any={};
+  paginaActual:number=1;
+  unidadDeNegocioActual:string='0';
 
 
   //Paginado
@@ -29,11 +38,19 @@ export class ReporteVentasComponent implements OnInit {
   ];
 
   //Data
-  ventas: any[];
-  ventasAnuales: number[];
+  ventas: any[]=[];
+  ventasAnuales: number[]=[];
   ventasMensuales: any = [];
   ventasDiarias:any =[];
   ventasPorCobrar: any = [];
+  metasMensuales:any[]=[];
+  metasActuales:any;
+  metaAnual:number;
+
+  //chartjs
+  canvas1:any;
+  ctx1:any;
+  chart1:any;
 
   graphColors=[
     "#55efc4",
@@ -88,19 +105,42 @@ export class ReporteVentasComponent implements OnInit {
     11: "Diciembre"
   };
 
-  constructor(private _ventasService: VentasService) {
+  constructor(
+    private _ventasService: VentasService,
+    private _clienteService: ClienteService,
+    private _subirArchivoService:SubirArchivoService,
+    private _metasService:MetasService,
+    private _usuarioService: UsuarioService
+    ) {
+
     this.year = this.fechaActual.getFullYear();
     this.month = this.fechaActual.getMonth();
+    this.unidadDeNegocioActual=this._usuarioService.usuario.unidadDeNegocio;
 
-    this.obtenerVentasMensuales(this.year);
-    this.obtenerVentasDiarias(this.year, this.month);
-    this.obtenerSaldoPendienteYMontoPagado();
+    this.obtenerVentasMensuales(this.year, this.unidadDeNegocioActual);
+    this.obtenerVentasDiarias(this.year, this.month, this.unidadDeNegocioActual);
+    this.obtenerSaldoPendienteYMontoPagado(this.year,this.unidadDeNegocioActual);
+    this.obtenerMetas();
+    
+
+  }
+
+  actualizarData(){
+    this.obtenerVentas(1,this.unidadDeNegocioActual);
+    this.obtenerVentasMensuales(this.year, this.unidadDeNegocioActual);
+    this.obtenerVentasDiarias(this.year, this.month, this.unidadDeNegocioActual);
+    this.obtenerSaldoPendienteYMontoPagado(this.year,this.unidadDeNegocioActual);
+    this.obtenerMetas();
+    
 
   }
 
   ngOnInit() {
 
-    this._ventasService.obtenerVentas(0).subscribe((resp: any) => {
+    this.canvas1 = <HTMLCanvasElement>document.getElementById("chart-bar-ventasMensuales");
+    this.ctx1 = this.canvas1.getContext('2d');
+
+    this._ventasService.obtenerVentas(0, this.unidadDeNegocioActual,this.year).subscribe((resp: any) => {
 
       this.ventas = resp.ventas;
       this.conteoVentas = resp.totalVentas;
@@ -109,6 +149,113 @@ export class ReporteVentasComponent implements OnInit {
 
     // Carga inicial de gráficas
     this.configurarGraficas();
+  }
+
+  obtenerMetas(){    
+    
+    this._metasService.obtenerMeta(this.year, this.unidadDeNegocioActual)
+      .subscribe(
+        (resp:any)=>{
+          this.metaAnual=0;
+          
+          this.metasActuales=resp.metas[0];
+          this.metasMensuales=resp.metas[0].metas;
+
+          this.metasMensuales.forEach(meta=>{
+            this.metaAnual+=meta;
+          })
+      },
+        (error) => {
+
+          this.crearNuevasMetas();
+
+          // swal(
+          //   `Error al obtener metas del año: ${ this.year }`,
+          //   error.error.mensaje + " | " + error.error.errors.message,
+          //   "error"
+          // );
+
+        });
+
+  }
+
+  crearNuevasMetas(){
+
+    if(this.unidadDeNegocioActual=='Todas'){
+      return;
+    }
+
+    let meta = {
+      year: this.year,
+      unidadDeNegocio: this.unidadDeNegocioActual,
+      metas: []
+    };
+
+    for (let mes = 0; mes < 12; mes++) {
+      
+      meta.metas[mes]=150000;
+      
+    };
+
+    this._metasService.crearMeta(meta)
+      .subscribe(
+        (resp)=>{
+          this.obtenerMetas();
+          swal(
+            'Creación de Metas',
+            'Se han creado las metas por defecto para el año: ' + this.year,
+            'success'
+            );
+      },
+        (error) => {
+          swal(
+            `Error al crear metas por defecto para el año: ${this.year}`,
+            error.error.mensaje + " | " + error.error.errors.message,
+            "error"
+          );
+        });
+
+
+  }
+
+  cambiarMeta(mes){
+
+    swal({
+      content: {
+        element: "input"
+      },
+      text: "Ingresa una nueva meta para " + this.mesesArray[mes],
+      buttons: [true, "Aceptar"]
+    })
+      .then(meta => {
+        if (!meta) {
+          return;
+        }
+        meta = Number(meta);
+        let nuevasMetas= this.metasActuales;
+
+        nuevasMetas.metas[mes]=meta;
+
+        this._metasService.actualizarMeta(this.metasActuales._id, nuevasMetas)
+          .subscribe(
+            (resp)=>{
+              this.obtenerMetas();
+              swal(
+                'Meta Actualizada',
+                'Meta actualizada exitosamente',
+                'success'
+              );
+          },
+            (error) => {
+              swal(
+                `Error al actualizar meta`,
+                error.error.mensaje + " | " + error.error.errors.message,
+                "error"
+              );
+            });
+
+      })
+      .catch();
   }
 
   changeYear(){
@@ -125,11 +272,10 @@ export class ReporteVentasComponent implements OnInit {
         }
         
         this.year=Number(year);
-        this.obtenerVentasMensuales(this.year);
-
+        
         this.month=0;
         this.day=1;
-        this.obtenerVentasDiarias(this.year,this.month);
+        this.actualizarData();
         this.configurarGraficas();
 
       })
@@ -176,8 +322,11 @@ export class ReporteVentasComponent implements OnInit {
       .catch();
   }
 
-  obtenerSaldoPendienteYMontoPagado(){
-    this._ventasService.obtenerSaldoPendienteYMontoPagado().subscribe(
+  obtenerSaldoPendienteYMontoPagado(year,unidadDeNegocio:string='0'){
+
+    (this.unidadDeNegocioActual == 'Todas') ? unidadDeNegocio = '0' : null;
+
+    this._ventasService.obtenerSaldoPendienteYMontoPagado(year,unidadDeNegocio).subscribe(
       (resp:any)=>{
         this.ventasPorCobrar = [ Number(resp.totalMontoPagado), resp.totalSaldoPendiente];
         
@@ -186,8 +335,15 @@ export class ReporteVentasComponent implements OnInit {
     );
   }
 
-  obtenerVentasMensuales(year:number){
-    this._ventasService.obtenerVentasMensuales(year).subscribe(
+  obtenerVentasMensuales(year:number, unidadDeNegocio:string='0'){
+
+    if(this.unidadDeNegocioActual=='Todas'){
+
+      unidadDeNegocio='0';
+      
+    }
+    
+    this._ventasService.obtenerVentasMensuales(year, unidadDeNegocio).subscribe(
       (resp:any)=>{
         this.ventasAnuales = resp.ventasMensuales;
         this.configurarGraficas();
@@ -197,8 +353,11 @@ export class ReporteVentasComponent implements OnInit {
     );
   }
 
-  obtenerVentasDiarias(year:number, month:number){
-    this._ventasService.obtenerVentasDiarias(year,month).subscribe(
+  obtenerVentasDiarias(year:number, month:number, unidadDeNegocio:string='0'){
+
+    (this.unidadDeNegocioActual=='Todas')?unidadDeNegocio='0':null;
+
+    this._ventasService.obtenerVentasDiarias(year,month,unidadDeNegocio).subscribe(
       (resp:any)=>{
         this.ventasMensuales = resp.ventasDiarias;
         this.configurarGraficas();
@@ -207,28 +366,87 @@ export class ReporteVentasComponent implements OnInit {
     );
   }
 
-  obtenerVentas(pagina: number) {
+  obtenerVentas(pagina: number, unidadDeNegocio:string='0') {
+    
+    if(this.unidadDeNegocioActual=='Todas'){
+      unidadDeNegocio='0';
+    }
     let desde = (pagina*10)-10;
 
-    this._ventasService.obtenerVentas(desde).subscribe(
+    this._ventasService.obtenerVentas(desde, unidadDeNegocio,this.year).subscribe(
       (resp: any) => {
       this.ventas = resp.ventas;
+      this.conteoVentas = resp.totalVentas;
+      this.paginarResultados();
       this.activarPagina(pagina);
 
     });
+  }
+
+  resetearVenta(venta){
+
+    this.ventaSeleccionadaTabla=venta;
+  }
+
+  verDetalleDeVenta(venta){
+    this.ventaSeleccionadaTabla=venta;
+    $('#modalDetalleVenta').modal('toggle');
+  }
+
+  registrarClienteNuevo(nuevoCliente) {
+    this._clienteService.guardarCliente(nuevoCliente).subscribe(
+      (resp: any) => {
+        let cliente = resp.cliente;
+
+        if (this.imagenClienteNuevo) {
+
+          this._subirArchivoService
+            .subirArchivo(this.imagenClienteNuevo, "cliente", cliente._id)
+            .then(resp => {
+              // console.log(resp);
+            });
+
+        }
+
+
+        swal(
+          "Registro exitoso",
+          "El cliente " +
+          resp.cliente.nombre +
+          " se ha guardado correctamente!",
+          "success"
+        );
+      },
+      error => {
+        swal(
+          "Registro de cliente fallido",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
+    );
+  }
+
+  imagenNuevoCliente(file) {
+    this.imagenClienteNuevo = file;
   }
 
   //============================================================
   //Funciones de paginado
   //============================================================
   activarPagina(pagina:number){
-
+    
     //Seteamos todas las paginas como inactivas
     this.paginas.forEach( pagina => {
       pagina.active=false;
     });
 
+    if (!this.paginas[pagina-1]) {
+      return;
+    }
+
     this.paginas[pagina-1].active=true;
+    this.paginaActual=this.paginas[pagina-1].pagina;
   }
 
   paginaAnterior() {
@@ -240,7 +458,7 @@ export class ReporteVentasComponent implements OnInit {
       return;
     }
     
-    this.obtenerVentas(paginaActual.pagina - 1);
+    this.obtenerVentas(paginaActual.pagina - 1,this.unidadDeNegocioActual);
   }
 
   paginaSiguiente(){
@@ -252,7 +470,7 @@ export class ReporteVentasComponent implements OnInit {
       return;
     }
 
-    this.obtenerVentas( paginaActual.pagina + 1 );
+    this.obtenerVentas( paginaActual.pagina + 1,this.unidadDeNegocioActual );
   }
 
   paginarResultados(){
@@ -271,7 +489,7 @@ export class ReporteVentasComponent implements OnInit {
       this.paginas.push(objetoPagina);
     }
 
-    this.paginas[0].active = true;
+    (this.paginas[0])?this.paginas[0].active = true:null;
 
   }
   //============================================================
@@ -370,10 +588,9 @@ export class ReporteVentasComponent implements OnInit {
       }
     });
 
-    let canvas1 = <HTMLCanvasElement> document.getElementById("chart-bar-ventasMensuales");
-    let ctx1 = canvas1.getContext('2d');
-
-    let chart1 = new Chart(ctx1,{
+    
+    (this.chart1)?this.chart1.destroy():null;
+    this.chart1 = new Chart(this.ctx1,{
       type: 'bar',
       data: {
         labels: this.mesesArray,
@@ -386,7 +603,20 @@ export class ReporteVentasComponent implements OnInit {
       },
 
       // Configuration options go here
-      options: {}
+      options: {
+        tooltips:{
+          callbacks:{
+            label: function(tooltipItem, data){
+              var index=tooltipItem.index;
+              var lecturaData=data.datasets[tooltipItem.datasetIndex];
+              let monto:number = data.datasets[0].data[index];
+
+              return '  $' + monto.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              
+            }
+          }
+        }
+      }
     });
   }
 }

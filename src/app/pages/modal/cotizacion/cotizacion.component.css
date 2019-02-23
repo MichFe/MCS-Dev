@@ -2,6 +2,14 @@ img.logo{
     width:150px;
 }
 
+th{
+    text-align: center;
+}
+
+th.txt-left{
+    text-align: left;
+}
+
 td{
     vertical-align: middle;
 }
@@ -24,6 +32,10 @@ div.politicas{
 
 img.product-image{
     height: 50px;
+    width: 50px;
+    object-fit: cover;
+    
+    border-radius: 5px;
 }
 
 .add-product-row{
@@ -49,6 +61,21 @@ img.product-image{
 .modal-lg {
     max-width: 85%;
 }
+
+.color-red{
+    color: red;
+}
+
+.color-green{
+    color: #06d79c;
+}
+
+.btn-nueva-cotizacion{
+    position: absolute;
+    left: 30px;
+}
+
+
 
 @media print {
 

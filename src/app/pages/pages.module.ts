@@ -43,6 +43,12 @@ import { PAGES_ROUTES } from "./pages.routes";
 import { InfiniteScrollDirective } from "../directives/infinite-scroll/infinite-scroll.directive";
 import { CuentasPorCobrarComponent } from './cuentas-por-cobrar/cuentas-por-cobrar.component';
 import { ImageDisplayModalComponent } from './modal/image-display-modal/image-display-modal.component';
+import { CarritoModalComponent } from './modal/carrito-modal/carrito-modal.component';
+import { SoloCatalogoProductosComponent } from './solo-catalogo-productos/solo-catalogo-productos.component';
+import { SoloCarritoComponent } from './solo-carrito/solo-carrito.component';
+import { ModalDetalleVentaComponent } from './modal/modal-detalle-venta/modal-detalle-venta.component';
+import { ModalRegistroCobroComponent } from './modal/modal-registro-cobro/modal-registro-cobro.component';
+import { TablaCotizacionesComponent } from './tabla-cotizaciones/tabla-cotizaciones.component';
 
 
 
@@ -82,7 +88,13 @@ import { ImageDisplayModalComponent } from './modal/image-display-modal/image-di
     ElementoVentasComponent,
     ElementoCuentasCobrarComponent,
     CuentasPorCobrarComponent,
-    ImageDisplayModalComponent
+    ImageDisplayModalComponent,
+    CarritoModalComponent,
+    SoloCatalogoProductosComponent,
+    SoloCarritoComponent,
+    ModalDetalleVentaComponent,
+    ModalRegistroCobroComponent,
+    TablaCotizacionesComponent
   ],
   exports: [
     DashboardComponent,

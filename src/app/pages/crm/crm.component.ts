@@ -22,6 +22,9 @@ declare var $:any;
   styleUrls: ["./crm.component.custom.css"]
 })
 export class CrmComponent implements OnInit {
+
+  //Inputs cotizacion
+  indiceCotizacion=0;
   //------------------------------
   //Variables Generales
   //------------------------------
@@ -316,8 +319,10 @@ export class CrmComponent implements OnInit {
   }
 
   obtenerProyectos(clienteId, pagina) {
+
     this._proyectoService.getProyectos(clienteId, pagina).subscribe(
       (resp: any) => {
+
         this.proyectos = resp.proyectos;
         this.obtenerTotalMensajesPorProyecto(clienteId);
       },
@@ -924,6 +929,10 @@ export class CrmComponent implements OnInit {
 
         this.clientesFiltrados = this.clientes;
         this.cambiarColorIniciales();
+
+        this.obtenerMensajesTotalesPorCliente();
+        this.agregarAClientesMensajesLeidos(this.registroLectura);
+
 
         this.infScrollClientes = true;
       },

@@ -182,7 +182,7 @@
                           type="button"
                           data-toggle="modal" 
                           data-target="#cotizacion">
-                          Cotización 
+                          Cotizaciones 
                           <i class="fa fa-file-text-o"></i>
                   </button>
                   
@@ -304,8 +304,8 @@
                     </div>
                     <!-- Termina botonera de grabación de audio -->
 
-                    <button class="btn btn-danger waves-effect waves-light"
-                            [routerLink]="['/calendario']"><i class="fa fa-calendar"></i> Agenda</button>
+                    <!-- <button class="btn btn-danger waves-effect waves-light"
+                            [routerLink]="['/calendario']"><i class="fa fa-calendar"></i> Agenda</button> -->
                     
                   </div>
                 </div>
@@ -322,6 +322,17 @@
     </div>
   <!-- ============================================================== -->
   <!-- End Chat Component -->
+  <!-- ============================================================== -->
+  
+  <!-- ============================================================== -->
+  <!-- Tabla Cotizaciones -->
+  <!-- ============================================================== -->
+    <app-tabla-cotizaciones
+      (actualizarIndexCotizacion)="indiceCotizacion=$event"
+      (recargarProyecto)="obtenerProyectos(clienteActual._id,0)"
+      [proyecto]="proyectoActual"></app-tabla-cotizaciones>
+  <!-- ============================================================== -->
+  <!-- FIN de Tabla Cotizaciones -->
   <!-- ============================================================== -->
 
   <!-- Componente Modal -->
@@ -340,7 +351,10 @@
 
   <app-cotizacion *ngIf="proyectoActual.nombre!=null"
     [proyecto]="proyectoActual"
-    [cliente]="clienteActual"></app-cotizacion>
+    [cliente]="clienteActual"
+    [indexCotizacion]="indiceCotizacion"></app-cotizacion>
 
   <app-image-display-modal
     [imagen]="imagenAgrandada"></app-image-display-modal>
+
+  <app-carrito-modal></app-carrito-modal>

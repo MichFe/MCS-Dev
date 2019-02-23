@@ -32,7 +32,7 @@
                 </span>
 
                 <span class="pull-right">
-                  León Gto. al {{ fecha | date:'fullDate'}}
+                  León Gto. a {{ fecha | date:'fullDate'}}
                 </span>
               </div>
             </div>
@@ -50,47 +50,48 @@
                       <th>Producto</th>
                       <th>Descripción</th>
                       <th>Cant.</th>
-                      <th [ngClass]="{'no-print': totalDescuento==0}">Descuento</th>
+                      <th [ngClass]="{'no-print': totalDescuento==0}">Descuento/Pieza</th>
                       <th>Precio</th>
                       <th>Importe</th>
+                      <th class="no-print">Eliminar</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let producto of productos; let i=index;">
-                      <td class="text-center"><img class="product-image" src="../assets/images/gallery/chair2.jpg"></td>
+                      <td class="text-center"><img class="product-image" [src]="producto.img | imagen:'producto'"></td>
+                      <td>{{ producto.codigo }}</td>
                       <td>{{ producto.nombre }}</td>
-                      <td>{{ producto.descripcion }}</td>
-                      <td (click)="clearFieldCantidad($event,i)" 
-                          (keyup.enter)="loseFocus(i)" 
-                          (blur)="loseFocus(i)" 
-                          (input)="actualizandoCantidad($event,i)" 
+                      <td (click)="cambiarCantidad(i)" 
                           class="text-center clickable"
-                           [ngClass]="{'editando': producto.editandoCantidad}"
-                          contenteditable="true">0</td>
-                      <td (click)="clearFieldDescuento($event,i)"
-                          (keyup.enter)="loseFocusDescuento(i)"
-                          (blur)="loseFocusDescuento(i)"
-                          (input)="actualizarDescuento($event,i)"
+                           [ngClass]="{'editando': producto.editandoCantidad}">
+                           {{ producto.cantidad }}
+                      </td>
+                      <td (click)="cambiarDescuento(i)"
                           class="text-center clickable"
                           [ngClass]="{
                             'editando': producto.editandoDescuento,
                             'no-print':totalDescuento==0
-                          }"
-                          contenteditable="true">0</td>
-                      <td (click)="clearFieldPrecio($event,i)" 
-                          (keyup.enter)="loseFocusPrecio(i)" 
-                          (blur)="loseFocusPrecio(i)" 
-                          (input)="actualizarPrecio($event,i)" 
+                          }">
+                          {{ producto.descuento | currency:'MXN' }}
+                        </td>
+                      <td (click)="cambiarPrecio(i)" 
                           class="text-center clickable"
-                          [ngClass]="{'editando': producto.editandoPrecio}"
-                          contenteditable="true">$8,000.00</td>
-                      <td class="text-center">{{ (producto.precio * producto.cantidad) - producto.descuento | currency:'MXN' }}</td>
+                          [ngClass]="{'editando': producto.editandoPrecio}">
+                          {{ producto.precio | currency:'MXN' }}
+                        </td>
+                      <td class="text-center">
+                        {{ ( (producto.precio - producto.descuento) * producto.cantidad ) | currency:'MXN' }}
+                      </td>
+                      <td class="text-center">
+                        <i class="fa fa-trash no-print color-red pointer"
+                           (click)="eliminarProducto(i)"></i>
+                      </td>
                     </tr>
 
                     <tr class="no-print">
                       <td colspan="42" 
                           class="add-product-row pointer"
-                          (click)="agregarProducto()">
+                          (click)="abrirCatalogoDeProductos()">
                         <i class="fa fa-plus"></i>
                       </td>
                     </tr>
@@ -101,8 +102,8 @@
                 </table>
 
                 <table class="table">
-                  <tr>
-                    <th><strong>SUBTOTAL</strong></th>
+                  <tr [ngClass]="{'oculto': totalDescuento==0}">
+                    <th class="txt-left"><strong>SUBTOTAL</strong></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -111,7 +112,7 @@
                     <th class="text-center">{{ totalImporte | currency:'MXN' }}</th>
                   </tr>
                   <tr [ngClass]="{'oculto': totalDescuento==0}">
-                    <th><strong>DESCUENTO</strong></th>
+                    <th class="txt-left"><strong>DESCUENTO</strong></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -120,7 +121,7 @@
                     <th class="text-center">{{ totalDescuento | currency:'MXN' }}</th>
                   </tr>
                   <tr>
-                    <th><strong>TOTAL</strong></th>
+                    <th class="txt-left"><strong>TOTAL</strong></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -136,6 +137,8 @@
 
             <!-- Políticas -->
             <div class="politicas">
+              <span><strong>Precios no inlcuyen IVA</strong></span>
+              <br>
               <span><strong>Imágenes meramente ilustrativas</strong></span>
             
               <ol class="p-l-0 m-l-10">
@@ -149,6 +152,42 @@
           </div>
           <!-- Fin de documento Cotización -->
 
+          <!-- Lista de cotizaciones -->
+          <div>
+            <div class="table-responsive"
+                 *ngIf="cotizaciones.length>0">
+              <table class="table table-bordered table-striped text-center">
+
+                <thead>
+                  <tr>
+                    <th># de Cotización</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Cargar</th>
+                    <th>Eliminar</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let cotizacion of cotizaciones, let i=index;">
+                    <td>Cotización #{{ i + 1 }}</td>
+                    <td>{{ cotizacion.fecha | date }}</td>
+                    <td>{{ cotizacion.total | currency:'MXN' }}</td>
+                    <td class="pointer" (click)="mostrarDetalleCotizacion(i)">
+                      <i class="fa fa-file-text color-green"></i>
+                    </td>
+                    <td class="pointer" (click)="eliminarCotizacion(cotizacion)">
+                      <i class="fa fa-trash color-red"></i>
+                    </td>
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+
+          </div>
+          <!-- FIN de Lista de cotizaciones -->
+
         </div>
       </div>
       <!-- Final de Modal Body -->
@@ -157,6 +196,12 @@
       <div class="modal-footer">
 
         <!-- Botones -->
+
+        <button type="button"
+                class="btn btn-info waves-effect waves-light btn-nueva-cotizacion"
+                *ngIf="cotizacion"
+                (click)="crearNuevaCotizacion()"
+                >Nueva Cotización</button>
 
         <button type="button"
                 class="btn btn-success waves-effect waves-light"
@@ -169,7 +214,13 @@
                 [ngClass]="{'disabled': !notaValida}"
                 [attr.data-toggle]="(!notaValida)?'tooltip':null"
                 [attr.data-original-title]="(!notaValida)?'Favor de validar la nota':null"
-                [attr.data-placement]="(!notaValida)?'bottom':null">Guardar</button>
+                [attr.data-placement]="(!notaValida)?'bottom':null"
+                *ngIf="!cotizacion">Guardar</button>
+
+        <button class="btn btn-warning waves-effect waves-light"
+                (click)="actualizarCotizacion()"
+                *ngIf="cotizacion">Actualizar</button>
+
 
         <button type="button"
                 (click)="resetearModal()" 

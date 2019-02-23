@@ -1,6 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, OnDestroy } from '@angular/core';
 import { formatCurrency } from '@angular/common';
 import { SharedService } from '../../../services/shared.service';
+import { CotizacionService } from 'src/app/services/cotizacion/cotizacion.service';
+import { Subscription } from 'rxjs';
 declare var $:any;
 
 @Component({
@@ -8,13 +10,19 @@ declare var $:any;
   templateUrl: "./cotizacion.component.html",
   styleUrls: ["./cotizacion.component.css"]
 })
-export class CotizacionComponent implements OnInit {
+export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
   //Inputs
   @Input()
   proyecto: any = {};
 
   @Input()
   cliente: any = {};
+
+  @Input()
+  indexCotizacion:number=0;
+
+  //Suscripciones
+  cambiosCarrito:Subscription;
 
   //Variables
   fecha: number = Date.now();
@@ -23,32 +31,11 @@ export class CotizacionComponent implements OnInit {
   totalDescuento: number = 0;
 
   //Productos de la nota
-  productos: any[] = [
-    {
-      nombre: "Sillón Murcielago",
-      descripcion: "Sillón inspirado en las alas de los murcielagos",
-      precio: 8000,
-      cantidad: 0,
-      descuento: 0,
-      factorDescuento: 0,
-      importe: 0,
-      editandoCantidad: false,
-      editandoPrecio: false,
-      editandoDescuento: false
-    },
-    {
-      nombre: "Sillón Murcielago",
-      descripcion: "Sillón inspirado en las alas de los murcielagos",
-      precio: 8000,
-      cantidad: 0,
-      descuento: 0,
-      factorDescuento: 0,
-      importe: 0,
-      editandoCantidad: false,
-      editandoPrecio: false,
-      editandoDescuento: false
-    }
-  ];
+  productos: any[];
+  cotizaciones: any[]=[];
+  cotizacion:any;
+
+
 
   politicas: any[] = [
     "Cotización en moneda nacional.",
@@ -65,35 +52,387 @@ export class CotizacionComponent implements OnInit {
     "No nos hacemos responsables por los diferentes tonos que tome la madera ya que varía según: Humedad, origen y varios factores externos a nuestras 	posibilidades."
   ];
 
-  constructor(private cotizacion: SharedService) {}
+  constructor(
+    private _cotizacionService: CotizacionService
+    ) {
+      // this.productos = this._cotizacionService.productos;
 
-  ngOnInit() {}
+      this.cambiosCarrito = this._cotizacionService.calcularTotalCotizacion.subscribe(
+        ()=>{
+          this.calcularTotal();
+        }
+      );
+    }
+
+  ngOnInit() {
+    this.obtenerCotizaciones(this.indexCotizacion);
+  }
+
+  ngOnDestroy(){
+    this.cambiosCarrito.unsubscribe();
+  }
+
+  ngOnChanges(changes) {
+    //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
+    //Add '${implements OnChanges}' to the class.
+    
+    this._cotizacionService.obtenerCotizacion(this.proyecto._id).subscribe(
+      (resp:any)=>{
+        let index=0;
+        if(resp.cotizacion[this.indexCotizacion]){
+          index=this.indexCotizacion;
+        }
+
+        if(resp.cotizacion[index]){
+      
+          this.cotizacion=resp.cotizacion[index];
+          this._cotizacionService.productos = resp.cotizacion[index].productos;
+          this.totalDescuento = resp.cotizacion[index].descuento;
+          this.totalImporte = resp.cotizacion[index].subtotal;
+          this.fecha = resp.cotizacion[index].fecha;
+
+          this.productos=this._cotizacionService.productos;          
+
+          this._cotizacionService.actualizarCotizaciones(resp.cotizacion);
+          this.cotizaciones=this._cotizacionService.cotizaciones;
+          
+        }else{
+          this.cotizacion=null;
+          this._cotizacionService.productos = [];
+          this.fecha = Date.now();
+          this.totalDescuento = 0;
+          this.totalImporte = 0;
+
+          this.productos = this._cotizacionService.productos;
+          this._cotizacionService.actualizarCotizaciones([]);
+          this.cotizaciones = this._cotizacionService.cotizaciones;
+
+        }
+
+
+      },
+      (err)=>{
+        this.cotizacion = null;
+        this._cotizacionService.productos=[];
+        this.fecha = Date.now();
+        this.totalDescuento = 0;
+        this.totalImporte = 0;
+
+        this._cotizacionService.actualizarCotizaciones([]);
+        this.cotizaciones = this._cotizacionService.cotizaciones;
+      }
+    );
+
+  }
+
+  obtenerCotizaciones(indiceCotizacion=0){
+    this._cotizacionService.obtenerCotizacion(this.proyecto._id).subscribe(
+      (resp: any) => {                
+        
+        if (resp.cotizacion[indiceCotizacion]) {
+
+          this.cotizacion = resp.cotizacion[indiceCotizacion];
+          this._cotizacionService.productos = resp.cotizacion[indiceCotizacion].productos;
+          this.totalDescuento = resp.cotizacion[indiceCotizacion].descuento;
+          this.totalImporte = resp.cotizacion[indiceCotizacion].subtotal;
+          this.fecha = resp.cotizacion[indiceCotizacion].fecha;
+
+          this.productos = this._cotizacionService.productos;
+          // this.cotizaciones=resp.cotizacion;
+
+          //Centralizando manejo de cotizaciones (Array) a través de servicio
+          this._cotizacionService.actualizarCotizaciones(resp.cotizacion);
+          this.cotizaciones = this._cotizacionService.cotizaciones;
+
+
+        } else {
+          this.cotizacion = null;
+          this._cotizacionService.productos = [];
+          this.fecha = Date.now();
+          this.totalDescuento = 0;
+          this.totalImporte = 0;
+
+          this.productos = this._cotizacionService.productos;
+        }
+
+        if(resp.cotizacion.length==0){
+
+          // this.cotizaciones=[];
+          this._cotizacionService.actualizarCotizaciones([]);
+          this.cotizaciones = this._cotizacionService.cotizaciones;
+        }
+
+
+      },
+      (err) => {
+        this.cotizacion = null;
+        this._cotizacionService.productos = [];
+        this.fecha = Date.now();
+        this.totalDescuento = 0;
+        this.totalImporte = 0;
+
+        // this.cotizaciones=[];
+        this._cotizacionService.actualizarCotizaciones([]);
+        this.cotizaciones = this._cotizacionService.cotizaciones;
+      }
+    );
+  }
+
+  crearNuevaCotizacion(){
+    this.cotizacion = null;
+    this._cotizacionService.productos = [];
+    this.productos=this._cotizacionService.productos;
+    this.fecha = Date.now();
+    this.totalDescuento = 0;
+    this.totalImporte = 0;
+
+    this.scrollTop();
+  }
 
   resetearModal() {}
 
-  agregarProducto(){
-    let nuevoProducto = {
-      nombre: "Nombre de producto",
-      descripcion: "Descripción del producto",
-      precio: 0,
-      cantidad: 0,
-      descuento: 0,
-      factorDescuento: 0,
-      importe: 0,
-      editandoCantidad: false,
-      editandoPrecio: false,
-      editandoDescuento: false
-    }
+  actualizarCotizacion(){
 
-    this.productos.push(nuevoProducto);
+    this.cotizacion.productos = this._cotizacionService.productos;
+
+    this.cotizacion.subtotal=this.totalImporte;
+    this.cotizacion.descuento=this.totalDescuento;
+    this.cotizacion.total=this.totalImporte - this.totalDescuento;
     
+
+    this._cotizacionService.actualizarCotizacion(this.cotizacion).subscribe(
+      (resp)=>{
+        
+        let indiceActualCotizacion = 0;
+        this.cotizaciones.forEach((cotizacion,index)=>{
+          if(cotizacion._id==this.cotizacion._id){
+            indiceActualCotizacion=index;
+          }
+        });
+        this.obtenerCotizaciones(indiceActualCotizacion);
+        
+        swal(
+          "Cotización actualizada",
+          "Cotización actualizada exitosamente",
+          "success"
+          );
+      }
+    );
+  }
+
+  mostrarDetalleCotizacion(indice){
+    this.cotizacion = this.cotizaciones[indice];
+    this._cotizacionService.productos = this.cotizaciones[indice].productos;
+    this.totalDescuento = this.cotizaciones[indice].descuento;
+    this.totalImporte = this.cotizaciones[indice].subtotal;
+    this.fecha = this.cotizaciones[indice].fecha;
+
+    this.productos = this._cotizacionService.productos;
+
+    setTimeout(() => {
+      this.scrollTop();
+    });
+  }
+
+  abrirCatalogoDeProductos(){
+
+
+    $("#cotizacion").modal("toggle");
+    $("#cotizacion").on("hidden.bs.modal", function(event) {
+      // Open your second one in here
+      $("#catalogoModal").modal("toggle");
+      $("#cotizacion").off("hidden.bs.modal");
+    });
+    
+  }
+
+  cambiarPrecio(i){
+
+    $("#cotizacion").modal("toggle");
+    $("#cotizacion").on("hidden.bs.modal", function (event) {
+      $("#cotizacion").off("hidden.bs.modal");
+      // Open your second one in here
+
+      swal({
+        content: {
+          element: "input"
+        },
+        text: "Asigna un nuevo precio",
+        buttons: [true, "Aceptar"]
+      })
+        .then(precio => {
+          if (!precio) {
+            $("#cotizacion").modal("toggle");
+            return;
+          }
+          this._cotizacionService.productos[i].precio = precio;
+          this.calcularTotal();
+          $("#cotizacion").modal("toggle");
+        })
+        .catch();
+    }.bind(this));
+  }
+
+  cambiarCantidad(i){
+    $("#cotizacion").modal("toggle");
+    $("#cotizacion").on("hidden.bs.modal", function (event) {
+      $("#cotizacion").off("hidden.bs.modal");
+      // Open your second one in here
+
+      swal({
+        content: {
+          element: "input"
+        },
+        text: "Asigna una cantidad",
+        buttons: [true, "Aceptar"]
+      })
+        .then((cantidad) => {
+
+          if (!cantidad) {
+            $("#cotizacion").modal("toggle");
+            return;
+          }
+
+          this._cotizacionService.productos[i].cantidad = Number(cantidad);
+
+          //Actualizamos subtotales de cada producto en el carrito
+          this.calcularTotal();
+          $("#cotizacion").modal("toggle");
+        })
+        .catch();
+
+
+    }.bind(this));
+  }
+
+  cambiarDescuento(index){
+    $("#cotizacion").modal("toggle");
+    $("#cotizacion").on("hidden.bs.modal", function (event) {
+      $("#cotizacion").off("hidden.bs.modal");
+      swal("Descuento", "Selecciona $ ó %", "info", {
+        buttons: {
+          monto: {
+            text: "$",
+            value: "monto"
+          },
+          porcentaje: {
+            text: "%",
+            value: "porcentaje"
+          }
+        }
+      }).then(tipo => {
+        swal({
+          content: {
+            element: "input",
+            attributes: {
+              type: "number"
+            }
+          },
+          text: "Ingresa el descuento en " + tipo,
+          buttons: [true, "Aceptar"]
+        }).then(descuento => {
+          if (tipo == "monto") {
+            descuento=Number(descuento);
+            if (descuento > this._cotizacionService.productos[index].precio) {
+              
+              swal(
+                "Descuento",
+                "El descuento, no puede ser mayor que el precio",
+                "error"
+              ).then(() => {
+                $("#cotizacion").modal("toggle");
+              });
+              return;
+              
+            }
+
+            this._cotizacionService.productos[index].descuento = Number(descuento);
+            this.calcularTotal();
+            $("#cotizacion").modal("toggle");
+
+          } else {
+            if (descuento >= 0 && descuento <= 100) {
+              this._cotizacionService.productos[index].descuento =
+                this._cotizacionService.productos[index].precio * (descuento / 100);
+              this.calcularTotal();
+              $("#cotizacion").modal("toggle");
+            } else {
+              swal(
+                "Descuento",
+                "El porcentaje debe ser un valor entre 0 y 100",
+                "error"
+              ).then(() => {
+                $("#cotizacion").modal("toggle");
+              });
+            }
+          }
+        });
+      });
+
+
+    }.bind(this));
   }
 
   eliminarProducto(i){
 
-    this.productos.splice(i,1);
+    this._cotizacionService.eliminarProductoDeCotizacion(i);
+    this.calcularTotal();
     
   }
+
+  eliminarCotizacion(cotizacion){
+
+    swal(
+      "Confirmar eliminación",
+      "Se eliminará la cotización, ¿Esta seguro de que desea continuar?",
+      "warning",
+      {
+        buttons: {
+          aceptar: {
+            text: "Aceptar",
+            value: true
+          },
+          cancelar: {
+            text: "Cancelar",
+            value: false
+          }
+        }
+      }
+    ).then(
+      (eliminar) => {
+        if (eliminar) {
+
+          this._cotizacionService.eliminarCotizacion(cotizacion._id)
+            .subscribe(
+              (resp: any) => {
+                
+                this.obtenerCotizaciones(0);
+                
+
+                swal(
+                  "Cotización eliminada",
+                  "La cotizacion: " + resp.cotizacion._id + ", se ha eliminado exitosamente",
+                  "success"
+                );
+              },
+              (error) => {
+                swal(
+                  "Error al eliminar cotización",
+                  error.error.mensaje + " | " + error.error.errors.message,
+                  "error"
+                );
+              });
+
+        } else {
+          return;
+        }
+      });
+
+    
+    
+  }
+
+
 
   imprimirCotizacion() {
     let cotizacion = document.getElementById("documento-cotizacion");
@@ -106,34 +445,72 @@ export class CotizacionComponent implements OnInit {
     window.print();
   }
 
-  guardarCotizacion() {}
+  guardarCotizacion() {
+    let cotizacion= {
+      proyecto: this.proyecto._id, 
+      cliente: this.cliente._id, 
+      fecha: new Date(), 
+      productos: this._cotizacionService.productos, 
+      subtotal: this.totalImporte, 
+      descuento: this.totalDescuento, 
+      total:  this.totalImporte - this.totalDescuento
+    };
+
+    this._cotizacionService.guardarCotizacion(cotizacion).subscribe(
+      (resp:any)=>{
+        
+        this.cotizacion=resp.cotizacion;
+        
+        this.obtenerCotizaciones(this.cotizaciones.length);
+        swal(
+          "Cotización creada exitozamente",
+          'La cotización se ha guardado de manera exitosa',
+          'success'
+        );
+      },
+      (err)=>{
+
+      }
+      );
+  }
 
   clearFieldDescuento(evento: Event, i) {
     evento.srcElement.textContent = "";
-    this.productos[i].editandoDescuento = true;
+    this._cotizacionService.productos[i].editandoDescuento = true;
   }
 
   clearFieldPrecio(evento: Event, i) {
     evento.srcElement.textContent = "";
-    this.productos[i].editandoPrecio = true;
+    this._cotizacionService.productos[i].editandoPrecio = true;
   }
 
   clearFieldCantidad(evento: Event, i) {
     evento.srcElement.textContent = "";
-    this.productos[i].editandoCantidad = true;
+    this._cotizacionService.productos[i].editandoCantidad = true;
   }
 
   calcularTotal() {
-    let total: number = 0;
+    
+    let subtotal:number = 0;
     let descuento: number = 0;
+    let total: number = 0;
 
-    this.productos.forEach(producto => {
-      total += producto.importe;
-      descuento += producto.descuento;
+    this._cotizacionService.productos.forEach(producto => {
+      subtotal += producto.precio * producto.cantidad;
+      descuento += (producto.descuento * producto.cantidad);
+
+      
     });
 
+
     this.totalDescuento = descuento;
-    this.totalImporte = total;
+    this.totalImporte = subtotal;    
+
+  }
+
+  scrollTop() {
+    let modal = document.getElementById('cotizacion');
+    modal.scrollTop = 0;
   }
 
   formatNumber(monto: string) {
@@ -209,19 +586,19 @@ export class CotizacionComponent implements OnInit {
 
     let descuento = this.formatNumber(celda.textContent);
 
-    if (Number.isNaN(descuento) || this.productos[index].cantidad == 0) {
+    if (Number.isNaN(descuento) || this._cotizacionService.productos[index].cantidad == 0) {
       celda.innerText = "0";
-      this.productos[index].factorDescuento = 0;
+      this._cotizacionService.productos[index].descuento = 0;
     } else {
       celda.innerText = descuento.toString();
-      this.productos[index].factorDescuento = descuento;
+      this._cotizacionService.productos[index].descuento = descuento;
     }
 
     this.validarNota();
     this.calcularTotal();
 
     celda.blur();
-    this.productos[index].editandoDescuento = false;
+    this._cotizacionService.productos[index].editandoDescuento = false;
   }
 
   loseFocusPrecio(index) {
@@ -235,7 +612,7 @@ export class CotizacionComponent implements OnInit {
 
     if (Number.isNaN(precio) || precio == 0) {
       celda.innerText = formatCurrency(
-        this.productos[index].precio,
+        this._cotizacionService.productos[index].precio,
         "es-Mx",
         "$"
       ).toString();
@@ -244,16 +621,16 @@ export class CotizacionComponent implements OnInit {
     }
 
     //Actualizamos descuento
-    let cantidad = this.productos[index].cantidad;
-    let factorDescuento = this.productos[index].factorDescuento;
-    this.productos[index].descuento =
+    let cantidad = this._cotizacionService.productos[index].cantidad;
+    let factorDescuento = this._cotizacionService.productos[index].factorDescuento;
+    this._cotizacionService.productos[index].descuento =
       cantidad * precio * (factorDescuento / 100);
 
     this.validarNota();
     this.calcularTotal();
 
     celda.blur();
-    this.productos[index].editandoPrecio = false;
+    this._cotizacionService.productos[index].editandoPrecio = false;
   }
 
   loseFocus(index) {
@@ -266,22 +643,22 @@ export class CotizacionComponent implements OnInit {
     let cantidad = this.formatNumber(celda.textContent);
 
     if (Number.isNaN(cantidad)) {
-      celda.textContent = this.productos[index].cantidad;
+      celda.textContent = this._cotizacionService.productos[index].cantidad;
     } else {
-      celda.textContent = this.productos[index].cantidad;
+      celda.textContent = this._cotizacionService.productos[index].cantidad;
     }
 
     //Actualizamos descuento
-    let precio = this.productos[index].precio;
-    let factorDescuento = this.productos[index].factorDescuento;
-    this.productos[index].descuento =
+    let precio = this._cotizacionService.productos[index].precio;
+    let factorDescuento = this._cotizacionService.productos[index].factorDescuento;
+    this._cotizacionService.productos[index].descuento =
       cantidad * precio * (factorDescuento / 100);
 
     this.validarNota();
     this.calcularTotal();
 
     celda.blur();
-    this.productos[index].editandoCantidad = false;
+    this._cotizacionService.productos[index].editandoCantidad = false;
   }
 
   actualizarPrecio(evento: Event, index) {
@@ -289,9 +666,9 @@ export class CotizacionComponent implements OnInit {
 
     if (Number.isNaN(precio) || precio == 0) {
     } else {
-      this.productos[index].precio = precio;
-      this.productos[index].importe =
-        this.productos[index].cantidad * this.productos[index].precio;
+      this._cotizacionService.productos[index].precio = precio;
+      this._cotizacionService.productos[index].importe =
+        this._cotizacionService.productos[index].cantidad * this._cotizacionService.productos[index].precio;
     }
   }
 
@@ -309,25 +686,25 @@ export class CotizacionComponent implements OnInit {
       !Number.isNaN(descuentoNumero)
     ) {
       //Guardamos la nueva cantidad en nuestro arreglo de productos
-      let precio = this.productos[index].precio;
-      let cantidad = this.productos[index].cantidad;
-      this.productos[index].factorDescuento = descuentoNumero;
+      let precio = this._cotizacionService.productos[index].precio;
+      let cantidad = this._cotizacionService.productos[index].cantidad;
+      this._cotizacionService.productos[index].factorDescuento = descuentoNumero;
 
       let calculoDescuento = (descuentoNumero / 100) * precio * cantidad;
 
       if (cantidad > 0) {
-        this.productos[index].descuento = calculoDescuento;
+        this._cotizacionService.productos[index].descuento = calculoDescuento;
       }
     } else {
       //Si es texto igualamos el factor de descuento a cero
 
-      this.productos[index].factorDescuento = 0;
-      let precio = this.productos[index].precio;
-      let cantidad = this.productos[index].cantidad;
+      this._cotizacionService.productos[index].factorDescuento = 0;
+      let precio = this._cotizacionService.productos[index].precio;
+      let cantidad = this._cotizacionService.productos[index].cantidad;
       let calculoDescuento = (descuentoNumero / 100) * precio * cantidad;
 
       if (cantidad > 0) {
-        this.productos[index].descuento = calculoDescuento;
+        this._cotizacionService.productos[index].descuento = calculoDescuento;
       }
     }
   }
@@ -346,9 +723,9 @@ export class CotizacionComponent implements OnInit {
       !Number.isNaN(cantidadNumero)
     ) {
       //Guardamos la nueva cantidad en nuestro arreglo de productos
-      this.productos[index].cantidad = cantidadNumero;
-      this.productos[index].importe =
-        cantidadNumero * this.productos[index].precio;
+      this._cotizacionService.productos[index].cantidad = cantidadNumero;
+      this._cotizacionService.productos[index].importe =
+        cantidadNumero * this._cotizacionService.productos[index].precio;
     } else {
       //Si es texto igualamos al input recibido sin espacios
     }

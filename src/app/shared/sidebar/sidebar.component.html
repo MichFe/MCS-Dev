@@ -21,8 +21,9 @@
         <li class="nav-small-cap">MODULOS</li>
 
         <li *ngFor="let menu of _sidebar.menu"> 
-          <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i [class]="menu.icono"></i><span
-              class="hide-menu">{{ menu.modulo }}</span></a>
+          <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i [class]="menu.icono" [routerLink]="[ menu.url ]"></i><span
+              class="hide-menu"
+              [routerLink]="[ menu.url ]">{{ menu.modulo }}</span></a>
           <ul aria-expanded="false" class="collapse">
             <li *ngFor="let submenu of menu.submenu">
               <a [routerLink]="[ submenu.url ]" routerLinkActive="active" (click)="expandCollapsSidebar()">{{ submenu.titulo }}</a></li>

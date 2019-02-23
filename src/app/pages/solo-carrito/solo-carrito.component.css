@@ -1,0 +1,104 @@
+ul{
+    list-style: none;
+    margin:0px;
+    padding:0px;
+
+    max-height: 300px;
+    overflow: auto;
+}
+
+.right{
+    float:right;
+}
+
+.item-carrito{
+    overflow: auto;
+
+    -webkit-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    padding: 5px;
+}
+
+.img-lista{
+    height: 50px;
+    border-radius: 5px;
+    clear: both;
+}
+
+.size-50{
+    height: 50px;
+    width:50px;
+    object-fit: cover;
+}
+
+.left{
+    float: left;
+}
+
+.info-lista{
+    width:100px;
+}
+
+.nombre-lista{
+    font-size: 10px;
+    margin-left: 5px;
+    margin-bottom:5px;
+
+    width: 150px;
+}
+
+.nombre-lista:hover{
+    color: #2e9bb0;
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+.centrar-carrito{
+    max-width: 50vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.precio-lista{
+    font-size: 10px;
+    margin-left: 5px;
+    margin-bottom: 0px
+}
+
+.precio-lista:hover{
+    text-decoration: underline;
+    color: #2e9bb0;
+}
+
+.descuento-lista{
+    float: left;
+    font-size: 15px;
+    color: darkorange;
+    width: 10px;
+}
+
+.botonera-item-lista{
+    height: 15px;
+    margin-top: 17.5px;
+    margin-bottom: 17.5px;
+}
+
+.cantidad-lista{
+    font-size: 10px;
+
+    background: green;
+    color: white;
+    min-width: 20px;
+    border-radius: 5px;
+    text-align: center;
+
+    height: 16px;
+    line-height: 16px;
+}
+
+.trash-button{
+    color:red;
+}

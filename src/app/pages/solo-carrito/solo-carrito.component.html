@@ -1,0 +1,40 @@
+<div [ngClass]="{'centrar-carrito': !modalCotizacion}">
+  Carrito
+  <i class="fa fa-shopping-cart right"></i>
+</div>
+
+<ul class="m-b-15" *ngIf="carrito" [ngClass]="{'centrar-carrito': !modalCotizacion}">
+  <li *ngFor="let producto of carrito; let i=index" class="item-carrito">
+
+    <img class="img-lista size-50 left" [src]="producto.img | imagen: 'producto'">
+
+    <div class="info-lista left">
+      <p class="nombre-lista fw-500 pointer" (click)="cambiarNombre(i)">{{ producto.nombre }}</p>
+      <p class="precio-lista pointer" (click)="cambiarPrecio(i)">{{ producto.precio | currency: 'MXN' }}</p>
+      <p *ngIf="producto.descuento" class="descuento-lista"> -{{ producto.descuento | currency: 'MXN' }}</p>
+    </div>
+
+    <div class="botonera-item-lista right">
+      <!-- <span class="left m-r-5 pointer">
+        <i class="descripcion-lista fa fa-info-circle" [ngClass]="{'no-descripcion-lista': !producto.descripcion}"
+          (click)="abrirModalDescripcion(i)"></i>
+      </span> -->
+      <span class="left m-r-5 pointer" (click)="agregarDescuento(i)">
+        <i class="descuento-lista fa fa-usd"></i>
+      </span>
+      <span class="cantidad-lista left m-r-5 pointer" (click)="asignarCantidadManualmente(i)">{{ producto.cantidad }}</span>
+      <span (click)="eliminarElementoDelCarrito(i)">
+        <i class="fa fa-trash trash-button right pointer"></i>
+      </span>
+    </div>
+
+  </li>
+</ul>
+
+<div *ngIf="modalCotizacion">
+  <div class="botonera" *ngIf="carrito.length>0">
+    <button class="btn btn-success waves-effect waves-light btn-block" (click)="agregarProductosACotizacion()">Agregar a
+      Cotización</button>
+    <!-- <button class="btn btn-secondary waves-effect-waves-light btn-block">Cotización</button> -->
+  </div>
+</div>

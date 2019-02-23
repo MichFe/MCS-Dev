@@ -1,0 +1,40 @@
+ul.clientes{
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 3px;
+    max-height: 200px;
+    overflow: auto;
+}
+
+li.cliente{
+    padding: 5px 5px 5px 41px;
+    border-bottom: 1px solid lightgray;
+    cursor: pointer;
+
+}
+
+li.cliente:hover{
+    background-color: #caebf1;
+
+}
+
+th{
+    text-align: center;
+}
+
+.f-w-500{
+    font-weight: 500;
+}
+
+.text-right{
+    text-align: right;
+}
+
+.txt-color-blue{
+    color: #2e9bb0;
+}
+
+.color-red{
+    color: red;
+}

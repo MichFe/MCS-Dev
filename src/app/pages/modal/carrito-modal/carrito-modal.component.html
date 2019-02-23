@@ -1,0 +1,36 @@
+<div class="modal fade" id="catalogoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Catálogo de Productos</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- FIN Modal header -->
+
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0 m-t-20 m-b-20">
+        <div class="card-body">
+          <div class="container">
+            <div class="row">
+
+              <div class="col col-12 col-md-8 text-center right-border">
+                <app-solo-catalogo-productos></app-solo-catalogo-productos>
+              </div>
+
+              <div class="col col-12 col-md-4">
+                <app-solo-carrito
+                  [modalCotizacion]="true"></app-solo-carrito>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

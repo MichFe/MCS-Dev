@@ -1,0 +1,179 @@
+<div class="modal fade" id="modalDetalleVenta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Detalle venta</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="resetearModal()"><span
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+
+          <form class="form-horizontal p-t-20">
+            <div class="form-group row">
+              <label class="col-sm-3 control-label">Cliente*</label>
+              <div class="col-sm-9">
+
+                <div class="input-group">
+                  <div class="input-group">
+                   <div class="input-group-addon"><i class="ti-user"></i></div>
+                    <input name="clienteNombre"
+                           id="clienteInput"
+                           (keyup)="buscarCliente()" 
+                               [(ngModel)]="clienteNombre" 
+                               type="string" 
+                               class="form-control" 
+                               placeholder="Ingresa el nombre del cliente"
+                               required>
+
+                    <div class="input-group-addon btn btn-info color-white"
+                      (click)="abrirRegistroDeCliente($event)"><i class="ti-plus"></i>
+                    </div>
+                 </div>
+                </div>
+
+                <div *ngIf="clientes.length>0">
+                  <ul class="clientes">
+                    <li *ngFor="let cliente of clientes"
+                        class="cliente"
+                        (click)="seleccionarcliente(cliente)">{{ cliente.nombre }}</li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-3 control-label">Proyecto</label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="ti-archive"></i></div>
+                  <select class="form-control custom-select" data-placeholder="Selecciona un proyecto" 
+                    name="proyectoSeleccionado"
+                    [(ngModel)]="proyectoSeleccionado">
+                    <option *ngFor="let proyecto of proyectos" 
+                            [value]="proyecto._id">{{ proyecto.nombre }}</option>
+                  </select>
+                  <!-- <input (keyup)="validarFormulario()" name="correo" [(ngModel)]="correo" type="email" class="form-control" placeholder="Correo electrónico"> -->
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row m-t-20">
+              <label class="col-sm-3 control-label">Método de Pago*</label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="ti-exchange-vertical"></i></div>
+                  <select class="form-control custom-select" 
+                          data-placeholder="Selecciona un método de págo" 
+                          name="tipoPago"
+                          [(ngModel)]="tipoPago"
+                          required>
+                    <option value="efectivo">Efectivo</option>
+                    <option value="tarjeta">Tarjeta</option>
+                    <option value="transferencia">Transferencia</option>
+                    <option value="cheque">Cheque</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                  <!-- <input (keyup)="validarFormulario()" name="correo" [(ngModel)]="correo" type="email" class="form-control" placeholder="Correo electrónico"> -->
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group row m-t-20">
+              <label class="col-sm-3 control-label">Fecha*</label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                   <div class="input-group-addon"><i class="ti-money"></i></div>
+                    <input name="fechaString" 
+                               [(ngModel)]="fechaString" 
+                               type="date" 
+                               class="form-control"
+                               (change)="cambiarFecha()" 
+                               required>
+                 </div>
+               </div>
+            </div>
+
+            <div class="form-group row m-t-20">
+              <div class="offset-sm-3 col-sm-9">
+                <div class="checkbox checkbox-success">
+                  <input id="checkbox34" 
+                         type="checkbox"
+                         name="seleccionIva"
+                         (change)="toggleIva()"
+                         [(ngModel)]="seleccionIva">
+                  <label for="checkbox34">Agregar IVA?</label>
+                </div>
+              </div>
+            </div>
+            
+          
+          </form>
+
+          <app-solo-carrito
+            [carrito]="carrito"
+            (actualizarTotales)="asignarTotales($event)"></app-solo-carrito>
+
+          <p class="text-right" *ngIf="totalDescuento>0||iva>0"><span class="f-w-500">Subtotal:</span> {{subtotal | currency:'MXN'}}</p>
+          <p class="text-right" *ngIf="totalDescuento>0"><span class="f-w-500">Descuento:</span> {{ totalDescuento | currency:'MXN' }}</p>
+          <p class="text-right" *ngIf="iva>0"><span class="f-w-500">Iva:</span> {{ iva | currency:'MXN'  }}</p>
+          <p class="text-right"><span class="f-w-500">Total:</span> {{ total | currency:'MXN' }}</p>
+
+          <p class="venta-footer small pointer txt-color-blue" (click)="obtenerCobros(venta._id)">
+            Mostrar/Ocultar historial de pago <i [ngClass]="{
+                          'ti-arrow-down': cobros,
+                          'ti-arrow-right': !cobros
+                        }"></i>
+          </p>
+
+
+          <div class="table-responsive"
+                 *ngIf="cobros">
+              <table class="table table-hover text-center" data-mobile-responsive="true">
+                
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                    <th>Eliminar</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let cobro of cobros"
+                      [ngClass]="{
+                        'table-warning': cobro.monto<0,
+                        'table-success': cobro.monto>0
+                      }">
+                    <td>{{ cobro.fecha | date }}</td>
+                    <td>{{ cobro.monto | currency:'MXN' }}</td>
+                    <td class="pointer color-red"
+                        (click)="eliminarPago(cobro)"><i class="fa fa-trash"></i></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+        </div>
+      </div>
+      <!-- FIN de Modal Body -->
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-warning waves-effect waves-light"
+          (click)="actualizarVenta()">Guardar</button>
+        <button class="btn btn-danger waves-effect waves-light"
+          (click)="eliminarVenta(venta._id)">Eliminar</button>
+      </div>
+      <!-- FIN de Modal Footer -->
+
+    </div>
+  </div>
+</div>

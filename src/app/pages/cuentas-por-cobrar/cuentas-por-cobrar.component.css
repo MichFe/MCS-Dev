@@ -51,3 +51,15 @@ li{
     width:50px;
     object-fit: cover;
 }
+
+.fila-cliente:hover{
+    background-color: #caebf1;
+}
+
+.txt-color-blue{
+    color: #2e9bb0;
+}
+
+.color-red{
+    color: red;
+}

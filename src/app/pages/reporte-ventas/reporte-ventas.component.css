@@ -20,3 +20,40 @@ th{
     font-weight: 500;
     /* color:#2e9bb0 !important; */
 }
+
+.lista-metas{
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+
+    columns: 200px 4;
+  /* -webkit-columns: 2; */
+  /* -moz-columns: 2; */
+}
+
+.meta-mes{
+    display: inline-block;
+    width: 200px;
+    margin-bottom: 15px;
+
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.meta-mes-actual{
+    background-color: #caebf1;
+}
+
+.fs-15{
+    font-size: 15px;
+}
+
+.texto-meta-actual1{
+    color: #278395;
+}
+
+.texto-meta-actual2{
+    color: lightslategray;
+}
+
+

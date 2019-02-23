@@ -13,32 +13,38 @@ export class VentasService {
     private _usuarioService: UsuarioService
   ) { }
 
-  obtenerVentas(desde:number){
-
-    let url = URL_SERVICIOS + '/venta?token=' + this._usuarioService.token + '&desde=' + desde;
-  
-    return this.http.get(url);
-
-  }
-
-  obtenerVentasMensuales(year:number){
+  obtenerVentaPorId(ventaId){
     let token = this._usuarioService.token;
-    let url = URL_SERVICIOS + `/venta/ventasMensuales/${ year }?token=${ token }`;
-
-    return this.http.get(url);
-
-  }
-
-  obtenerVentasDiarias(year:number, month:number){
-    let token = this._usuarioService.token;
-    let url = URL_SERVICIOS + `/venta/ventasDiarias/${year}/${month}?token=${token}`;
+    let url = URL_SERVICIOS + `/venta/ventaPorId/${ventaId}?token=${token}`;
 
     return this.http.get(url);
   }
 
-  obtenerSaldoPendienteYMontoPagado(){
+  obtenerVentas(desde:number, unidadDeNegocio: string='0', year:number){
+    let url = URL_SERVICIOS + `/venta/tablaVentas?year=${year}&unidadDeNegocio=${unidadDeNegocio}&token=` + this._usuarioService.token + '&desde=' + desde;
+    
+    return this.http.get(url);
+
+  }
+
+  obtenerVentasMensuales(year:number, unidadDeNegocio:string='0'){
     let token = this._usuarioService.token;
-    let url = URL_SERVICIOS + `/venta/saldoPendiente?token=${token}`;
+    let url = URL_SERVICIOS + `/venta/ventasMensuales/${ year }?unidadDeNegocio=${unidadDeNegocio}&token=${ token }`;
+
+    return this.http.get(url);
+
+  }
+
+  obtenerVentasDiarias(year:number, month:number, unidadDeNegocio:string='0'){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/ventasDiarias/${year}/${month}?unidadDeNegocio=${unidadDeNegocio}&token=${token}`;
+
+    return this.http.get(url);
+  }
+
+  obtenerSaldoPendienteYMontoPagado(year,unidadDeNegocio:string='0'){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/saldoPendiente/${year}?unidadDeNegocio=${unidadDeNegocio}&token=${token}`;
 
     return this.http.get(url);
   }
@@ -55,6 +61,27 @@ export class VentasService {
     let url = URL_SERVICIOS + `/venta/ventasConSaldo/${clienteId}?token=${token}`;
 
     return this.http.get(url);
+  }
+
+  obtenerSaldoPendienteDeTodosLosTiempos(){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/saldoPendiente/todosLosTiempos?token=${token}`;
+
+    return this.http.get(url);
+  }
+
+  actualizarVenta(id, ventaActualizada, devolucion:number=0){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/${id}?token=${token}&devolucion=${devolucion}`;
+
+    return this.http.put(url,ventaActualizada);
+  }
+
+  eliminarVenta(id){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/${id}?token=${token}`;
+
+    return this.http.delete(url);
   }
 
 

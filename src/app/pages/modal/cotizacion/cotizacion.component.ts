@@ -3,6 +3,8 @@ import { formatCurrency } from '@angular/common';
 import { SharedService } from '../../../services/shared.service';
 import { CotizacionService } from 'src/app/services/cotizacion/cotizacion.service';
 import { Subscription } from 'rxjs';
+import { ImageUploadService } from '../image-upload/image-upload.service';
+import { DeleteImageService } from 'src/app/services/deleteImage/delete-image.service';
 declare var $:any;
 
 @Component({
@@ -53,7 +55,9 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
   ];
 
   constructor(
-    private _cotizacionService: CotizacionService
+    private _cotizacionService: CotizacionService,
+    private _imageUploadService: ImageUploadService,
+    private _deleteImageService:DeleteImageService
     ) {
       // this.productos = this._cotizacionService.productos;
 
@@ -62,6 +66,20 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
           this.calcularTotal();
         }
       );
+
+      this._imageUploadService.notificacion.subscribe((resp)=>{
+        
+        let cotizacionActualizada=resp.cotizacion;
+        
+        if ('cotizacion' in resp){
+          
+          this._cotizacionService.vaciarProductosDeCotizacion();
+          this._cotizacionService.agregarProductosACotizacion(cotizacionActualizada.productos);
+          
+        }else{
+          return;
+        }
+      })
     }
 
   ngOnInit() {
@@ -193,8 +211,12 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
 
   actualizarCotizacion(){
 
-    this.cotizacion.productos = this._cotizacionService.productos;
+    //Si no hay una cotización en el componente retornamos
+    if(!this.cotizacion){
+      return;
+    }
 
+    this.cotizacion.productos = this._cotizacionService.productos;
     this.cotizacion.subtotal=this.totalImporte;
     this.cotizacion.descuento=this.totalDescuento;
     this.cotizacion.total=this.totalImporte - this.totalDescuento;
@@ -244,6 +266,123 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
       $("#cotizacion").off("hidden.bs.modal");
     });
     
+  }
+
+  cambiarImagen(i){
+
+    if( !this.cotizacion){
+
+      let cotizacion = {
+        proyecto: this.proyecto._id,
+        cliente: this.cliente._id,
+        fecha: new Date(),
+        productos: this._cotizacionService.productos,
+        subtotal: this.totalImporte,
+        descuento: this.totalDescuento,
+        total: this.totalImporte - this.totalDescuento
+      };
+
+      this._cotizacionService.guardarCotizacion(cotizacion).subscribe(
+        (resp: any) => {
+
+          this.cotizacion = resp.cotizacion;
+
+          this.obtenerCotizaciones(this.cotizaciones.length);
+
+          //Continuamos con la carga de la imagen
+          $("#cotizacion").on("hidden.bs.modal", function (event) {
+            $("#cotizacion").off("hidden.bs.modal");
+
+            this._imageUploadService.indexProductoEnCotizacion = i;
+
+            //Seteamos el modal de carga de imagen con el id de nuestra cotizacion y el tipo cotizacion
+            this._imageUploadService.inicializarModal('cotizacion', this.cotizacion._id);
+
+          }.bind(this));
+
+          $("#cotizacion").modal("toggle");
+          
+
+        },
+        (err) => {
+          return;
+        }
+      );
+    }else{
+
+      // Actulizamos la cotizacion, para guardar los productos agregados del carito
+      // en la base de datos
+      // Necesitamos asegurarnos de esto porque si intentamos subir una imagen de un producto
+      // que no ha sido guardado, nos dara un error en el backend ya q valida la imagen anterior
+      // para eliminarla y sustituirla por la imagen nueva
+      this.cotizacion.productos = this._cotizacionService.productos;
+
+      this.cotizacion.subtotal = this.totalImporte;
+      this.cotizacion.descuento = this.totalDescuento;
+      this.cotizacion.total = this.totalImporte - this.totalDescuento;
+
+
+      this._cotizacionService.actualizarCotizacion(this.cotizacion).subscribe(
+        (resp) => {
+
+          let indiceActualCotizacion = 0;
+          this.cotizaciones.forEach((cotizacion, index) => {
+            if (cotizacion._id == this.cotizacion._id) {
+              indiceActualCotizacion = index;
+            }
+          });
+          this.obtenerCotizaciones(indiceActualCotizacion);
+
+          //Continuamos con la carga de la imagen
+          $("#cotizacion").on("hidden.bs.modal", function (event) {
+            $("#cotizacion").off("hidden.bs.modal");
+
+            this._imageUploadService.indexProductoEnCotizacion = i;
+
+            //Seteamos el modal de carga de imagen con el id de nuestra cotizacion y el tipo cotizacion
+            this._imageUploadService.inicializarModal('cotizacion', this.cotizacion._id);
+
+          }.bind(this));
+
+          $("#cotizacion").modal("toggle");
+
+        },
+        (err) => {
+          return;
+        }
+      );
+
+    }
+
+    
+
+   
+  }
+
+  cambiarNombre(i){
+    $("#cotizacion").modal("toggle");
+    $("#cotizacion").on("hidden.bs.modal", function (event) {
+      $("#cotizacion").off("hidden.bs.modal");
+      // Open your second one in here
+
+      swal({
+        content: {
+          element: "input"
+        },
+        text: "Cambiar descripcion",
+        buttons: [true, "Aceptar"]
+      })
+        .then(nombre => {
+          if (!nombre) {
+            $("#cotizacion").modal("toggle");
+            return;
+          }
+          this._cotizacionService.productos[i].nombre = nombre;
+          this.calcularTotal();
+          $("#cotizacion").modal("toggle");
+        })
+        .catch();
+    }.bind(this));
   }
 
   cambiarPrecio(i){
@@ -375,8 +514,29 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
 
   eliminarProducto(i){
 
-    this._cotizacionService.eliminarProductoDeCotizacion(i);
-    this.calcularTotal();
+    console.log(this.productos[i]);
+    
+
+    //Validamos si la imagen es custom o de un producto de catalogo
+    //Si es custom la eliminamos    
+    if ( this.productos[i].img && this.productos[i].img.includes('cotizacion')) {
+
+      this._deleteImageService.eliminarImagenCotizacion(this.cotizacion._id, i)
+        .subscribe(
+          (resp) => {
+            
+            this._cotizacionService.eliminarProductoDeCotizacion(i);
+            this.calcularTotal();
+            this.actualizarCotizacion();
+          });
+    }else{
+      this._cotizacionService.eliminarProductoDeCotizacion(i);
+      this.calcularTotal();
+      this.actualizarCotizacion();
+    }
+
+    
+
     
   }
 
@@ -462,6 +622,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
         this.cotizacion=resp.cotizacion;
         
         this.obtenerCotizaciones(this.cotizaciones.length);
+        
         swal(
           "Cotización creada exitozamente",
           'La cotización se ha guardado de manera exitosa',

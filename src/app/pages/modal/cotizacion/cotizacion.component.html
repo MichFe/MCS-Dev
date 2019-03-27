@@ -58,9 +58,27 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let producto of productos; let i=index;">
-                      <td class="text-center"><img class="product-image" [src]="producto.img | imagen:'producto'"></td>
-                      <td>{{ producto.codigo }}</td>
-                      <td>{{ producto.nombre }}</td>
+                      <td (click)="cambiarImagen(i)"
+                          class="text-center clickable">
+                          
+                          <div *ngIf="producto.img">
+                            <img class="product-image" 
+                               [src]="producto.img | imagen:'producto'"
+                               *ngIf="!producto.img.includes('cotizacion')">
+                            <img class="product-image" 
+                               [src]="producto.img | imagen:'cotizacion'"
+                               *ngIf="producto.img.includes('cotizacion')">
+                          </div>
+
+                          <div *ngIf="!producto.img">
+                            <img class="product-image" 
+                               [src]="producto.img | imagen:'producto'">
+                          </div>
+                          
+                        </td>
+                      <td class="text-center">{{ producto.codigo }}</td>
+                      <td (click)="cambiarNombre(i)"
+                          class="text-center clickable">{{ producto.nombre }}</td>
                       <td (click)="cambiarCantidad(i)" 
                           class="text-center clickable"
                            [ngClass]="{'editando': producto.editandoCantidad}">

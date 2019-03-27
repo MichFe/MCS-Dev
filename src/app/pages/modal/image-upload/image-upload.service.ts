@@ -8,6 +8,7 @@ export class ImageUploadService {
 
   public id:string;
   public tipo:string;
+  public indexProductoEnCotizacion:number=null;
 
   public notificacion = new EventEmitter<any>();
 
@@ -22,6 +23,9 @@ export class ImageUploadService {
   resetearModal(){
     this.tipo=null;
     this.id=null;
+    $("#cargarImagen").modal("toggle");
+    this.indexProductoEnCotizacion=null;
+
   }
 
 

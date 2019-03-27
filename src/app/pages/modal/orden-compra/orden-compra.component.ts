@@ -177,6 +177,52 @@ export class OrdenCompraComponent implements OnInit {
     this.compra=null;
   }
 
+  eliminarCompra(compra){
+    swal(
+      "Confirmación de eliminación",
+      "La compra y todos los pagos realizados serán eliminados, esta seguro que desea continuar?",
+      "warning",
+      {
+        buttons: {
+          continuar: {
+            text: "Sí",
+            value: true
+          },
+          cancelar: {
+            text: "No",
+            value: false
+          }
+        }
+      }
+    ).then(
+      (continuar) => {
+        if (continuar) {
+          this._compraService.eliminarCompra(compra)
+            .subscribe(
+              (resp:any)=>{
+                $('#modalOrdenDeCompra').modal('toggle');
+                swal(
+                  "Compra eliminada",
+                  "La compra y los pagos asociados a ella, de han eliminado exitosamente.",
+                  "success"
+                );
+                this.refrescarTablas();
+                this.resetearModal();
+            },
+            (error)=>{
+              swal(
+                "Error al eliminar Orden de Compra",
+                error.error.mensaje + " | " + error.error.errors.message,
+                "error"
+              );
+            });
+        } else {
+          return;
+        }
+      }
+    );
+  }
+
   crearOrdenDeCompra(){
 
     // Validamos que el costo no sea negativo

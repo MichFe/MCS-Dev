@@ -30,6 +30,13 @@ export class OrdenCompraService {
 
   }
 
+  eliminarCompra(compra){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/compra/${ compra._id }?token=${ token }`;
+
+    return this.http.delete(url);
+  }
+
   actualizarCompra(compra){
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/compra/${compra._id}?token=${ token }`;

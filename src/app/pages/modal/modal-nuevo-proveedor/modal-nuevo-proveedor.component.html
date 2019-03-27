@@ -1,0 +1,105 @@
+<div class="modal fade" id="modalNuevoProveedor" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+  
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Registrar nuevo proveedor</h4>
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+      
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+              <!-- Panel de ingreso de información del cliente -->
+              <div>
+                <form class="form-horizontal p-t-20"
+                      #forma="ngForm"
+                      id="formaNuevoProveedor"
+                      (ngSubmit)="registrarProveedor(forma.value)"
+                      ngNativeValidate>
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Nombre* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-user"></i></div>
+                        <input name="nombre" 
+                               [(ngModel)]="nombre" 
+                               autocomplete="off"
+                               type="text" 
+                               class="form-control"
+                               placeholder="Ingresa el nombre del proveedor"
+                               required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Teléfono* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-mobile"></i></div>
+                        <input  name="telefono" 
+                                [(ngModel)]="telefono"
+                                autocomplete="off" 
+                                type="text" 
+                                placeholder="Ingresa un teléfono"
+                                class="form-control"
+                                required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Dirección :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-location-pin"></i></div>
+                        <input name="domicilio" 
+                               [(ngModel)]="domicilio"
+                               autocomplete="off" 
+                               type="text" 
+                               placeholder="Ingresa una dirección"
+                               class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row m-b-0">
+                    <label class="col-sm-3 control-label">Email :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-email"></i></div>
+                        <input name="email" 
+                               [(ngModel)]="email"
+                               autocomplete="off" 
+                               type="email" 
+                               placeholder="ejemplo@ejemplo.com"
+                               class="form-control">
+                      </div>
+                          
+                    </div>
+                  </div>
+                
+                </form>              
+              </div>
+              <!-- Fin de panel de edición de información del cliente -->
+            
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button class="btn btn-success waves-effect waves-light"
+                type="submit"
+                form="formaNuevoProveedor">Registrar</button>
+        <!-- Fin de botones -->
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

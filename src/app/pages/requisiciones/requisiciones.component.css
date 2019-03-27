@@ -1,0 +1,22 @@
+th{
+  text-align: center;
+}
+
+hr{
+  border: 0;
+  height: 1px;
+  background: #278395;
+  background-image: linear-gradient(to right, #caebf1, #278395, #caebf1);
+}
+
+td{
+  vertical-align: middle;
+}
+
+.color-red{
+  color:red;
+}
+
+.color-green{
+  color: green;
+}

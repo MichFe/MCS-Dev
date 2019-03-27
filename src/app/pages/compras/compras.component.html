@@ -1,0 +1,150 @@
+<div class="container">
+  <!-- Elemento que muestra las requisiciones aprobadas y sin orden de compra -->
+  <div *ngIf="requisicionesAprobadas && requisicionesAprobadas.length>0">
+    <h4>Requisiciones Aprobadas <i class="ti-check m-l-10"></i></h4>
+    <hr class="style-two">
+    
+    <button class="btn btn-success waves-effect waves-light right" (click)="registrarCliente()"><i class="fa fa-plus"></i>
+      Nuevo Proveedor</button>
+    
+    <div class="table-responsive">
+      <table class="table table-hover text-center">
+        <thead class="header">
+          <tr>
+            <th>Fecha</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Solicitante</th>
+            <th>Estatus</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let requisicion of requisicionesAprobadas; let i = index" 
+              (click)="generarOrdenDeCompra(requisicion)"
+              class="pointer" 
+              [ngClass]="{
+                    'table-warning': requisicion.estatus=='Por aprobar'
+                  }">
+            <td>{{requisicion.fechaSolicitud | date }}</td>
+            <td>{{requisicion.descripcion}}</td>
+            <td>{{requisicion.cantidad}}</td>
+            <td>{{requisicion.solicitante.nombre}} ({{requisicion.unidadDeNegocio}})</td>
+            <td>{{requisicion.estatus}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Componente de paginado   -->
+    <div *ngIf="requisicionesAprobadas && requisicionesAprobadas.length>0" class="m-t-15">
+      <ul class="pagination justify-content-center">
+    
+        <li class="page-item pointer" (click)="paginaAnterior()">
+          <a class="page-link" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+    
+        <li *ngFor="let pagina of paginas" class="page-item pointer" (click)="cargarElementosPagina(pagina.pagina)"
+          [ngClass]="{'active': pagina.active }"><a class="page-link">{{ pagina.pagina }}</a></li>
+    
+        <li class="page-item pointer" (click)="paginaSiguiente()">
+          <a class="page-link" aria-label="Next">
+            <span aria-hidden="true">»</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+    
+      </ul>
+    
+    </div>
+    <!-- FIN de Componente de paginado   -->
+  </div>
+  <!-- FIN de Elemento que muestra las requisiciones aprobadas y sin orden de compra -->
+
+  <!-- Compras en seguimiento -->
+  <div class="m-t-30">
+    <h4>Compras en Seguimiento <i class="ti-search rotar"></i></h4>
+    <hr class="style-two">
+    
+    <div class="table-responsive">
+      <table class="table table-hover text-center">
+        <thead class="header">
+          <tr>
+            <th>Fecha de compra</th>
+            <th>Proveedor</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Pagado</th>
+            <th>Estatus</th>
+            <th>Fecha compromiso de entrega</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let compra of compras, let i=index" 
+              class="pointer"
+              (click)="mostrarDetalleCompra(compra)">
+            <td>{{ compra.fechaCompra | date }}</td>
+            <td>{{ compra.proveedor.nombre }}</td>
+            <td>{{ compra.requisicion.descripcion }}</td>
+            <td>{{ compra.requisicion.cantidad }}</td>
+            <td>{{ compra.costoTotal | currency:'MXN' }}</td>
+            <td>
+              <span>{{ compra.montoPagado | currency:'MXN' }} ({{ (compra.montoPagado/compra.costoTotal) | percent }})</span>
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
+                                          'width': ((compra.montoPagado/compra.costoTotal)*100)+'%'
+                                        }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </td>
+            <td>{{ compra.estatusPedido }}</td>
+            <td>{{ compra.fechaCompromisoEntrega | date }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Componente de paginado   -->
+    <div *ngIf="compras && compras.length>0" class="m-t-15">
+      <ul class="pagination justify-content-center">
+    
+        <li class="page-item pointer" (click)="paginaAnteriorCompras()">
+          <a class="page-link" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+    
+        <li *ngFor="let pagina of paginasCompras" class="page-item pointer"
+          (click)="cargarElementosPaginaCompras(pagina.pagina)" [ngClass]="{'active': pagina.active }"><a
+            class="page-link">{{ pagina.pagina }}</a></li>
+    
+        <li class="page-item pointer" (click)="paginaSiguienteCompras()">
+          <a class="page-link" aria-label="Next">
+            <span aria-hidden="true">»</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+    
+      </ul>
+    
+    </div>
+    <!-- FIN de Componente de paginado   -->
+
+  </div>
+  <!-- Compras en seguimiento -->
+
+</div>
+
+
+
+<app-orden-compra
+  [requisicion]="requisicion"
+  [compra]="compra"
+  (actualizarData)="actualizarData($event)"
+  (deseleccionarRequisicion)="requisicion=null"></app-orden-compra>
+<app-modal-nuevo-proveedor></app-modal-nuevo-proveedor>
+<app-modal-pago
+  [compra]="compra"></app-modal-pago>

@@ -1,0 +1,56 @@
+th{
+    text-align: center;
+}
+
+td{
+        vertical-align: middle;
+}
+
+.borde-izquierdo{
+    border-left: 1px solid lightgrey;
+}
+
+.proveedor-activo{
+    background-color:#caebf1;
+}
+
+ul{
+    list-style: none;
+    padding: 5px;
+    margin-bottom: 10px;
+
+    -webkit-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+    box-shadow: 1px 1px 4px 0px rgba(0,0,0,0.3);
+}
+
+.compra-title{
+    font-weight: 500;
+}
+
+.compra-subtitle{
+    margin-top: 5px;
+    margin-bottom:0px;
+}
+
+.compra-footer{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.right{
+    text-align: right;
+    padding-right: 10px;
+}
+
+.fila-proveedor:hover{
+    background-color: #caebf1;
+}
+
+.txt-color-blue{
+    color: #2e9bb0;
+}
+
+.color-red{
+    color: red;
+}

@@ -1,0 +1,162 @@
+<div class="container">
+
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card">
+        <div class="card-title text-center fw-500">
+          Total saldo pendiente: {{ totalSaldoPendiente |currency:'MXN' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- Tabla de proveedores con saldo pendiente -->
+    <div class="col col-md-6 text-center">
+      <div class="card">
+        <div class="card-title">
+          Proveedores con saldo pendiente
+        </div>
+        
+        <!-- Filtro de clientes por nombre -->
+        <div class="form-group row">
+          <!-- <label class="col-sm-3 control-label">Buscar Proveedor</label> -->
+          <div class="col col-md-12">
+            <div class="input-group">
+              <div class="input-group-addon"><i class="ti-search"></i></div>
+              <input name="proveedorNombre"
+                           id="clienteInput"
+                           autocomplete="off"
+                           (keyup)="filtrarProveedores()" 
+                               [(ngModel)]="proveedorNombre" 
+                               type="string" 
+                               class="form-control" 
+                               placeholder="Ingresa el nombre del proveedor"
+                               required>
+            </div>
+          </div>
+        </div>
+        <!-- FIN de Filtro de clientes por nombre -->
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Proveedor</th>
+                  <th>Saldo</th>
+                </tr>
+              </thead>
+          
+              <tbody>
+                <tr *ngFor="let proveedor of proveedoresConSaldoPendiente; let i=index"
+                    class="pointer fila-proveedor"
+                    (click)="cargarComprasConSaldoDelProveedor(proveedor.proveedor._id, i)"
+                    [ngClass]="{'proveedor-activo': proveedoresConSaldoPendiente[i].activo }">
+                  <td>{{ proveedor.fechaMasAntigua | date }}</td>
+                  <td>{{ proveedor.proveedor.nombre }}</td>
+                  <td>{{ proveedor.saldoPendiente | currency:'MXN' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN de Tabla de clientes con saldo pendiente -->
+
+    <!-- Detalle de cuenta seleccionada -->
+    <div class="col col-md-6 borde-izquierdo">
+      <div class="card">
+        <div class="card-title text-center">
+          Detalle de cuenta <span *ngIf="proveedorActual">de {{ proveedorActual }}</span>
+        </div>
+        <div class="card-body">
+
+          <ul *ngFor="let compra of comprasConSaldo; let i=index">
+            <span class="compra-title">
+              Compra {{ i + 1 }}
+            </span>
+
+            <p class="venta-subtitle">
+              Descripción: 
+            </p>
+
+            <p class="p-l-10">{{ compra.requisicion.descripcion }}</p>
+
+            <p class="compra-footer right">
+              Total: {{ compra.costoTotal | currency:'MXN' }}
+            </p>
+
+            <p class="compra-footer right">
+              Monto Pagado: {{ compra.montoPagado | currency:'MXN' }}
+            </p>
+
+            <p class="compra-footer right">
+              Saldo pendiente: {{ compra.saldoPendiente | currency:'MXN' }}
+            </p>
+
+            <button class="btn btn-success btn-block"
+                    (click)="registrarPago(compra)">Registrar Pago</button>
+
+            <p class="compra-footer small pointer txt-color-blue" (click)="obtenerPagos(compra._id, i)">
+              Mostrar/Ocultar historial de pago <i [ngClass]="{
+                'ti-arrow-down': compra.pagos,
+                'ti-arrow-right': !compra.pagos
+              }"></i>
+            </p>
+
+            <div class="table-responsive"
+                 *ngIf="compra.pagos">
+              <table class="table table-hover text-center" data-mobile-responsive="true">
+                
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                    <th>Forma de Pago</th>
+                    <th>Eliminar</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let pago of compra.pagos"
+                      [ngClass]="{
+                        'table-warning': pago.monto<0,
+                        'table-success': pago.monto>0
+                      }">
+                    <td>{{ pago.fecha | date }}</td>
+                    <td>{{ pago.monto | currency:'MXN' }}</td>
+                    <td>{{ pago.tipoDePago | titlecase }}</td>
+                    <td class="pointer color-red"
+                        (click)="eliminarPago(pago)"><i class="fa fa-trash"></i></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="compra-footer small">
+              Comprado por {{ compra.usuarioCreador.nombre }}
+            </p>
+
+          </ul>
+        </div>
+      </div>
+
+
+    </div>
+    <!-- FIN de Detalle de cuenta seleccionada -->
+
+  </div>
+
+</div>
+
+<app-modal-pago
+  [compra]="compraSeleccionada"
+  (actualizarData)="actualizarData()"></app-modal-pago>
+
+<!-- <app-modal-registro-cobro -->
+  <!-- [venta]="ventaSeleccionada" -->
+  <!-- (actualizarVentasDelCliente)="actualizarData()"></app-modal-registro-cobro> -->

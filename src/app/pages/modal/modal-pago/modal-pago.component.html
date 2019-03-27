@@ -1,0 +1,96 @@
+<div class="modal fade" id="modalPago" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+  
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" 
+            id="exampleModalLabel1">Registrar Pago <span *ngIf="compra && compra.proveedor.nombre">a {{ compra.proveedor.nombre }}</span></h4>
+
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+      
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+              <!-- Panel de ingreso de información del cliente -->
+              <div *ngIf="compra && compra.costoTotal">
+                <p class="venta-footer">
+                  Total: {{ compra.costoTotal | currency:'MXN' }}
+                </p>
+                
+                <p class="venta-footer">
+                  Monto Pagado: {{ compra.montoPagado | currency:'MXN' }}
+                </p>
+                
+                <p class="venta-footer">
+                  Saldo pendiente: {{ compra.saldoPendiente | currency:'MXN' }}
+                </p>
+              </div>
+
+              <div>
+                <form class="form-horizontal p-t-20"
+                      ngNativeValidate 
+                      #forma="ngForm"
+                      id="formaPagoProveedor"
+                      (ngSubmit)="registrarPagoAProveedor()">
+
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Método de Pago* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-exchange-vertical"></i></div>
+                        <select class="form-control custom-select" 
+                          data-placeholder="Selecciona un método de págo" 
+                          name="tipoDePago"
+                          [(ngModel)]="tipoDePago"
+                          required>
+                            <option value="efectivo">Efectivo</option>
+                            <option value="tarjeta">Tarjeta</option>
+                            <option value="transferencia">Transferencia</option>
+                            <option value="cheque">Cheque</option>
+                            <option value="otro">Otro</option>
+                         </select>
+                      </div>
+                    </div>
+                  </div>    
+
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Monto* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-money"></i></div>
+                        <input  name="monto" 
+                                [(ngModel)]="monto" 
+                                type="number" 
+                                class="form-control"
+                                required>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </form>
+              </div>
+              <!-- Fin de panel de edición de información del cliente -->
+            
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button 
+          class="btn btn-warning waves-effect waves-light"
+          (click)="registrarPagoAProveedor()">Pagar</button>        
+        <!-- Fin de botones -->
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,141 @@
+<div class="modal fade" id="modalOrdenDeCompra" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+  
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" 
+            id="exampleModalLabel1"
+            *ngIf="requisicion">Creación de orden de compra</h4>
+
+        <h4 class="modal-title" 
+            id="exampleModalLabel1"
+            *ngIf="compra">Detalle de orden de compra</h4>
+
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+      
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+              <!-- Panel de ingreso de información del cliente -->
+              <div>
+                <form class="form-horizontal p-t-20"
+                      ngNativeValidate 
+                      #forma="ngForm"
+                      id="formaNuevaCompra"
+                      (ngSubmit)="crearOrdenDeCompra()">
+
+                  <div class="form-group row m-t-20">
+                    <label class="col-sm-3 control-label">Proveedor* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-user"></i></div>
+                          <input name="proveedorNombre"
+                            autocomplete="off"
+                            id="clienteInput"
+                            (keyup)="buscarProveedor()" 
+                            [(ngModel)]="proveedorNombre" 
+                            type="string" 
+                            class="form-control" 
+                            placeholder="Selecciona un proveedor"
+                            required>
+
+                        <div class="input-group-addon btn btn-info color-white"
+                             (click)="abrirRegistroDeProveedor($event)"><i class="ti-plus"></i>
+                        </div>
+                 </div>
+
+                <div *ngIf="proveedores.length>0">
+                  <ul class="proveedores">
+                    <li *ngFor="let proveedor of proveedores"
+                        class="proveedor"
+                        (click)="seleccionarProveedor(proveedor)">{{ proveedor.nombre }}</li>
+                  </ul>
+                </div>
+               </div>
+            </div>
+
+                  
+
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Costo* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-money"></i></div>
+                        <input  name="costo" 
+                                [(ngModel)]="costo" 
+                                type="number" 
+                                class="form-control"
+                                required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Fecha Compromiso* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-calendar"></i></div>
+                        <input name="fechaEntregaString" 
+                               (change)="cambiarFecha()"
+                               [(ngModel)]="fechaEntregaString" 
+                               type="date" 
+                               class="form-control"
+                               required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row m-b-0">
+                    <label class="col-sm-3 control-label">Comentario :</label>
+                    <div class="col-sm-9">
+            
+                          <textarea name="comentario" 
+                                    [(ngModel)]="comentario" 
+                                    cols="30" 
+                                    rows="5"></textarea>
+                    </div>
+                  </div>
+                
+                </form>
+
+                <p *ngIf="requisicion && requisicion.aprobador">Aprobado por {{ requisicion.aprobador.nombre }}</p>
+              
+              </div>
+              <!-- Fin de panel de edición de información del cliente -->
+            
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button class="btn btn-info waves-effect waves-light btn-actualizar-compra"
+                *ngIf="compra"
+                (click)="actualizarCompra()">Actualizar Compra</button>
+
+        <button class="btn btn-success waves-effect waves-light"
+                *ngIf="compra"
+                (click)="confirmarRecepcionDeProducto()">Confirmar Recepción</button>
+        
+                
+        <button class="btn btn-warning waves-effect waves-light"
+                *ngIf="compra"
+                (click)="abrirModalPago()">Pagar</button>
+
+        <button class="btn btn-warning waves-effect waves-light"
+                type="submit"
+                *ngIf="requisicion"
+                form="formaNuevaCompra">Crear Compra</button>
+        
+        <!-- Fin de botones -->
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

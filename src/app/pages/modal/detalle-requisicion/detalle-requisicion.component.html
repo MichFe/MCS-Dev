@@ -1,0 +1,122 @@
+<div class="modal fade" id="detalleRequisicion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+  
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Detalle Requisición</h4>
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+      
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+              <!-- Panel de ingreso de información del cliente -->
+              <div>
+                <form class="form-horizontal p-t-20"
+                      ngNativeValidate 
+                      #forma="ngForm"
+                      id="formaRequisicion"
+                      (ngSubmit)="guardarRequisicion(forma.value)">
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Producto o servicio*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-archive"></i></div>
+                        <input name="descripcion" 
+                               [(ngModel)]="descripcion" 
+                               type="text" 
+                               class="form-control" 
+                               placeholder="Descripcion"
+                               required> 
+                              <!-- [disabled]="accion == 'Aprobar'" -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Cantidad*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-vector"></i></div>
+                        <input name="cantidad" 
+                               [(ngModel)]="cantidad" 
+                               type="text"
+                               class="form-control" 
+                               placeholder="Cantidad"
+                               required>
+                               <!-- [disabled]="accion == 'Aprobar'"> -->
+                      </div>
+                    </div>
+                  </div>              
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Solicitante*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-user"></i></div>
+                        <input name="solicitante" 
+                               [(ngModel)]="solicitante" 
+                               type="text"
+                               class="form-control" 
+                               placeholder="Solicitante" [disabled]="true"
+                               required [disabled]="accion == 'Aprobar'">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row m-b-0">
+                    <label class="col-sm-3 control-label">Unidad de negocio*</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-home"></i></div>
+                        <select class="form-control custom-select"
+                                placeholder="Seleccione una unidad de negocio"
+                                name="unidadNegocio"
+                                [(ngModel)]="unidadDeNegocio"
+                                required>
+                                <!-- [disabled]="accion == 'Aprobar'"> -->
+                          <option hidden value="" disabled selected>Seleccione </option>
+                          <option *ngFor="let unidad of UnidadesDeNegocio" [value]="unidad">{{ unidad }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>                          
+                </form>
+              
+              </div>
+              <!-- Fin de panel de edición de información del cliente -->
+            
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button class="btn btn-info waves-effect waves-light btn-actualizar-requisicion" 
+                (click)="actualizarInformacionDeRequisicion()"
+                *ngIf="accion !== 'Registrar'">Actualizar</button>
+
+        <button type="submit"
+                form="formaRequisicion"
+                class="btn btn-success waves-effect waves-light" *ngIf="accion === 'Registrar'">{{accion}}</button>
+        <button type="button"
+                (click)="actualizarRequisicion(true)"
+                class="btn btn-success waves-effect waves-light" *ngIf="accion !== 'Registrar' ">Aprobar</button>
+        <button type="button"
+                (click)="actualizarRequisicion(false)"
+                class="btn btn-warning waves-effect waves-light" *ngIf="accion !== 'Registrar' ">Rechazar</button>
+
+        <!-- <button type="button"
+                (click)="resetearModal()" 
+                class="btn btn-danger waves-effect waves-light" 
+                data-dismiss="modal">Salir</button> -->
+        <!-- Fin de botones -->
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

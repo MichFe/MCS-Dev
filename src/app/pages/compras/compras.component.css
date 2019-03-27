@@ -1,0 +1,24 @@
+hr{
+  border: 0;
+  height: 1px;
+  background: #278395;
+  background-image: linear-gradient(to right, #caebf1, #278395, #caebf1);
+}
+
+th{
+  text-align: center;
+}
+
+td{
+  vertical-align: middle;
+}
+
+.right{
+  float: right;
+}
+
+.rotar{
+    transform: rotate(90deg);
+    display: inline-block;
+    margin-left: 10px;
+}

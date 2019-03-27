@@ -12,6 +12,10 @@ import { CatalogoProductosComponent } from "./catalogo-productos/catalogo-produc
 import { ProfileComponent } from "./profile/profile.component";
 import { ReporteVentasComponent } from "./reporte-ventas/reporte-ventas.component";
 import { CuentasPorCobrarComponent } from "./cuentas-por-cobrar/cuentas-por-cobrar.component";
+import { RequisicionesComponent } from "./requisiciones/requisiciones.component";
+import { ComprasComponent } from "./compras/compras.component";
+import { AprobacionRequisicionesComponent } from "./aprobacion-requisiciones/aprobacion-requisiciones.component";
+import { CuentasPorPagarComponent } from "./cuentas-por-pagar/cuentas-por-pagar.component";
 
 
 const pagesRoutes:Routes = [
@@ -30,6 +34,10 @@ const pagesRoutes:Routes = [
             { path: 'perfil', component: ProfileComponent},
             { path: 'reporteVentas', component: ReporteVentasComponent },
             { path: 'cuentasPorCobrar', component: CuentasPorCobrarComponent },
+            { path: 'requisiciones', component: RequisicionesComponent },
+            { path: 'compras', component: ComprasComponent},
+            { path: 'aprobaciones', component: AprobacionRequisicionesComponent },
+            { path: 'cuentasPorPagar', component: CuentasPorPagarComponent },
             { path: '', redirectTo: '/reporteVentas', pathMatch: 'full' },
         ]
     },

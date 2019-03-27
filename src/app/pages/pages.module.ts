@@ -49,6 +49,14 @@ import { SoloCarritoComponent } from './solo-carrito/solo-carrito.component';
 import { ModalDetalleVentaComponent } from './modal/modal-detalle-venta/modal-detalle-venta.component';
 import { ModalRegistroCobroComponent } from './modal/modal-registro-cobro/modal-registro-cobro.component';
 import { TablaCotizacionesComponent } from './tabla-cotizaciones/tabla-cotizaciones.component';
+import { RequisicionesComponent } from "./requisiciones/requisiciones.component";
+import { DetalleRequisicionComponent } from "./modal/detalle-requisicion/detalle-requisicion.component";
+import { ComprasComponent } from "./compras/compras.component";
+import { AprobacionRequisicionesComponent } from './aprobacion-requisiciones/aprobacion-requisiciones.component';
+import { OrdenCompraComponent } from './modal/orden-compra/orden-compra.component';
+import { ModalNuevoProveedorComponent } from './modal/modal-nuevo-proveedor/modal-nuevo-proveedor.component';
+import { ModalPagoComponent } from './modal/modal-pago/modal-pago.component';
+import { CuentasPorPagarComponent } from './cuentas-por-pagar/cuentas-por-pagar.component';
 
 
 
@@ -94,7 +102,15 @@ import { TablaCotizacionesComponent } from './tabla-cotizaciones/tabla-cotizacio
     SoloCarritoComponent,
     ModalDetalleVentaComponent,
     ModalRegistroCobroComponent,
-    TablaCotizacionesComponent
+    TablaCotizacionesComponent,
+    RequisicionesComponent,
+    DetalleRequisicionComponent,
+    ComprasComponent,
+    AprobacionRequisicionesComponent,
+    OrdenCompraComponent,
+    ModalNuevoProveedorComponent,
+    ModalPagoComponent,
+    CuentasPorPagarComponent
   ],
   exports: [
     DashboardComponent,

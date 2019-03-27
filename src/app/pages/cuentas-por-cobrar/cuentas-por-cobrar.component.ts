@@ -54,16 +54,19 @@ export class CuentasPorCobrarComponent implements OnInit {
       this.ventasConSaldo = [];
       return;
     }
+    let clientesFiltrados=[];
     this.clientesConSaldoPendiente.forEach((cliente,i)=>{
       nombreCliente=cliente.cliente.nombre;
       nombreCliente=nombreCliente.toUpperCase();
       nombreCliente=nombreCliente.trim();
 
-      if(!nombreCliente.includes(termino)){
+      if(nombreCliente.includes(termino)){
         //Si el termino de busqueda no coincide con el nombre del cliente lo sacamos del array
-        this.clientesConSaldoPendiente.splice(i,1);
+        clientesFiltrados.push(cliente);
       }
     });
+
+    this.clientesConSaldoPendiente=clientesFiltrados;
 
 
 

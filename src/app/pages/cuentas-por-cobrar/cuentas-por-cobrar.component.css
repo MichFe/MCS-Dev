@@ -2,6 +2,10 @@ th{
     text-align: center;
 }
 
+td{
+        vertical-align: middle;
+}
+
 .borde-izquierdo{
     border-left: 1px solid lightgrey;
 }

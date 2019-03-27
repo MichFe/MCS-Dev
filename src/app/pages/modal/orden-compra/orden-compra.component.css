@@ -28,7 +28,6 @@ li.proveedor:hover{
 
 }
 
-.btn-actualizar-compra{
-    position: absolute;
-    left: 30px;
+.left-footer-wrap{
+    margin-right: auto;
 }

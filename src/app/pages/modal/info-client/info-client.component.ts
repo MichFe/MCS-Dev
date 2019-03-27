@@ -40,14 +40,16 @@ export class InfoClientComponent implements OnInit, OnChanges {
   actualizarImagen( cliente ){
 
     this._imageUploadService.notificacion.subscribe( (resp)=>{
-
-      this.cliente=resp.cliente;
+      
+      if( 'cliente' in resp ){
+        this.cliente=resp.cliente;
+      }
             
     });
 
     this._imageUploadService.inicializarModal('cliente', cliente._id);
     $("#infoCliente").modal('toggle');
-    $("#cargarImagen").modal("toggle");
+    // $("#cargarImagen").modal("toggle");
 
     
 

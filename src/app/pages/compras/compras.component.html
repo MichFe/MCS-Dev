@@ -136,6 +136,78 @@
   </div>
   <!-- Compras en seguimiento -->
 
+    <!-- Compras en seguimiento -->
+  <div class="m-t-30">
+    <h4>Todas las compras <i class="ti-bag m-l-10"></i></h4>
+    <hr class="style-two">
+    
+    <div class="table-responsive">
+      <table class="table table-hover text-center">
+        <thead class="header">
+          <tr>
+            <th>Fecha de compra</th>
+            <th>Proveedor</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Pagado</th>
+            <th>Estatus</th>
+            <th>Fecha compromiso de entrega</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let compra of todasLasCompras, let i=index" 
+              class="pointer"
+              (click)="mostrarDetalleCompra(compra)">
+            <td>{{ compra.fechaCompra | date }}</td>
+            <td>{{ compra.proveedor.nombre }}</td>
+            <td>{{ compra.requisicion.descripcion }}</td>
+            <td>{{ compra.requisicion.cantidad }}</td>
+            <td>{{ compra.costoTotal | currency:'MXN' }}</td>
+            <td>
+              <span>{{ compra.montoPagado | currency:'MXN' }} ({{ (compra.montoPagado/compra.costoTotal) | percent }})</span>
+              <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
+                                          'width': ((compra.montoPagado/compra.costoTotal)*100)+'%'
+                                        }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </td>
+            <td>{{ compra.estatusPedido }}</td>
+            <td>{{ compra.fechaCompromisoEntrega | date }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Componente de paginado   -->
+    <div *ngIf="compras && compras.length>0" class="m-t-15">
+      <ul class="pagination justify-content-center">
+    
+        <li class="page-item pointer" (click)="paginaAnteriorTodasLasCompras()">
+          <a class="page-link" aria-label="Previous">
+            <span aria-hidden="true">«</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+    
+        <li *ngFor="let pagina of paginasTodasLasCompras" class="page-item pointer"
+          (click)="cargarElementosPaginaTodasLasCompras(pagina.pagina)" [ngClass]="{'active': pagina.active }"><a
+            class="page-link">{{ pagina.pagina }}</a></li>
+    
+        <li class="page-item pointer" (click)="paginaSiguienteTodasLasCompras()">
+          <a class="page-link" aria-label="Next">
+            <span aria-hidden="true">»</span>
+            <span class="sr-only">Next</span>
+          </a>
+        </li>
+    
+      </ul>
+    
+    </div>
+    <!-- FIN de Componente de paginado   -->
+
+  </div>
+
 </div>
 
 

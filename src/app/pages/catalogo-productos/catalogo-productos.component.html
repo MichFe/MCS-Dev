@@ -153,9 +153,12 @@
 
       <div class="botonera"
            *ngIf="carrito.length>0">
+        <button class="btn btn-warning waves-effect waves-light btn-block"
+                (click)="agregarDescuentoTotal()">Descuento Total</button>
+
         <button class="btn btn-success waves-effect waves-light btn-block"
                 data-toggle="modal"
-                data-target="#ticketVenta">Venta</button>
+                data-target="#ticketVenta">Vender</button>
         <!-- <button class="btn btn-secondary waves-effect-waves-light btn-block">Cotización</button> -->
       </div>
 

@@ -3,6 +3,7 @@ import { ProductoService } from 'src/app/services/productos/producto.service';
 import { Producto } from 'src/app/models/producto.model';
 import { ClienteService } from 'src/app/services/clientes/cliente.service';
 import { SubirArchivoService } from 'src/app/services/subirArchivo/subir-archivo.service';
+import swal from 'sweetalert';
 
 declare var $:any;
 
@@ -67,6 +68,76 @@ export class CatalogoProductosComponent implements OnInit {
   ) {}
 
   ngOnInit() {}
+
+  agregarDescuentoTotal(){
+
+    swal("Descuento Total", "Selecciona $ ó %", "info", {
+      buttons: {
+        monto: {
+          text: "$",
+          value: "monto"
+        },
+        porcentaje: {
+          text: "%",
+          value: "porcentaje"
+        }
+      }
+    }).then(tipo=>{
+
+      swal({
+        content: {
+          element: "input",
+          attributes: {
+            type: "number"
+          }
+        },
+        text: "Ingresa el descuento en " + tipo,
+        buttons: [true, "Aceptar"]
+      }).then(descuento=>{
+        descuento=Number(descuento);
+
+        if(tipo=='porcentaje'){
+
+          if(descuento>=0 && descuento<=100){
+            this.carrito.forEach(producto => {
+              producto.descuento = (producto.precio) * (descuento / 100);
+              producto.descuento = Number(producto.descuento.toFixed(2));
+            });
+            this.calcularSubTotalCarrito();
+          }else{
+            swal(
+              "Descuento no válido",
+              "El porcentaje debe ser un valor entre 0 y 100",
+              "warning"
+              );
+              return;
+          }
+          
+        }else{
+
+          if(tipo=='monto'){
+            if(descuento>this.totalCarrito){
+              swal(
+                "Descuento no válido",
+                "El desucento no puede ser mayor al total de la venta",
+                "warning"
+              );
+              return;
+            }else{
+              this.carrito.forEach(producto => {
+                producto.descuento = (( (producto.precio*producto.cantidad) / this.totalCarrito) * descuento)/producto.cantidad;
+                producto.descuento = Number(producto.descuento.toFixed(2));
+              });
+              this.calcularSubTotalCarrito();
+            }
+
+            
+          }
+        }
+      });
+
+    });
+  }
 
   buscarProducto(termino) {
 
@@ -412,16 +483,20 @@ export class CatalogoProductosComponent implements OnInit {
       let precio = producto.precio;
       let descuento = Number(producto.descuento);
 
+      
+
       let total = cantidad * precio;
-      producto.total = total;
+      producto.total = Number(total.toFixed(2));
 
       this.totalCarrito += total;
       if (descuento) {
-        this.totalDescuento += descuento;
+        this.totalDescuento += descuento*cantidad;
+        this.totalDescuento=Number(this.totalDescuento.toFixed(2));
       }
     });
 
     this.ivaCarrito = (this.totalCarrito - this.totalDescuento) * 0.16;
+    this.ivaCarrito=Number(this.ivaCarrito.toFixed(2));
   }
 
   cambiarNombre(indiceCarrito){
@@ -453,7 +528,9 @@ export class CatalogoProductosComponent implements OnInit {
         if (!precio) {
           return;
         }
-        this.carrito[indiceCarrito].precio = precio;
+        this.carrito[indiceCarrito].precio = Number(precio);
+        this.carrito[indiceCarrito].precio = this.carrito[indiceCarrito].precio.toFixed(2);
+        this.carrito[indiceCarrito].precio = Number(this.carrito[indiceCarrito].precio);
         this.calcularSubTotalCarrito();
       })
       .catch();

@@ -199,7 +199,7 @@ export class SoloCarritoComponent implements OnInit {
             buttons: [true, "Aceptar"]
           }).then(descuento => {
             if (tipo == "monto") {
-
+              descuento=Number(descuento);
               if (descuento > this.carrito[index].precio) {
                 swal(
                   "Descuento",
@@ -217,6 +217,7 @@ export class SoloCarritoComponent implements OnInit {
               $("#catalogoModal").modal("toggle");
 
             } else {
+              descuento=Number(descuento);
               if (descuento >= 0 && descuento <= 100) {
                 this.carrito[index].descuento =
                   this.carrito[index].precio * (descuento / 100);
@@ -264,6 +265,7 @@ export class SoloCarritoComponent implements OnInit {
             text: "Ingresa el descuento en " + tipo,
             buttons: [true, "Aceptar"]
           }).then(descuento => {
+            descuento=Number(descuento);
             if (tipo == "monto") {
 
               if (descuento > this.carrito[index].precio) {
@@ -283,6 +285,7 @@ export class SoloCarritoComponent implements OnInit {
               $("#modalDetalleVenta").modal("toggle");
 
             } else {
+              descuento=Number(descuento);
               if (descuento >= 0 && descuento <= 100) {
                 this.carrito[index].descuento =
                   this.carrito[index].precio * (descuento / 100);
@@ -321,16 +324,17 @@ export class SoloCarritoComponent implements OnInit {
       let descuento = (!producto.descuento)?0:Number(producto.descuento);
 
       let total = cantidad * (precio );
-      producto.total = total;
+      producto.total = Number(total.toFixed(2));
 
       this.subTotalCarrito += total;
       if (descuento) {
-        this.totalDescuento += (descuento * cantidad);
+        this.totalDescuento += Number((descuento * cantidad).toFixed(2));
       }
     });
 
-    this.ivaCarrito = (this.subTotalCarrito - this.totalDescuento) * 0.16;
-    this.totalCarrito=(this.subTotalCarrito - this.totalDescuento + this.ivaCarrito);
+    this.subTotalCarrito=Number(this.subTotalCarrito.toFixed(2));
+    this.ivaCarrito = Number(((this.subTotalCarrito - this.totalDescuento) * 0.16).toFixed(2));
+    this.totalCarrito=Number((this.subTotalCarrito - this.totalDescuento + this.ivaCarrito).toFixed(2));
 
     this.totales ={
       subtotal: this.subTotalCarrito,

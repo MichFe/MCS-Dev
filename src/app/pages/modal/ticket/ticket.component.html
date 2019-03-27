@@ -31,6 +31,7 @@
                 <div class="input-group">
                    <div class="input-group-addon"><i class="ti-user"></i></div>
                     <input name="clienteNombre"
+                           autocomplete="off"
                            id="clienteInput"
                            (keyup)="buscarCliente()" 
                                [(ngModel)]="clienteNombre" 
@@ -97,7 +98,8 @@
                 <div class="input-group">
                    <div class="input-group-addon"><i class="ti-money"></i></div>
                     <input name="efectivo" 
-                               [(ngModel)]="efectivo" 
+                               [(ngModel)]="efectivo"
+                               autocomplete="off"  
                                type="string" 
                                class="form-control" 
                                placeholder="Ingresa el efectivo recibido"
@@ -193,7 +195,7 @@
                         {{ producto.cantidad }} x {{ producto.precio | number:'1.2-2' }} 
                         <span class="right">{{ producto.total | number:'1.2-2' }}</span></p>
                       <p *ngIf="producto.descuento>0"
-                          class="descripcion-item-producto">Descuento: <span class="right">-{{ producto.descuento | number:'1.2-2' }}</span></p>
+                          class="descripcion-item-producto">Descuento: <span class="right">-{{ (producto.descuento*producto.cantidad) | number:'1.2-2' }}</span></p>
                   </li>
                   <br>
                 </ul>

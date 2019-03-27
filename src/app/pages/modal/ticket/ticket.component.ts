@@ -318,27 +318,79 @@ export class TicketComponent implements OnInit {
         }
       });
     } else {
-      // console.log(venta);
-      this._ventasService.generarVenta(venta).subscribe(
-        (resp: any) => {
-          this.ventaConfirmada = true;
 
-          this.registrarPago(resp.venta, this.efectivo);
-
-          swal(
-            "Venta exitosa",
-            "La venta se ha registrado exitosamente",
-            "success"
-          );
-          
-      },
-      (error)=>{
+      if (this.efectivo > venta.total){
         swal(
-          "Error al registrar Venta",
-          error.error.mensaje + " | " + error.error.errors.message,
-          "error"
-        );
-      });
+          "Efectivo mayor a total",
+          "El monto recibido es mayor que el monto total, ¿desea continuar?",
+          "warning",
+          {
+            buttons: {
+              monto: {
+                text: "Sí",
+                value: true
+              },
+              porcentaje: {
+                text: "No",
+                value: false
+              }
+            }
+          }
+        ).then(continuar => {
+          if (continuar) {
+            this._ventasService.generarVenta(venta).subscribe(
+              (resp: any) => {
+                this.ventaConfirmada = true;
+
+                this.registrarPago(resp.venta, this.efectivo);
+
+                swal(
+                  "Venta exitosa",
+                  "La venta se ha registrado exitosamente",
+                  "success"
+                );
+
+              },
+              (error) => {
+                swal(
+                  "Error al registrar Venta",
+                  error.error.mensaje + " | " + error.error.errors.message,
+                  "error"
+                );
+              });
+          } else {
+
+            return;
+          }
+        });
+      }else{
+        //Si el efectivo es igual q el total de la venta
+        if (this.efectivo == venta.total) {
+          this._ventasService.generarVenta(venta).subscribe(
+            (resp: any) => {
+              this.ventaConfirmada = true;
+
+              this.registrarPago(resp.venta, this.efectivo);
+
+              swal(
+                "Venta exitosa",
+                "La venta se ha registrado exitosamente",
+                "success"
+              );
+
+            },
+            (error) => {
+              swal(
+                "Error al registrar Venta",
+                error.error.mensaje + " | " + error.error.errors.message,
+                "error"
+              );
+            });
+        }
+      }
+
+      
+     
     }
   }
 
@@ -351,6 +403,11 @@ export class TicketComponent implements OnInit {
       tipoDePago: venta.tipoDePago,
       fecha: this.fecha
     };
+
+    //validamos q el pago no sea mayor al total de la venta
+    if (cobro.monto > venta.total){
+      cobro.monto=venta.total;
+    }
 
     this._cobrosService.registrarCobro(cobro)
       .subscribe(

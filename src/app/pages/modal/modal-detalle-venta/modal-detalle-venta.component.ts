@@ -87,7 +87,7 @@ export class ModalDetalleVentaComponent implements OnInit,OnChanges {
 
       this.carrito.forEach(producto => {
         if (producto.descuento) {
-          this.totalDescuento += producto.descuento;
+          this.totalDescuento += (producto.descuento*producto.cantidad);
         }
       });
 
@@ -123,6 +123,21 @@ export class ModalDetalleVentaComponent implements OnInit,OnChanges {
 
 
 
+  }
+
+  recargarVenta(){
+    this._ventasService.obtenerVentaPorId(this.venta._id)
+      .subscribe(
+        (resp:any)=>{
+          this.venta=resp.venta;
+        },
+        (error)=>{
+          swal(
+            "Error al recargar venta",
+            error.error.mensaje + " | " + error.error.errors.message,
+            "error"
+          );
+        });
   }
 
 
@@ -170,6 +185,8 @@ export class ModalDetalleVentaComponent implements OnInit,OnChanges {
           this._cobrosService.eliminarCobro(pago._id)
             .subscribe(
               (resp) => {
+                
+                this.recargarVenta();
                 this.obtenerCobros(this.venta._id);
                 this.recargarTablaVentas.emit();
                 swal(
@@ -337,7 +354,8 @@ export class ModalDetalleVentaComponent implements OnInit,OnChanges {
 
     if (this.total>this.venta.total){
 
-      ventaActualizada.saldoPendiente=this.venta.saldoPendiente+(this.total-this.venta.total);
+      ventaActualizada.saldoPendiente= this.venta.saldoPendiente+(this.total-this.venta.total);
+      ventaActualizada.saldoPendiente= Number(ventaActualizada.saldoPendiente.toFixed(2));
       ventaActualizada.estatus = 'Saldo Pendiente';
       this.llamarActualizacionDeVenta(ventaActualizada);
       return;
@@ -349,12 +367,15 @@ export class ModalDetalleVentaComponent implements OnInit,OnChanges {
         ((this.venta.saldoPendiente - (this.venta.total - this.total)) == 0)?ventaActualizada.estatus = 'Liquidada':ventaActualizada.estatus = 'Saldo Pendiente';
 
         ventaActualizada.saldoPendiente=this.venta.saldoPendiente-(this.venta.total-this.total);
+        ventaActualizada.saldoPendiente= Number(ventaActualizada.saldoPendiente.toFixed(2));
         this.llamarActualizacionDeVenta(ventaActualizada);
         return;
 
       }else{        
 
         let excedente = ((this.venta.saldoPendiente - (this.venta.total - this.total)) * -1);
+
+        excedente=Number(excedente.toFixed(2));
 
         let excedenteString = excedente.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
@@ -378,7 +399,9 @@ export class ModalDetalleVentaComponent implements OnInit,OnChanges {
           (actualizar) => {
             if (actualizar) {
 
-              ventaActualizada.montoPagado= ventaActualizada.montoPagado-excedente;              
+              ventaActualizada.montoPagado = ventaActualizada.montoPagado-excedente;
+              ventaActualizada.montoPagado=Number(ventaActualizada.montoPagado.toFixed(2));
+              ventaActualizada.saldoPendiente=0;              
               ventaActualizada.estatus = 'Liquidada';
               this.llamarActualizacionDeVenta(ventaActualizada,excedente);
 

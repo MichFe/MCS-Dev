@@ -142,6 +142,7 @@
                   <tr>
                     <th>Fecha</th>
                     <th>Monto</th>
+                    <th>Forma de Pago</th>
                     <th>Eliminar</th>
                   </tr>
                 </thead>
@@ -154,6 +155,7 @@
                       }">
                     <td>{{ cobro.fecha | date }}</td>
                     <td>{{ cobro.monto | currency:'MXN' }}</td>
+                    <td>{{ cobro.tipoDePago | titlecase }}</td>
                     <td class="pointer color-red"
                         (click)="eliminarPago(cobro)"><i class="fa fa-trash"></i></td>
                   </tr>

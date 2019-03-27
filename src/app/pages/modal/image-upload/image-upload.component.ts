@@ -24,12 +24,10 @@ export class ImageUploadComponent implements OnInit {
 
   subirImagen(){
     
-    this._subirArchivoService.subirArchivo( this.imagenSubir, this._imageUploadService.tipo, this._imageUploadService.id )
+    this._subirArchivoService.subirArchivo(this.imagenSubir, this._imageUploadService.tipo, this._imageUploadService.id, this._imageUploadService.indexProductoEnCotizacion )
         .then( resp=>{
-
+          
           this._imageUploadService.notificacion.emit( resp );
-          this._imageUploadService.resetearModal();
-          this.resetearModal();
 
           swal(
             "Carga de imagen exitosa",
@@ -37,6 +35,8 @@ export class ImageUploadComponent implements OnInit {
             "success"
           );
 
+
+          this.resetearModal();
 
         })
         .catch( (error:any) =>{
@@ -47,10 +47,11 @@ export class ImageUploadComponent implements OnInit {
             "error"
           );
           
+          this.resetearModal();
+          
         });
         
-        $('#cargarImagen').modal("toggle");
-        $('#infoCliente').modal('toggle');
+        
         
   }
 
@@ -58,6 +59,25 @@ export class ImageUploadComponent implements OnInit {
     this.imagenTemporal=null;
     this.imagenSubir=null;
     this.hayImagen=false;
+    
+    if (this._imageUploadService.indexProductoEnCotizacion !== null) {
+      
+      $("#cargarImagen").on("hidden.bs.modal", function (event) {
+        $("#cargarImagen").off("hidden.bs.modal");
+        $('#cotizacion').modal("toggle");
+      });
+
+      // $("#cargarImagen").modal("toggle");
+
+    } else {
+      $("#cargarImagen").on("hidden.bs.modal", function (event) {
+        $("#cargarImagen").off("hidden.bs.modal");
+        $('#infoCliente').modal('toggle');
+      });
+      
+      // $('#cargarImagen').modal("toggle");
+
+    }
 
     this._imageUploadService.resetearModal();
   }

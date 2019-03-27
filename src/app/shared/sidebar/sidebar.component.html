@@ -26,7 +26,15 @@
               [routerLink]="[ menu.url ]">{{ menu.modulo }}</span></a>
           <ul aria-expanded="false" class="collapse">
             <li *ngFor="let submenu of menu.submenu">
-              <a [routerLink]="[ submenu.url ]" routerLinkActive="active" (click)="expandCollapsSidebar()">{{ submenu.titulo }}</a></li>
+              <a [routerLink]="[ submenu.url ]" routerLinkActive="active" (click)="expandCollapsSidebar()">
+                {{ submenu.titulo }} 
+                <span class="badge badge-pill badge-info" 
+                *ngIf="submenu.notificacion && submenu.notificacion>0">
+                  {{ submenu.notificacion }}
+                </span>
+              </a>
+              
+            </li>
           </ul>
         </li>
       </ul>

@@ -18,6 +18,11 @@ File: scss
 /*******************
 Login register and recover password Page
 ******************/
+.bg-resize{
+  background-size: 80vw 100vh;
+  background-position: left;
+}
+
 .login-register {
   background-size: cover;
   background-repeat: no-repeat;

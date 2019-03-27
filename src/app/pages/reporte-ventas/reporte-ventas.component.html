@@ -24,7 +24,7 @@
 
       <!-- Column Ventas Diarias -->
       <div class="col-lg-4 col-12">
-        <div class="card bg-warning bordered-card-10">
+        <div class="card bg-red bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
@@ -43,7 +43,7 @@
 
       <!-- Column Ventas Mensuales -->
       <div class="col-lg-4 col-12">
-        <div class="card bg-info bordered-card-10">
+        <div class="card bg-blue bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
@@ -61,7 +61,7 @@
 
       <!-- Column Ventas Anuales -->
       <div class="col-lg-4 col-12">
-        <div class="card bg-primary bordered-card-10">
+        <div class="card bg-pink bordered-card-10">
           <div class="card-body">
             <div class="d-flex">
               <div>
@@ -175,6 +175,8 @@
       </div>
     <!-- Elemento de cuentas por cobrar -->
 
+    
+
 
   </div>
   <!-- FIN de ElementoGráficas de Pie -->
@@ -183,7 +185,9 @@
   <div class="row">
     <div class="col col-md-12">
       <div class="card text-center">
-        <div class="card-title"><h4>Ventas {{ year }}</h4></div>
+        <div class="card-title">
+          <h4>Ventas {{ year }}</h4>
+        </div>
         <div class="card-body">
           <canvas id="chart-bar-ventasMensuales" height="100"></canvas>
         </div>
@@ -191,6 +195,24 @@
     </div>
   </div>
   <!-- FIN de Elemento grafica de barras de ventas mensuales -->
+
+  <!-- Elemento Descuentos Mensuales Otorgados -->
+  <div class="row">
+    <div class="col col-md-12 text-center">
+  
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Descuentos {{ year }}: {{ totalDescuentosAnuales | currency:'MXN' }}</h4>
+          <!-- <div id="sparkPieDescuentos"></div> -->
+
+          <canvas id="chart-bar-descuentosMensuales" height="100"></canvas>
+
+        </div>
+      </div>
+  
+    </div>
+  </div>
+  <!-- FIN de Elemento Descuentos Mensuales Otorgados -->
 
   <!-- Top 5 ventas -->
   <div class="row"
@@ -223,8 +245,8 @@
           
               <tbody>
                 <tr *ngFor="let venta of ventas" class="pointer" [ngClass]="{
-                            'table-success': venta.estatus==='Liquidada',
-                            'table-warning': venta.estatus==='Saldo Pendiente'
+                            'tb-success': venta.estatus==='Liquidada',
+                            'tb-warning': venta.estatus==='Saldo Pendiente'
                           }" (click)="verDetalleDeVenta(venta)">
                   <td>{{ venta.fecha | date }}</td>
                   <td>{{ venta.cliente.nombre }}</td>

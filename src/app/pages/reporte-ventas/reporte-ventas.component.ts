@@ -23,6 +23,7 @@ export class ReporteVentasComponent implements OnInit {
   month:number = 0;
   day:number = this.fechaActual.getDate();
   totalVentasAnuales:number;
+  totalDescuentosAnuales:number;
   imagenClienteNuevo: File;
   ventaSeleccionadaTabla:any={};
   paginaActual:number=1;
@@ -46,25 +47,31 @@ export class ReporteVentasComponent implements OnInit {
   metasMensuales:any[]=[];
   metasActuales:any;
   metaAnual:number;
+  descuentosAnuales: number[]=[];
 
   //chartjs
   canvas1:any;
   ctx1:any;
   chart1:any;
 
+  //chartjs descuentos mensuales
+  canvas2:any;
+  ctxt2:any;
+  chart2:any;
+
   graphColors=[
-    "#55efc4",
-    "#00b894",
-    "#ffeaa7",
-    "#fdcb6e",
-    "#81ecec",
-    "#00cec9",
-    "#fab1a0",
-    "#e17055",
-    "#74b9ff",
-    "#0984e3",
-    "#ff7675",
-    "#d63031",
+    "#0a3d62", //Ene
+    "#b71540", //Feb
+    "#e58e26", //Mar
+    "#006266", //Abr
+    "#e55039", //May
+    "#aaa69d", //Jun
+    "#FFC312", //Jul
+    "#6F1E51", //Ago
+    "#273c75", //Sep
+    "#f368e0", //Oct
+    "#009432", //Nov
+    "#d63031", //Dic
     "#a29bfe",
     "#6c5ce7",
     "#fd79a8",
@@ -120,6 +127,7 @@ export class ReporteVentasComponent implements OnInit {
     this.obtenerVentasMensuales(this.year, this.unidadDeNegocioActual);
     this.obtenerVentasDiarias(this.year, this.month, this.unidadDeNegocioActual);
     this.obtenerSaldoPendienteYMontoPagado(this.year,this.unidadDeNegocioActual);
+    this.obtenerDescuentosMensuales(this.year, this.unidadDeNegocioActual);
     this.obtenerMetas();
     
 
@@ -130,17 +138,22 @@ export class ReporteVentasComponent implements OnInit {
     this.obtenerVentasMensuales(this.year, this.unidadDeNegocioActual);
     this.obtenerVentasDiarias(this.year, this.month, this.unidadDeNegocioActual);
     this.obtenerSaldoPendienteYMontoPagado(this.year,this.unidadDeNegocioActual);
+    this.obtenerDescuentosMensuales(this.year, this.unidadDeNegocioActual);
     this.obtenerMetas();
     
 
   }
 
   ngOnInit() {
-
+    //Grafica de ventas mensuales
     this.canvas1 = <HTMLCanvasElement>document.getElementById("chart-bar-ventasMensuales");
     this.ctx1 = this.canvas1.getContext('2d');
 
-    this._ventasService.obtenerVentas(0, this.unidadDeNegocioActual,this.year).subscribe((resp: any) => {
+    //grafica de descuentos mensuales
+    this.canvas2 = <HTMLCanvasElement>document.getElementById("chart-bar-descuentosMensuales");
+    this.ctxt2 = this.canvas2.getContext('2d');
+
+    this._ventasService.obtenerVentas(0, this.unidadDeNegocioActual,this.year, this.month).subscribe((resp: any) => {
 
       this.ventas = resp.ventas;
       this.conteoVentas = resp.totalVentas;
@@ -298,6 +311,7 @@ export class ReporteVentasComponent implements OnInit {
         this.month = mes-1;
         this.day = 1;
         this.obtenerVentasDiarias(this.year,this.month);
+        this.obtenerVentas(1,this.unidadDeNegocioActual);
         this.configurarGraficas();
 
       })
@@ -353,6 +367,21 @@ export class ReporteVentasComponent implements OnInit {
     );
   }
 
+  obtenerDescuentosMensuales(year:number, unidadDeNegocio:string='0'){
+    if (this.unidadDeNegocioActual == 'Todas') {
+
+      unidadDeNegocio = '0';
+
+    }
+
+    this._ventasService.obtenerDescuentosMensuales(year,unidadDeNegocio).subscribe(
+      (resp:any)=>{
+        this.descuentosAnuales = resp.descuentosMensuales;
+        this.configurarGraficas();
+        this.totalDescuentosAnuales = this.descuentosAnuales.reduce((a, b) => a + b, 0);
+      });
+  }
+
   obtenerVentasDiarias(year:number, month:number, unidadDeNegocio:string='0'){
 
     (this.unidadDeNegocioActual=='Todas')?unidadDeNegocio='0':null;
@@ -373,7 +402,7 @@ export class ReporteVentasComponent implements OnInit {
     }
     let desde = (pagina*10)-10;
 
-    this._ventasService.obtenerVentas(desde, unidadDeNegocio,this.year).subscribe(
+    this._ventasService.obtenerVentas(desde, unidadDeNegocio,this.year, this.month).subscribe(
       (resp: any) => {
       this.ventas = resp.ventas;
       this.conteoVentas = resp.totalVentas;
@@ -507,7 +536,7 @@ export class ReporteVentasComponent implements OnInit {
       width: "100%",
       height: "50px",
       lineColor: "#fff",
-      fillColor: "#7460ee",
+      fillColor: "#b71540",
       highlightLineColor: "rgba(0, 0, 0, 0.2)",
       highlightSpotColor: "#7460ee",
       minSpotColor: "",
@@ -524,7 +553,7 @@ export class ReporteVentasComponent implements OnInit {
       width: "100%",
       height: "50",
       lineColor: "#fff",
-      fillColor: "#009efb",
+      fillColor: "#0a3d62",
       highlightLineColor: "rgba(0, 0, 0, 0.2)",
       highlightSpotColor: "#009efb",
       maxSpotColor: "",
@@ -565,6 +594,25 @@ export class ReporteVentasComponent implements OnInit {
       }
     });
 
+    // $("#sparkPieDescuentos").sparkline(this.descuentosAnuales, {
+    //   type: "pie",
+    //   width: "200px",
+    //   height: "200px",
+    //   highlightLighten: 0.6,
+    //   sliceColors: this.graphColors,
+    //   offset: "180",
+    //   borderColor: "#fff",
+    //   // lineColor: "#fff",
+    //   // fillColor: "#7460ee",
+    //   // maxSpotColor: "#7460ee",
+    //   // highlightLineColor: "rgba(0, 0, 0, 0.2)",
+    //   // highlightSpotColor: "#7460ee",
+    //   tooltipFormat: "{{offset:names}} ${{value}} ({{percent.1}}%)",
+    //   tooltipValueLookups: {
+    //     names: this.meses
+    //   }
+    // });
+
     $("#sparkPieCredito").sparkline(this.ventasPorCobrar, {
       type: "pie",
       width: "200px",
@@ -588,7 +636,7 @@ export class ReporteVentasComponent implements OnInit {
       }
     });
 
-    
+    //Grafica de barras de ventas mensuales
     (this.chart1)?this.chart1.destroy():null;
     this.chart1 = new Chart(this.ctx1,{
       type: 'bar',
@@ -611,12 +659,45 @@ export class ReporteVentasComponent implements OnInit {
               var lecturaData=data.datasets[tooltipItem.datasetIndex];
               let monto:number = data.datasets[0].data[index];
 
-              return '  $' + monto.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              return '  $' + monto.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
               
             }
           }
         }
       }
     });
+
+    //Grafica de descuentos mensuales
+    (this.chart2) ? this.chart2.destroy() : null;
+    this.chart2 = new Chart(this.ctxt2, {
+      type: 'bar',
+      data: {
+        labels: this.mesesArray,
+        datasets: [{
+          label: "Descuentos " + this.year,
+          backgroundColor: this.graphColors,
+          borderColor: this.graphColors,
+          data: this.descuentosAnuales,
+        }]
+      },
+
+      // Configuration options go here
+      options: {
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var index = tooltipItem.index;
+              var lecturaData = data.datasets[tooltipItem.datasetIndex];
+              let monto: number = data.datasets[0].data[index];
+
+              return '  $' + monto.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            }
+          }
+        }
+      }
+    });
+
+
   }
 }

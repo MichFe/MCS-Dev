@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { UsuarioService } from '../usuarios/usuario.service';
 import { URL_SERVICIOS } from 'src/app/config/config';
 import { Observable, Subject } from 'rxjs';
+import { DeleteImageService } from '../deleteImage/delete-image.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class CotizacionService {
 
   constructor(
     private http:HttpClient,
-    private _usuarioService:UsuarioService
+    private _usuarioService:UsuarioService,
+    private _deleteImageService: DeleteImageService
   ) { 
     this.calcularTotalCotizacionSubject = new Subject<any>();
     this.calcularTotalCotizacion = this.calcularTotalCotizacionSubject.asObservable();
@@ -45,11 +47,19 @@ export class CotizacionService {
   }
 
   eliminarProductoDeCotizacion(index){
-    this.productos.splice(index, 1);
+        
+        this.productos.splice(index, 1);            
+
   }
 
   vaciarCarrito(){
     this.carrito.splice(0,this.carrito.length);
+    
+  }
+
+  vaciarProductosDeCotizacion(){
+    this.productos.splice(0, this.productos.length);
+    
   }
 
   actualizarCotizacion(cotizacion){    

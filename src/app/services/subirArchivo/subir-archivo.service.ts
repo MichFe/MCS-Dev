@@ -8,7 +8,7 @@ export class SubirArchivoService {
 
   constructor() { }
 
-  subirArchivo( archivo:File, tipo:string, id: string ){
+  subirArchivo( archivo:File, tipo:string, id: string, indexCotizacion:number=null ){
 
     return new Promise( (resolve, reject)=>{
 
@@ -35,6 +35,11 @@ export class SubirArchivoService {
       };
 
       let url = URL_SERVICIOS + '/upload/imagen/' + tipo + '/' + id;
+
+      //Si hay index cotizacion cambiamos la url
+      if(indexCotizacion!==null){
+        url = URL_SERVICIOS + `/upload/imagen/${tipo}/${id}?indexCotizacion=${indexCotizacion}`;
+      }
 
       xhr.open( 'PUT', url, true );
       xhr.send( formData );

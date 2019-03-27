@@ -13,6 +13,13 @@ export class VentasService {
     private _usuarioService: UsuarioService
   ) { }
 
+  obtenerDescuentosMensuales(year, unidadDeNegocio: string = '0'){
+    let token= this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/descuentosAnuales/${year}?unidadDeNegocio=${unidadDeNegocio}&token=${ token }`;
+
+    return this.http.get(url);
+  }
+
   obtenerVentaPorId(ventaId){
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/venta/ventaPorId/${ventaId}?token=${token}`;
@@ -20,8 +27,8 @@ export class VentasService {
     return this.http.get(url);
   }
 
-  obtenerVentas(desde:number, unidadDeNegocio: string='0', year:number){
-    let url = URL_SERVICIOS + `/venta/tablaVentas?year=${year}&unidadDeNegocio=${unidadDeNegocio}&token=` + this._usuarioService.token + '&desde=' + desde;
+  obtenerVentas(desde:number, unidadDeNegocio: string='0', year:number, mes:number){
+    let url = URL_SERVICIOS + `/venta/tablaVentas?year=${year}&mes=${mes}&unidadDeNegocio=${unidadDeNegocio}&token=` + this._usuarioService.token + '&desde=' + desde;
     
     return this.http.get(url);
 

@@ -34,6 +34,14 @@ export class SidebarService {
         { titulo: "Compras", url:"/compras" },
         { titulo: "Cuentas por pagar", url: "/cuentasPorPagar"}
       ]
+    },
+    {
+      modulo: "Usuarios",
+      icono: "mdi mdi-account-multiple",
+      url:"/permisosDeUsuario",
+      submenu: [
+        { titulo: "Permisos", url: "/permisosDeUsuario" }
+      ]
     }
   ];
 

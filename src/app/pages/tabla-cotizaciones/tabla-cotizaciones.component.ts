@@ -119,8 +119,12 @@ export class TablaCotizacionesComponent implements OnInit,OnChanges {
 
 
       },
-      (err) => {
-       
+      (error) => {
+        swal(
+          "Error al consultar cotizaciones",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
         // this.cotizaciones = [];
         this._cotizacionService.actualizarCotizaciones([]);
 

@@ -1,0 +1,70 @@
+
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card">
+        <div class="card-title text-center fw-500">
+          Permisos de usuario
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col col-12 col-md-3">
+      <div class="card">
+
+        <div class="control-container">
+          <p class="arrow-control ponter"
+             (click)="paginaAnterior()"><</p>
+          <p class="arrow-control ponter"
+             (click)="paginaSiguiente()">></p>
+        </div>
+        <ul>
+          <li *ngFor="let usuario of usuarios"
+              class="list-user pointer"
+              (click)="obtenerPermisos(usuario)">
+            <img [src]="usuario.img | imagen:'usuario'"
+                 class="profile img-circle size-30">
+            <p class="nombre-usuario">
+              {{ usuario.nombre }}
+            </p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col col-12 col-md-9">
+      <div class="card">
+        <div class="card-title user-name" *ngIf="usuarioActual">
+          Permisos de {{ usuarioActual.nombre }}
+        </div>
+
+        <ul *ngIf="permisos">
+          <li *ngFor="let permiso of permisos.permisos; let i=index;"
+              class="permiso">
+
+              <span class="descripcion">
+                {{ permiso.permiso }}
+              </span>
+              
+            <div class="switch">
+              <label>
+                OFF
+                <input type="checkbox" [(ngModel)]="permiso.enabled"><span class="lever"></span>
+                ON
+              </label>
+            </div>
+              
+
+          </li>
+        </ul>
+
+        <div class="botonera" *ngIf="permisos">
+          <button class="btn btn-success btn-block waves-effect waves-light m-b-10"
+                  (click)="actualizarPermisos()">Guardar Cambios</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+

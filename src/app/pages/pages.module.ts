@@ -57,6 +57,7 @@ import { OrdenCompraComponent } from './modal/orden-compra/orden-compra.componen
 import { ModalNuevoProveedorComponent } from './modal/modal-nuevo-proveedor/modal-nuevo-proveedor.component';
 import { ModalPagoComponent } from './modal/modal-pago/modal-pago.component';
 import { CuentasPorPagarComponent } from './cuentas-por-pagar/cuentas-por-pagar.component';
+import { PermisosDeUsuariosComponent } from './permisos-de-usuarios/permisos-de-usuarios.component';
 
 
 
@@ -110,7 +111,8 @@ import { CuentasPorPagarComponent } from './cuentas-por-pagar/cuentas-por-pagar.
     OrdenCompraComponent,
     ModalNuevoProveedorComponent,
     ModalPagoComponent,
-    CuentasPorPagarComponent
+    CuentasPorPagarComponent,
+    PermisosDeUsuariosComponent
   ],
   exports: [
     DashboardComponent,

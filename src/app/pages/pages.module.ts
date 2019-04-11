@@ -59,6 +59,7 @@ import { ModalPagoComponent } from './modal/modal-pago/modal-pago.component';
 import { CuentasPorPagarComponent } from './cuentas-por-pagar/cuentas-por-pagar.component';
 import { PermisosDeUsuariosComponent } from './permisos-de-usuarios/permisos-de-usuarios.component';
 import { RegistroGastosComponent } from './registro-gastos/registro-gastos.component';
+import { ModalEditarGastoComponent } from './modal/modal-editar-gasto/modal-editar-gasto.component';
 
 
 
@@ -114,7 +115,8 @@ import { RegistroGastosComponent } from './registro-gastos/registro-gastos.compo
     ModalPagoComponent,
     CuentasPorPagarComponent,
     PermisosDeUsuariosComponent,
-    RegistroGastosComponent
+    RegistroGastosComponent,
+    ModalEditarGastoComponent
   ],
   exports: [
     DashboardComponent,

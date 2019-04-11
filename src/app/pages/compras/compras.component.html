@@ -219,4 +219,5 @@
   (deseleccionarRequisicion)="requisicion=null"></app-orden-compra>
 <app-modal-nuevo-proveedor></app-modal-nuevo-proveedor>
 <app-modal-pago
-  [compra]="compra"></app-modal-pago>
+  [compra]="compra"
+  (actualizarData)="actualizarData()"></app-modal-pago>

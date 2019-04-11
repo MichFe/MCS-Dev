@@ -27,7 +27,8 @@ export class GastoService {
     return this.http.post(url, gasto);
   }
 
-  actualizarGasto(idGasto, gasto){
+  actualizarGasto(gasto){
+    let idGasto = gasto._id;
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/gasto/${ idGasto }?token=${ token }`;
 

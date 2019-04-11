@@ -17,6 +17,7 @@ import { ComprasComponent } from "./compras/compras.component";
 import { AprobacionRequisicionesComponent } from "./aprobacion-requisiciones/aprobacion-requisiciones.component";
 import { CuentasPorPagarComponent } from "./cuentas-por-pagar/cuentas-por-pagar.component";
 import { PermisosDeUsuariosComponent } from "./permisos-de-usuarios/permisos-de-usuarios.component";
+import { RegistroGastosComponent } from "./registro-gastos/registro-gastos.component";
 
 
 const pagesRoutes:Routes = [
@@ -40,6 +41,7 @@ const pagesRoutes:Routes = [
             { path: 'aprobaciones', component: AprobacionRequisicionesComponent },
             { path: 'cuentasPorPagar', component: CuentasPorPagarComponent },
             { path: 'permisosDeUsuario', component: PermisosDeUsuariosComponent },
+            { path: 'gastos', component: RegistroGastosComponent },
             { path: '', redirectTo: '/reporteVentas', pathMatch: 'full' },
         ]
     },

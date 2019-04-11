@@ -58,6 +58,7 @@ import { ModalNuevoProveedorComponent } from './modal/modal-nuevo-proveedor/moda
 import { ModalPagoComponent } from './modal/modal-pago/modal-pago.component';
 import { CuentasPorPagarComponent } from './cuentas-por-pagar/cuentas-por-pagar.component';
 import { PermisosDeUsuariosComponent } from './permisos-de-usuarios/permisos-de-usuarios.component';
+import { RegistroGastosComponent } from './registro-gastos/registro-gastos.component';
 
 
 
@@ -112,7 +113,8 @@ import { PermisosDeUsuariosComponent } from './permisos-de-usuarios/permisos-de-
     ModalNuevoProveedorComponent,
     ModalPagoComponent,
     CuentasPorPagarComponent,
-    PermisosDeUsuariosComponent
+    PermisosDeUsuariosComponent,
+    RegistroGastosComponent
   ],
   exports: [
     DashboardComponent,

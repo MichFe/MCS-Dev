@@ -1,0 +1,132 @@
+<!-- Registro de gastos -->
+<div class="row text-center">
+  <div class="card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Agregar</th>
+          </tr>
+        </thead>
+      
+        <tbody>
+          <tr>
+            <td><input type="date" name="fecha" [(ngModel)]="fechaString" class="form-control date-input"></td>
+            <td><input type="number" name="monto" [(ngModel)]="monto" class="form-control"></td>
+            <td><input type="text" name="descripcion" [(ngModel)]="descripcion" autocomplete="off" class="form-control"></td>
+            <td>
+              <select name="categoria" [(ngModel)]="categoria" class="form-control" id="">
+                <option value="Materiales e Insumos">Materiales e Insumos</option>
+                <option value="Servicios">Servicios</option>
+                <option value="Transporte">Transporte</option>
+                <option value="Mantenimiento y Reparaciones">Mantenimiento y Reparaciones</option>
+                <option value="Viáticos">Viáticos</option>
+                <option value="Servicios Profesionales">Servicios Profesionales</option>
+                <option value="Nomina">Nomina</option>
+                <option value="Otros">Otros</option>
+              </select>
+            </td>
+            <td>
+              <div class="input-group">
+                <input name="proveedor"
+                           autocomplete="off"
+                           id="proveedorInput"
+                           (keyup)="buscarProveedor()" 
+                               [(ngModel)]="proveedorNombre" 
+                               type="string" 
+                               class="form-control" 
+                               placeholder="Proveedor"
+                               required>
+
+                <div class="input-group-addon btn btn-info color-white"
+                  (click)="abrirRegistroDeProveedor($event)"><i class="ti-plus"></i>
+                </div>
+              </div>
+              
+            </td>
+            <td><button class="btn btn-sm btn-success waves-effect waves-light"
+                        (click)="guardarGasto()">Add <i class="fa fa-plus"></i></button></td>
+          </tr>
+
+          <!-- Fila para mostrar dropdown de proveedores -->
+          <tr *ngIf="proveedores.length>0">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+              <div *ngIf="proveedores.length>0">
+                <ul class="proveedores">
+                  <li *ngFor="let proveedor of proveedores" class="proveedor" (click)="seleccionarProveedor(proveedor)">
+                    {{ proveedor.nombre }}</li>
+                </ul>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      
+      </table>
+    </div>
+    
+  </div>
+  
+</div>
+
+<!-- Tabla de gastos -->
+<div class="row">
+  <div class="card">
+
+    
+    <div class="botonera">
+      
+      <div class="btn-group right" role="group">
+        <button class="btn btn-info"><</button>
+        <button class="btn btn-info">></button>
+      </div>
+        
+      <span class="page-indicator">Página {{ paginaActual }} de {{ totalDePaginas }}</span>
+    </div>
+    
+
+    <div class="table-responsive">
+      <table class="table table-hover">
+      
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+          </tr>
+        </thead>
+      
+        <tbody>
+          <tr *ngFor="let gasto of gastos">
+            <td>{{ gasto.fecha | date }}</td>
+            <td>{{ gasto.monto | currency:'MXN' }}</td>
+            <td>{{ gasto.descripcion }}</td>
+            <td>{{ gasto.categoria }}</td>
+            <td>{{ gasto.proveedor.nombre }}</td>
+            <td class="pointer"
+                (click)="abrirEditorDeGasto()"><i class="fa fa-edit color-yellow"></i></td>
+            <td class="pointer"
+                (click)="eliminarGasto(gasto._id)"><i class="fa fa-trash color-red"></i></td>
+          </tr>
+        </tbody>
+      
+      </table>
+    </div>
+    
+  </div>
+</div>
+
+<app-modal-nuevo-proveedor></app-modal-nuevo-proveedor>

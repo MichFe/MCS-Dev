@@ -1,0 +1,63 @@
+.btn-group{
+    width: 70px;
+    float: right;
+
+}
+
+.page-indicator{
+    line-height: 36px;
+    margin-right: 10px;
+    float: right;
+}
+
+table{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th, td{
+    text-align: center;
+}
+
+td{
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.date-input{
+    padding: 6px;
+}
+
+.card{
+    padding: 5px;
+    width: 100%;
+}
+
+ul.proveedores{
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 3px;
+    max-height: 200px;
+    overflow: auto;
+}
+
+li.proveedor{
+    padding: 5px 5px 5px 5px;
+    border-bottom: 1px solid lightgray;
+    cursor: pointer;
+
+}
+
+li.proveedor:hover{
+    background-color: #caebf1;
+
+}
+
+.color-yellow{
+    color: green;
+}
+
+.color-red{
+    color: red;
+}

@@ -13,6 +13,7 @@ export class RegistroGastosComponent implements OnInit {
   proveedorSeleccionado:any;
   fecha = new Date();
   gastos:any[];
+  gastoSeleccionadoParaEditar:any={};
 
   //Variables de paginado
   paginaActual:number = 1;
@@ -36,6 +37,7 @@ export class RegistroGastosComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerGastosPaginados(this.paginaActual);
+    this.cargarFechaString();
   }
 
   obtenerGastosPaginados(pagina:number){
@@ -87,8 +89,9 @@ export class RegistroGastosComponent implements OnInit {
       });
   }
 
-  abrirEditorDeGasto(){
-
+  abrirEditorDeGasto(gasto){
+    this.gastoSeleccionadoParaEditar = gasto;
+    $('#modalEdicionDeGasto').modal('toggle');
   }
 
   eliminarGasto(gastoId){
@@ -134,6 +137,42 @@ export class RegistroGastosComponent implements OnInit {
           return;
         }
       });
+  }
+
+  //Funciones de cambio de fecha
+  cargarFechaString() {
+    let year = this.fecha.getFullYear();
+    let mes = this.fecha.getMonth();
+    let dia = this.fecha.getDate();
+    mes = mes + 1;
+    let mesString: string;
+    let diaString: string;
+
+    if (mes < 10) {
+      mesString = '0' + mes;
+    } else {
+      mesString = String(mes);
+    }
+
+    if (dia < 10) {
+      diaString = '0' + dia;
+    } else {
+      diaString = String(dia);
+    }
+
+    this.fechaString = `${year}-${mesString}-${diaString}`;
+
+  }
+
+  cambiarFecha() {
+    this.fecha = new Date();
+
+    let horas = this.fecha.getHours();
+    let minutos = this.fecha.getMinutes();
+
+    let fechaArray = this.fechaString.split('-');
+    this.fecha = new Date(Number(fechaArray[0]), Number(fechaArray[1]) - 1, Number(fechaArray[2]), horas, minutos);
+
   }
 
 // Funciones de paginado

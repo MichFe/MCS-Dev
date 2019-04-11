@@ -1,0 +1,20 @@
+ul.proveedores{
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 3px;
+    max-height: 200px;
+    overflow: auto;
+}
+
+li.proveedor{
+    padding: 5px 5px 5px 5px;
+    border-bottom: 1px solid lightgray;
+    cursor: pointer;
+
+}
+
+li.proveedor:hover{
+    background-color: #caebf1;
+
+}

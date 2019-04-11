@@ -1,0 +1,149 @@
+<div class="modal fade" id="modalEdicionDeGasto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+  
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" 
+            id="exampleModalLabel1">
+            Detalle de gasto
+        </h4>
+
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+      
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+              <!-- Panel de ingreso de información del cliente -->
+              <div>
+                <form class="form-horizontal p-t-20"
+                      ngNativeValidate >
+
+                  <div class="form-group row m-t-20">
+                    <label class="col-sm-3 control-label">Proveedor* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-user"></i></div>
+                          <input name="proveedorNombre"
+                            autocomplete="off"
+                            id="clienteInput"
+                            (keyup)="buscarProveedor()" 
+                            [(ngModel)]="proveedorNombre" 
+                            type="string" 
+                            class="form-control" 
+                            placeholder="Selecciona un proveedor"
+                            required>
+
+                        <div class="input-group-addon btn btn-info color-white"
+                             (click)="abrirRegistroDeProveedor($event)"><i class="ti-plus"></i>
+                        </div>
+                 </div>
+
+                <div *ngIf="proveedores.length>0">
+                  <ul class="proveedores">
+                    <li *ngFor="let proveedor of proveedores"
+                        class="proveedor"
+                        (click)="seleccionarProveedor(proveedor)">{{ proveedor.nombre }}</li>
+                  </ul>
+                </div>
+               </div>
+            </div>
+
+            <div class="form-group row">
+                    <label class="col-sm-3 control-label">Descripción* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-info"></i></div>
+                        <input  name="descripcion" 
+                                [(ngModel)]="descripcion" 
+                                type="string" 
+                                class="form-control"
+                                required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Categoría* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-layout-grid2"></i></div>
+                        <select name="categoria" 
+                                [(ngModel)]="categoria" 
+                                class="form-control" 
+                                id="">
+                          <option value="Materiales e Insumos">Materiales e Insumos</option>
+                          <option value="Servicios">Servicios</option>
+                          <option value="Transporte">Transporte</option>
+                          <option value="Mantenimiento y Reparaciones">Mantenimiento y Reparaciones</option>
+                          <option value="Viáticos">Viáticos</option>
+                          <option value="Servicios Profesionales">Servicios Profesionales</option>
+                          <option value="Nomina">Nomina</option>
+                          <option value="Pago a proveedores">Pago a proveedores</option>
+                          <option value="Otros">Otros</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Monto* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-money"></i></div>
+                        <input  name="monto" 
+                                [(ngModel)]="monto" 
+                                type="number" 
+                                class="form-control"
+                                required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label class="col-sm-3 control-label">Fecha* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-calendar"></i></div>
+                        <input name="fechaString" 
+                               (change)="cambiarFecha()"
+                               [(ngModel)]="fechaString" 
+                               type="date" 
+                               class="form-control"
+                               required>
+                      </div>
+                    </div>
+                  </div>
+
+                  
+
+                  
+                </form>
+
+                <p *ngIf="gasto && gasto.usuarioCreador">Gasto registrado por {{ gasto.usuarioCreador.nombre }}</p>
+              
+              </div>
+              <!-- Fin de panel de edición de información del cliente -->
+            
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button class="btn btn-warning waves-effect waves-light"
+                (click)="actualizarGasto()">Actualizar Gasto</button>
+        
+        <!-- Fin de botones -->
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

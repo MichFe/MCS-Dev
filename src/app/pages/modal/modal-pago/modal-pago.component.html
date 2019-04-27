@@ -71,6 +71,21 @@
                       </div>
                     </div>
                   </div>
+
+                  <div class="form-group row m-t-20">
+              <label class="col-sm-3 control-label">Fecha*</label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                   <div class="input-group-addon"><i class="ti-money"></i></div>
+                    <input name="fechaString" 
+                               [(ngModel)]="fechaString" 
+                               type="date" 
+                               class="form-control"
+                               (change)="cambiarFecha()" 
+                               required>
+                 </div>
+               </div>
+            </div>
                   
                 </form>
               </div>

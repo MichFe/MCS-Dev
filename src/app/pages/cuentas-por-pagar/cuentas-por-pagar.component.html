@@ -84,7 +84,7 @@
               Descripción: 
             </p>
 
-            <p class="p-l-10">{{ compra.requisicion.descripcion }}</p>
+            <p class="p-l-10" *ngFor="let requisicion of compra.requisiciones">{{ requisicion.descripcion }} x {{ requisicion.cantidad }}</p>
 
             <p class="compra-footer right">
               Total: {{ compra.costoTotal | currency:'MXN' }}

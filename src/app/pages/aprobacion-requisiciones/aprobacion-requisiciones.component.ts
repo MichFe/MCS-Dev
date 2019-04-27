@@ -4,6 +4,7 @@ import { DetalleRequisicionComponent } from '../modal/detalle-requisicion/detall
 import { RequisicionesService } from '../../services/requisiciones/requisiciones.service';
 import swal from 'sweetalert';
 import { SidebarService } from 'src/app/services/sidebar.service';
+import { UsuarioService } from 'src/app/services/usuarios/usuario.service';
 declare var $: any;
 
 @Component({
@@ -32,11 +33,203 @@ export class AprobacionRequisicionesComponent implements OnInit {
 
   constructor(
     private _requisicionesService: RequisicionesService,
-    private _sideBarService:SidebarService
+    private _sideBarService:SidebarService,
+    private _usuarioService: UsuarioService
     ) { }
 
   ngOnInit() {
     this.obtenerRequisicionesPorAprobar(1);
+  }
+
+  aprobarRequisicionesSeleccionadas(){
+
+    let requisicionesSeleccionadas = [];
+
+    this.requisiciones.forEach((requisicion) => {
+      if (requisicion.seleccionada) {
+        requisicionesSeleccionadas.push(requisicion);
+      }
+    });
+
+    if (requisicionesSeleccionadas.length === 0) {
+      return;
+    }
+
+    swal(
+      'Actualización',
+      '¿Está seguro de que desea aprobar las requisiciones seleccionadas?',
+      'warning', {
+        buttons: {
+          Aprobar: {
+            text: 'Si, Aprobar',
+            value: 'confirmado',
+            className: 'btn-success'
+          },
+          Rechazar: {
+            text: 'No, regresar',
+            value: 'cancelar',
+            className: 'btn-danger'
+          }
+        },
+
+      }).then( isConfirm => {
+        if (isConfirm === 'confirmado') {
+
+          let aprobadasCorrectamente = 0;
+          let erroresAlAprobar = 0;
+
+         requisicionesSeleccionadas.forEach(async (requisicion, i)=>{
+
+            let aprobada = await this.aprobarUnaRequisicion(requisicion);
+            
+            if(aprobada){
+              aprobadasCorrectamente= aprobadasCorrectamente + 1
+            }else{
+              erroresAlAprobar = erroresAlAprobar + 1;
+            };
+
+            //Ultima ejecución
+            if(i>=(requisicionesSeleccionadas.length-1)){
+              if(erroresAlAprobar === 0){
+                swal(
+                  "Aprobaciones exitosas",
+                  `Se han aprobado ${ aprobadasCorrectamente } requisiciones`,
+                  "success"
+                );
+              }else{
+                swal(
+                  "Errores al aprobar",
+                  `Se aprobaron correctamente: ${aprobadasCorrectamente} requisiciones | No se aprobaron: ${erroresAlAprobar} requisiciones`,
+                  "warning"
+                );
+              }
+              this.obtenerRequisicionesPorAprobar(this.paginaActual);
+            }
+            
+          });
+
+        } else {
+          return;
+          // swal('Cancelado', 'No se actualizó la requisición', 'error');
+        }
+      });
+  }
+
+  rechazarRequisicionesSeleccionadas(){
+    let requisicionesSeleccionadas = [];
+
+    this.requisiciones.forEach((requisicion) => {
+
+      if (requisicion.seleccionada) {
+        requisicionesSeleccionadas.push(requisicion);
+      }
+
+    });
+
+    if (requisicionesSeleccionadas.length === 0) {
+      return;
+    }
+    
+    swal(
+      'Actualización',
+      '¿Está seguro de que desea rechazar las requisiciones seleccionadas?',
+      'warning', {
+        buttons: {
+          Aprobar: {
+            text: 'Si, Rechazar',
+            value: 'confirmado',
+            className: 'btn-success'
+          },
+          Rechazar: {
+            text: 'No, regresar',
+            value: 'cancelar',
+            className: 'btn-danger'
+          }
+        },
+
+      }).then(isConfirm => {
+        if (isConfirm === 'confirmado') {
+
+          let rechazadasCorrectamente = 0;
+          let erroresAlRechazar = 0;
+
+          requisicionesSeleccionadas.forEach(async (requisicion, i) => {
+
+            let aprobada = await this.rechazarUnaRequisicion(requisicion);
+
+            if (aprobada) {
+              rechazadasCorrectamente = rechazadasCorrectamente + 1
+            } else {
+              erroresAlRechazar = erroresAlRechazar + 1;
+            };
+
+            //Ultima ejecución
+            if (i >= (requisicionesSeleccionadas.length - 1)) {
+              if (erroresAlRechazar === 0) {
+                swal(
+                  "Rechazos exitosos",
+                  `Se han rechazado ${rechazadasCorrectamente} requisiciones`,
+                  "success"
+                );
+              } else {
+                swal(
+                  "Errores al rechazar",
+                  `Se rechazaron correctamente: ${rechazadasCorrectamente} requisiciones | No se rechazaron: ${erroresAlRechazar} requisiciones`,
+                  "warning"
+                );
+              }
+              this.obtenerRequisicionesPorAprobar(this.paginaActual);
+            }
+
+          });
+
+        } else {
+          return;
+          // swal('Cancelado', 'No se actualizó la requisición', 'error');
+        }
+      });
+  }
+
+  aprobarUnaRequisicion(requisicion){
+
+    let fechaActual = new Date();
+
+      requisicion.aprobador = this._usuarioService.id;
+      requisicion.estatus = 'Aprobada';
+      requisicion.fechaAprobacionRechazo = fechaActual;
+
+    return new Promise((resolve, reject)=>{
+      this._requisicionesService.actualizarRequisicion(requisicion).subscribe(
+        (resp: any) => {
+          resolve(true);
+        },
+        error => {
+          reject(false);
+        });
+    });
+    
+
+  }
+
+   rechazarUnaRequisicion(requisicion){
+
+    let fechaActual = new Date();
+
+      requisicion.aprobador = this._usuarioService.id;
+     requisicion.estatus = 'Rechazada';
+      requisicion.fechaAprobacionRechazo = fechaActual;
+
+    return new Promise((resolve, reject)=>{
+      this._requisicionesService.actualizarRequisicion(requisicion).subscribe(
+        (resp: any) => {
+          resolve(true);
+        },
+        error => {
+          reject(false);
+        });
+    });
+    
+
   }
 
   detalleRequisicion(requisicion: Requisicion) {

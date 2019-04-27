@@ -26,6 +26,7 @@ export class ComprasComponent implements OnInit {
   totalCompras: number;
   totalTodasLasCompras:number;
   compra:any;
+  requisicionesSeleccionadas=[];
 
   //Variables Paginado de Compras
   paginaActualCompras:number;
@@ -49,7 +50,6 @@ export class ComprasComponent implements OnInit {
   requisicionesAprobadas: Requisicion[];
   compras:any[]=[];
   todasLasCompras:any[]=[];
-  
 
   // Paginado
   paginas: any[] = [
@@ -73,7 +73,7 @@ export class ComprasComponent implements OnInit {
   
   }
 
-  actualizarData(event){
+  actualizarData(){
     this.obtenerRequisicionesAprobadas(1);
     this.obtenerCompras(1);
     this.obtenerTodasLasCompras(1);
@@ -104,7 +104,7 @@ export class ComprasComponent implements OnInit {
   obtenerTodasLasCompras(pagina:number){
     let desde = (pagina -1)*10;
 
-    this._comprasService.obtenerCompras(desde, false)
+    this._comprasService.obtenerCompras(desde, false, true)
       .subscribe(
         (resp:any)=>{
           this.todasLasCompras = resp.compras;
@@ -327,7 +327,18 @@ export class ComprasComponent implements OnInit {
   }
 
   generarOrdenDeCompra(requisicion){
-    this.requisicion=requisicion;
+    this.requisicionesSeleccionadas=[];
+
+    this.requisicionesAprobadas.forEach((requisicion)=>{
+      if(requisicion.seleccionada){
+        this.requisicionesSeleccionadas.push(requisicion);
+      }
+    });
+
+    if(this.requisicionesSeleccionadas.length===0){
+      return;
+    }
+    
     $('#modalOrdenDeCompra').modal('toggle');
 
   }

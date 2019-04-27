@@ -16,11 +16,11 @@
             <th>Cantidad</th>
             <th>Solicitante</th>
             <th>Estatus</th>
+            <th>Seleccionar</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let requisicion of requisicionesAprobadas; let i = index" 
-              (click)="generarOrdenDeCompra(requisicion)"
               class="pointer" 
               [ngClass]="{
                     'table-warning': requisicion.estatus=='Por aprobar'
@@ -30,9 +30,24 @@
             <td>{{requisicion.cantidad}}</td>
             <td>{{requisicion.solicitante.nombre}} ({{requisicion.unidadDeNegocio}})</td>
             <td>{{requisicion.estatus}}</td>
+            <td>
+            <div class="checkbox checkbox-success">
+                  <input [id]="'id-checkbox-requisiciones-' + i"
+                         type="checkbox"
+                         name="seleccionIva"
+                         [(ngModel)]="requisicion.seleccionada">
+                  <label class="checkbox" [for]="'id-checkbox-requisiciones-' + i"></label>
+                </div>
+          </td>
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <div class="botonera" *ngIf="requisicionesAprobadas && requisicionesAprobadas.length>0">
+      <button class="btn btn-warning waves-effect waves-light right" 
+        (click)="generarOrdenDeCompra(requisicion)">
+        Comprar seleccionadas</button>
     </div>
     
     <!-- Componente de paginado   -->
@@ -65,7 +80,7 @@
 
   <!-- Compras en seguimiento -->
   <div class="m-t-30">
-    <h4>Compras en Seguimiento <i class="ti-search rotar"></i></h4>
+    <h4>Compras por recibir <i class="ti-search rotar"></i></h4>
     <hr class="style-two">
     
     <div class="table-responsive">
@@ -75,7 +90,6 @@
             <th>Fecha de compra</th>
             <th>Proveedor</th>
             <th>Descripción</th>
-            <th>Cantidad</th>
             <th>Total</th>
             <th>Pagado</th>
             <th>Estatus</th>
@@ -88,8 +102,7 @@
               (click)="mostrarDetalleCompra(compra)">
             <td>{{ compra.fechaCompra | date }}</td>
             <td>{{ compra.proveedor.nombre }}</td>
-            <td>{{ compra.requisicion.descripcion }}</td>
-            <td>{{ compra.requisicion.cantidad }}</td>
+            <td>{{ compra.descripcionCompra }}</td>
             <td>{{ compra.costoTotal | currency:'MXN' }}</td>
             <td>
               <span>{{ compra.montoPagado | currency:'MXN' }} ({{ (compra.montoPagado/compra.costoTotal) | percent }})</span>
@@ -138,7 +151,7 @@
 
     <!-- Compras en seguimiento -->
   <div class="m-t-30">
-    <h4>Todas las compras <i class="ti-bag m-l-10"></i></h4>
+    <h4>Compras recibidas <i class="ti-bag m-l-10"></i></h4>
     <hr class="style-two">
     
     <div class="table-responsive">
@@ -148,7 +161,6 @@
             <th>Fecha de compra</th>
             <th>Proveedor</th>
             <th>Descripción</th>
-            <th>Cantidad</th>
             <th>Total</th>
             <th>Pagado</th>
             <th>Estatus</th>
@@ -161,8 +173,7 @@
               (click)="mostrarDetalleCompra(compra)">
             <td>{{ compra.fechaCompra | date }}</td>
             <td>{{ compra.proveedor.nombre }}</td>
-            <td>{{ compra.requisicion.descripcion }}</td>
-            <td>{{ compra.requisicion.cantidad }}</td>
+            <td>{{ compra.descripcionCompra }}</td>
             <td>{{ compra.costoTotal | currency:'MXN' }}</td>
             <td>
               <span>{{ compra.montoPagado | currency:'MXN' }} ({{ (compra.montoPagado/compra.costoTotal) | percent }})</span>
@@ -213,11 +224,14 @@
 
 
 <app-orden-compra
-  [requisicion]="requisicion"
+  [requisiciones]="requisicionesSeleccionadas"
   [compra]="compra"
-  (actualizarData)="actualizarData($event)"
+  (actualizarData)="actualizarData()"
   (deseleccionarRequisicion)="requisicion=null"></app-orden-compra>
 <app-modal-nuevo-proveedor></app-modal-nuevo-proveedor>
 <app-modal-pago
   [compra]="compra"
   (actualizarData)="actualizarData()"></app-modal-pago>
+
+<app-modal-nota-de-compra 
+  [compra]="compra"></app-modal-nota-de-compra>

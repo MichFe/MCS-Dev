@@ -9,12 +9,14 @@ export class Requisicion {
        public solicitante?: Usuario,
        public unidadDeNegocio?: string,
        public fechaSolicitud?: Date,
+       public fechaCompromisoProveedor?:Date,
        public _id?: string,
        public estatus?: EstatusRequisicion,
        public aprobador?: string,
        public fechaAprobacionRechazo?: Date,
        public compraCreada?: boolean,
-       public productoRecibido?: boolean
+       public productoRecibido?: boolean,
+       public seleccionada?: boolean
     ) { }
 
 

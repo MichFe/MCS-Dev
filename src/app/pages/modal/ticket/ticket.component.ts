@@ -136,9 +136,10 @@ export class TicketComponent implements OnInit {
       return;
     }
 
-    if (termino.length < 3) {
+    if (termino.length < 1) {
       return;
     }
+
     this._clienteService.buscarCliente(termino).subscribe(
       (resp: any) => {
         this.clientes = resp.cliente;

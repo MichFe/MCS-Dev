@@ -1,0 +1,123 @@
+<div class="modal fade" id="modalReimpresionDeTicket" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Detalle venta</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+
+          <!-- Documento ticket -->
+          <div id="documento-ticket" *ngIf="venta.cliente" class="container print-content">
+          
+            <!-- Header de cotizacion -->
+            <div class="row m-b-5">
+          
+              <div class="col col-md-12 m-b-10 p-0">
+                <p class="titulo">MOBLA - MUEBLES E INTERIORISMO</p>
+                <p>Paseo de los Insurgentes 2403, 37300 León, Gto.</p>
+                <p>Teléfono: +52 (477) 290-54-01</p>
+                <p>ventas@mobla.com.mx</p>
+                <p>{{ venta.cliente.nombre }}</p>
+          
+                <hr>
+          
+                <!-- <p class="big fw-500">Original</p> -->
+          
+                <p class="fw-500">{{ venta.fecha | date:'fullDate' }} a las {{ venta.fecha | date:'h:mm a' }}</p>
+          
+              </div>
+          
+            </div>
+            <!-- Fin de header de cotizacion -->
+          
+            <!-- Lista de productos -->
+            <div class="row m-b-30">
+              <hr>
+              <ul class="lista-productos">
+                <li *ngFor="let producto of venta.carrito">
+                  <p class="nombre-item-producto">{{ producto.nombre }}</p>
+                  <p class="descripcion-item-producto">
+                    {{ producto.cantidad }} x {{ producto.precio | number:'1.2-2' }}
+                    <span class="right">{{ producto.total | number:'1.2-2' }}</span></p>
+                  <p *ngIf="producto.descuento>0" class="descripcion-item-producto">Descuento: <span
+                      class="right">-{{ (producto.descuento*producto.cantidad) | number:'1.2-2' }}</span></p>
+                </li>
+                <br>
+              </ul>
+              <hr>
+          
+              <p><span class="left">Subtotal</span> <span class="right">{{ venta.subtotal | currency:'MXN' }}</span></p>
+          
+              <!-- Con Iva  -->
+              <p *ngIf="venta.iva>0"><span class="left p-b-10">IVA 16%</span> <span
+                  class="right">{{ venta.iva | currency:'MXN' }}</span>
+              </p>
+              <!-- FIN de Con Iva  -->
+          
+              <!-- Sin Iva -->
+              <p *ngIf="venta.iva==0"><span class="left p-b-10">IVA 0%</span> <span class="right">{{ 0 | currency:'MXN' }}</span>
+              </p>
+              <!-- FIN de Sin Iva -->
+          
+              <p class="fw-500"><span class="left">Total</span> <span
+                  class="right big m-b-20">{{ venta.total | currency:'MXN' }}</span></p>
+          
+              <!-- Situación de pago -->
+              <div>
+                <p class="borde fw-500">Estatus de pago </p>
+                <p *ngIf="venta.estatus=='Liquidada'" class="borde sin-borde-top fw-500">Liquidado</p>
+          
+                <p *ngIf="venta.estatus=='Saldo Pendiente'" class="borde sin-borde-top fw-500">
+                  <span class="left">Pagado: </span>
+                  <span class="right">{{ venta.montoPagado | currency:'MXN' }}</span>
+                </p>
+          
+                <p *ngIf="venta.estatus=='Saldo Pendiente'" class="borde sin-borde-top fw-500">
+                  <span class="left">Saldo pendiente: </span>
+                  <span class="right">{{ venta.saldoPendiente | currency:'MXN' }}</span>
+                </p>
+              </div>
+              <!-- FIN de Situación de pago -->
+          
+          
+          
+            </div>
+            <!-- Fin de tabla de productos -->
+          
+            <!-- Recepción de efectivo -->
+          
+          
+          
+          
+          
+          </div>
+          <!-- Fin de documento Cotización -->
+
+        </div>
+      </div>
+      <!-- FIN de Modal Body -->
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div class="right botnera">
+          <button class="btn btn-info waves-effect waves-light" 
+            (click)="imprimirTicket()">Imprimir</button>
+        </div>
+      
+      </div>
+      <!-- FIN de Modal Footer -->
+    </div>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,84 @@
+<div class="modal fade" id="modalNotaCompra" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">
+          Nota de Compra
+        </h4>
+
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+
+          <div id="documento-notaCompra" class="container print-content" *ngIf="compra && compra.proveedor">
+
+            <div class="row m-b-5">
+              <div class="col col-md-12 m-b-30">
+                <img class="logo pull-left" src="../assets/images/mobla-logo.png" alt="">
+              </div>
+            </div>
+
+              <div class="row">
+                <div class="col col-md-12">
+                  <span class="pull-left">
+                    Proveedor: {{ compra.proveedor.nombre }}
+                  </span>
+              
+                  <span class="pull-right">
+                    León Gto. a {{ fecha | date:'fullDate'}}
+                  </span>
+                </div>
+              </div>
+
+              <div class="row m-b-30">
+                <div class="col col-md-12 p-l-10 p-r-10 table-responsive">
+              
+                  <table class="table table-bordered table-striped">
+
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let requisicion of compra.requisiciones">
+                        <td>{{ requisicion.descripcion }}</td>
+                        <td>{{ requisicion.cantidad }}</td>
+                      </tr>
+                    </tbody>
+                    
+                  </table>
+                </div>
+              </div>
+
+            
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button 
+          class="btn btn-info waves-effect waves-light"
+          (click)="imprimirNotaDeCompra()">Imprimir</button>        
+        <!-- Fin de botones -->
+
+      </div>
+
+    </div>
+  </div>
+</div>

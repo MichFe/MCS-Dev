@@ -38,3 +38,19 @@ th{
 .color-red{
     color: red;
 }
+
+.modal-footer{
+    display: block;
+}
+
+.left{
+    float: left;
+}
+
+.right{
+    float:  right;
+}
+
+.botnera button{
+    margin-right: 10px;
+}

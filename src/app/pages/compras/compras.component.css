@@ -22,3 +22,7 @@ td{
     display: inline-block;
     margin-left: 10px;
 }
+
+.botonera{
+  overflow: auto;
+}

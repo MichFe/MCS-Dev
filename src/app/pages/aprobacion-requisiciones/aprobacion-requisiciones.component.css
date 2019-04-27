@@ -12,3 +12,23 @@ th{
 td{
   vertical-align: middle;
 }
+
+label.checkbox{
+    vertical-align: middle;
+    margin-bottom: 0px;
+}
+
+.right{
+  float: right;
+}
+
+.left{
+  float: left;
+}
+
+button{
+  margin-right: 10px;
+}
+.botonera{
+  overflow: auto;
+}

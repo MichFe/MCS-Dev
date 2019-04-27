@@ -21,15 +21,7 @@
             <td><input type="text" name="descripcion" [(ngModel)]="descripcion" autocomplete="off" class="form-control"></td>
             <td>
               <select name="categoria" [(ngModel)]="categoria" class="form-control" id="">
-                <option value="Materiales e Insumos">Materiales e Insumos</option>
-                <option value="Servicios">Servicios</option>
-                <option value="Transporte">Transporte</option>
-                <option value="Mantenimiento y Reparaciones">Mantenimiento y Reparaciones</option>
-                <option value="Viáticos">Viáticos</option>
-                <option value="Servicios Profesionales">Servicios Profesionales</option>
-                <option value="Nomina">Nomina</option>
-                <option value="Pago a proveedores">Pago a proveedores</option>
-                <option value="Otros">Otros</option>
+                <option *ngFor="let gasto of listaGastos" [value]="gasto">{{ gasto }}</option>
               </select>
             </td>
             <td>
@@ -87,8 +79,10 @@
     <div class="botonera">
       
       <div class="btn-group right" role="group">
-        <button class="btn btn-info"><</button>
-        <button class="btn btn-info">></button>
+        <button class="btn btn-info"
+                (click)="paginaAnterior()"><</button>
+        <button class="btn btn-info"
+                (click)="paginaSiguiente()">></button>
       </div>
         
       <span class="page-indicator">Página {{ paginaActual }} de {{ totalDePaginas }}</span>

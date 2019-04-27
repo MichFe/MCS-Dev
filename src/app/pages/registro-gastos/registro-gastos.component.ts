@@ -10,29 +10,60 @@ declare var $:any;
 })
 export class RegistroGastosComponent implements OnInit {
   //Variables
-  proveedorSeleccionado:any;
+  proveedorSeleccionado: any;
   fecha = new Date();
-  gastos:any[];
-  gastoSeleccionadoParaEditar:any={};
+  gastos: any[];
+  gastoSeleccionadoParaEditar: any = {};
 
   //Variables de paginado
-  paginaActual:number = 1;
-  conteoGastos:number;
-  totalDePaginas:number;
+  paginaActual: number = 1;
+  conteoGastos: number;
+  totalDePaginas: number;
 
   //Data
   proveedores: any[] = [];
+  listaGastos = [
+    "Proveedores Productos",
+    "Proveedores Materia Prima",
+    "Proveedores Maquila",
+    "Nómina",
+    "Otros",
+    "Fletes",
+    "Publicidad",
+    "Gastos no Operativos",
+    "Comisiones por Ventas",
+    "Impuestos",
+    "Transporte",
+    "Maquinaria/Equipo",
+    "Mantenimiento",
+    "Renta/Servicios"
+  ];
+
+  listaGastosOperativos = [
+    "Proveedores Productos",
+    "Proveedores Materia Prima",
+    "Proveedores Maquila",
+    "Nómina",
+    "Otros",
+    "Fletes",
+    "Publicidad",
+    "Comisiones por Ventas",
+    "Transporte",
+    "Maquinaria/Equipo",
+    "Mantenimiento",
+    "Renta/Servicios"
+  ];
 
   //Variables de formulario
-  proveedorNombre: string='';
-  fechaString:string;
-  monto:number;
-  descripcion:string;
-  categoria:string;
+  proveedorNombre: string = "";
+  fechaString: string;
+  monto: number;
+  descripcion: string;
+  categoria: string;
 
   constructor(
-    private _proveedorService:ProveedorService,
-    private _gastoService:GastoService
+    private _proveedorService: ProveedorService,
+    private _gastoService: GastoService
   ) {}
 
   ngOnInit() {
@@ -40,62 +71,65 @@ export class RegistroGastosComponent implements OnInit {
     this.cargarFechaString();
   }
 
-  obtenerGastosPaginados(pagina:number){
-    let desde = (pagina-1) * 10;
+  obtenerGastosPaginados(pagina: number) {
+    let desde = (pagina - 1) * 10;
 
-    this._gastoService.obtenerGastosPaginados(desde)
-      .subscribe(
-        (resp:any)=>{
-          this.gastos = resp.gastos;
-          this.conteoGastos = resp.conteoGastos;
-          this.totalDePaginas = Math.ceil(this.conteoGastos/10);
+    this._gastoService.obtenerGastosPaginados(desde).subscribe(
+      (resp: any) => {
+        this.gastos = resp.gastos;
+        this.conteoGastos = resp.conteoGastos;
+        this.totalDePaginas = Math.ceil(this.conteoGastos / 10);
       },
-      (error)=>{
+      error => {
         swal(
           "Error al obtener gastos",
           error.error.mensaje + " | " + error.error.errors.message,
           "error"
         );
-      });
+      }
+    );
   }
 
-  guardarGasto(){
-
+  guardarGasto() {
     let gasto = {
       fecha: this.fecha,
       monto: this.monto,
       descripcion: this.descripcion,
       categoria: this.categoria,
       proveedor: this.proveedorSeleccionado._id,
-      pagoCompra: null
+      pagoCompra: null,
+      gastoOperativo: false
     };
 
-    this._gastoService.crearGasto(gasto)
-      .subscribe(
-        (resp)=>{
-          swal(
-            "Gasto Guardado",
-            "El gasto se ha guardado exitosamente",
-            "success"
-          );
-          this.obtenerGastosPaginados(this.paginaActual);         
+    if(this.listaGastosOperativos.includes(this.categoria)){
+      gasto.gastoOperativo=true;
+    }
+
+    this._gastoService.crearGasto(gasto).subscribe(
+      resp => {
+        swal(
+          "Gasto Guardado",
+          "El gasto se ha guardado exitosamente",
+          "success"
+        );
+        this.obtenerGastosPaginados(this.paginaActual);
       },
-      (error)=>{
+      error => {
         swal(
           "Error al guardar gasto",
           error.error.mensaje + " | " + error.error.errors.message,
           "error"
         );
-      });
+      }
+    );
   }
 
-  abrirEditorDeGasto(gasto){
+  abrirEditorDeGasto(gasto) {
     this.gastoSeleccionadoParaEditar = gasto;
-    $('#modalEdicionDeGasto').modal('toggle');
+    $("#modalEdicionDeGasto").modal("toggle");
   }
 
-  eliminarGasto(gastoId){
-
+  eliminarGasto(gastoId) {
     swal(
       "Confirmar eliminación",
       "Se eliminará el gasto, ¿Esta seguro de que desea continuar?",
@@ -112,31 +146,30 @@ export class RegistroGastosComponent implements OnInit {
           }
         }
       }
-    ).then(
-      (eliminar) => {
-        if (eliminar) {
-          this._gastoService.eliminarGasto(gastoId)
-            .subscribe(
-              (resp) => {
-                swal(
-                  "Gasto Eliminado",
-                  "El gasto se ha eliminado correctamente",
-                  "success"
-                );
+    ).then(eliminar => {
+      if (eliminar) {
+        this._gastoService.eliminarGasto(gastoId).subscribe(
+          resp => {
+            swal(
+              "Gasto Eliminado",
+              "El gasto se ha eliminado correctamente",
+              "success"
+            );
 
-                this.obtenerGastosPaginados(this.paginaActual);
-              },
-              (error) => {
-                swal(
-                  "Error al Eliminar Gasto",
-                  error.error.mensaje + " | " + error.error.errors.message,
-                  "error"
-                );
-              });
-        } else {
-          return;
-        }
-      });
+            this.obtenerGastosPaginados(this.paginaActual);
+          },
+          error => {
+            swal(
+              "Error al Eliminar Gasto",
+              error.error.mensaje + " | " + error.error.errors.message,
+              "error"
+            );
+          }
+        );
+      } else {
+        return;
+      }
+    });
   }
 
   //Funciones de cambio de fecha
@@ -149,19 +182,18 @@ export class RegistroGastosComponent implements OnInit {
     let diaString: string;
 
     if (mes < 10) {
-      mesString = '0' + mes;
+      mesString = "0" + mes;
     } else {
       mesString = String(mes);
     }
 
     if (dia < 10) {
-      diaString = '0' + dia;
+      diaString = "0" + dia;
     } else {
       diaString = String(dia);
     }
 
     this.fechaString = `${year}-${mesString}-${diaString}`;
-
   }
 
   cambiarFecha() {
@@ -170,29 +202,34 @@ export class RegistroGastosComponent implements OnInit {
     let horas = this.fecha.getHours();
     let minutos = this.fecha.getMinutes();
 
-    let fechaArray = this.fechaString.split('-');
-    this.fecha = new Date(Number(fechaArray[0]), Number(fechaArray[1]) - 1, Number(fechaArray[2]), horas, minutos);
-
+    let fechaArray = this.fechaString.split("-");
+    this.fecha = new Date(
+      Number(fechaArray[0]),
+      Number(fechaArray[1]) - 1,
+      Number(fechaArray[2]),
+      horas,
+      minutos
+    );
   }
 
-// Funciones de paginado
-  paginaSiguiente(){
-    if(this.paginaActual*10 >= this.conteoGastos){
+  // Funciones de paginado
+  paginaSiguiente() {
+    if (this.paginaActual * 10 >= this.conteoGastos) {
       return;
     }
-    this.paginaActual+=1;
+    this.paginaActual += 1;
     this.obtenerGastosPaginados(this.paginaActual);
   }
 
-  paginaAnterior(){
-    if(this.paginaActual===1){
+  paginaAnterior() {
+    if (this.paginaActual === 1) {
       return;
     }
-    this.paginaActual-=1;
+    this.paginaActual -= 1;
     this.obtenerGastosPaginados(this.paginaActual);
   }
 
-// Funciones para buscador de proveedores
+  // Funciones para buscador de proveedores
   buscarProveedor() {
     let termino = this.proveedorNombre;
 
@@ -201,14 +238,14 @@ export class RegistroGastosComponent implements OnInit {
       return;
     }
 
-    if (termino.length < 3) {
+    if (termino.length < 1) {
       return;
     }
     this._proveedorService.buscarProveedor(termino).subscribe(
       (resp: any) => {
         this.proveedores = resp.proveedor;
       },
-      (error) => {
+      error => {
         swal(
           "Error al Buscar Proveedor",
           error.error.mensaje + " | " + error.error.errors.message,
@@ -219,13 +256,12 @@ export class RegistroGastosComponent implements OnInit {
   }
 
   abrirRegistroDeProveedor(evento) {
-    $("#modalNuevoProveedor").modal('toggle');
+    $("#modalNuevoProveedor").modal("toggle");
   }
 
-  seleccionarProveedor(proveedor){
+  seleccionarProveedor(proveedor) {
     this.proveedorSeleccionado = proveedor;
     this.proveedorNombre = proveedor.nombre;
     this.proveedores = [];
   }
-
 }

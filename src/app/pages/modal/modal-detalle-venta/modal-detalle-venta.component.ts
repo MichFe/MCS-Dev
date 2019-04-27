@@ -118,10 +118,22 @@ export class ModalDetalleVentaComponent implements OnInit,OnChanges {
       this.cargarFechaString();
 
     }
+  }
 
-    
+  abrirModalReimpresionTicket(){
 
+    $("#modalDetalleVenta").modal("toggle");
+    $("#modalDetalleVenta").on("hidden.bs.modal", function(event) {
+      // Open your second one in here
+      $("#modalReimpresionDeTicket").modal("toggle");
+      $("#modalDetalleVenta").off("hidden.bs.modal");
 
+      $("#modalReimpresionDeTicket").on("hidden.bs.modal", function(event){
+        $('#modalDetalleVenta').modal('toggle');
+        $("#modalReimpresionDeTicket").off("hidden.bs.modal");
+      });
+
+    });
 
   }
 

@@ -22,9 +22,9 @@ export class OrdenCompraService {
     
   }
 
-  obtenerCompras(desde, soloPedidos=false){
+  obtenerCompras(desde, soloPedidos = false, soloRecibidos = false){
     let token = this._usuarioService.token;
-    let url = URL_SERVICIOS + `/compra?token=${token}&desde=${desde}&soloPedidos=${soloPedidos}`;
+    let url = URL_SERVICIOS + `/compra?token=${token}&desde=${desde}&soloPedidos=${soloPedidos}&soloRecibidos=${soloRecibidos}`;
 
     return this.http.get(url);
 
@@ -48,6 +48,13 @@ export class OrdenCompraService {
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/compra/buscarPorRequisicion/${requisicion._id}?token=${token}`;
   
+    return this.http.get(url);
+  }
+
+  buscarCompraPorId(idCompra){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/compra/buscarPorId/${idCompra}?token=${token}`;
+
     return this.http.get(url);
   }
 

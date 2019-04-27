@@ -13,6 +13,7 @@
           <th>Cantidad</th>
           <th>Solicitante</th>
           <th>Estatus</th>
+          <th>Fecha Proveedor</th>
           <th>Recibido?</th>
           <th>Eliminar</th>
         </tr>
@@ -29,6 +30,7 @@
           <td>{{req.cantidad}}</td>
           <td>{{req.solicitante.nombre}} ({{req.unidadDeNegocio}})</td>
           <td>{{req.estatus}}</td>
+          <td> <div *ngIf="req.fechaCompromisoProveedor">{{ req.fechaCompromisoProveedor | date }}</div> <div *ngIf="!req.fechaCompromisoProveedor">-</div> </td>
           <td><span *ngIf="req.estatus!='Pedido'">-</span> <button class="btn btn-sm btn-success" *ngIf="req.estatus=='Pedido'" (click)="confirmarRecepcionDeProdcuto(req)">Confirmar</button></td>
           <td><span *ngIf="req.estatus=='Aprobada' || req.estatus=='Pedido' || req.estatus=='Recibido'">-</span><i class="fa fa-trash color-red pointer" *ngIf="req.estatus!='Aprobada' && req.estatus!='Pedido' && req.estatus!='Recibido'" (click)="eliminarRequisicion(req)"></i></td>
         </tr>

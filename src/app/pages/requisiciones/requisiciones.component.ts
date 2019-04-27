@@ -68,11 +68,32 @@ export class RequisicionesComponent implements OnInit {
 
     this._requisicionesService.actualizarRequisicion(requisicion)
       .subscribe((resp:any)=>{
-        this._comprasService.buscarCompraPorRequisicion(requisicion)
+        let requisicionActualizada = resp.requisicion;
+
+        this._comprasService.buscarCompraPorId(requisicion.compra)
           .subscribe((resp:any)=>{
-            let compra= resp.compras[0];
-            compra.estatusPedido = 'Recibido';
-            compra.fechaReciboMercancia = new Date();
+
+            let compra = resp.compra;
+            
+            compra.requisiciones.forEach((req,index) => {
+              if(req._id===requisicion._id){
+                compra.requisiciones[index].estatus = 'Recibido';
+              }
+            });
+            
+            let requisicionesConProductoRecibido = 0;
+
+            compra.requisiciones.forEach((req) => {
+              
+              if (req.estatus === 'Recibido') {
+                requisicionesConProductoRecibido += 1;
+              }  
+            });
+
+            if(requisicionesConProductoRecibido >= compra.requisiciones.length){
+              compra.estatusPedido = 'Recibido';
+              compra.fechaReciboMercancia = new Date();
+            }
 
             this._comprasService.actualizarCompra(compra)
               .subscribe((resp:any)=>{

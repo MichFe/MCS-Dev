@@ -7,7 +7,7 @@
       <div class="modal-header">
         <h4 class="modal-title" 
             id="exampleModalLabel1"
-            *ngIf="requisicion">Creación de orden de compra</h4>
+            *ngIf="requisiciones.length>0">Creación de orden de compra</h4>
 
         <h4 class="modal-title" 
             id="exampleModalLabel1"
@@ -23,6 +23,21 @@
         <div class="card-body">
               <!-- Panel de ingreso de información del cliente -->
               <div>
+
+                <h3 class="card-title">Productos</h3>
+
+                <ul *ngIf="compra">
+                  <li *ngFor="let requisicion of compra.requisiciones">
+                    {{ requisicion.descripcion }} x {{ requisicion.cantidad }}
+                  </li>
+                </ul>
+
+                <ul *ngIf="requisiciones">
+                  <li *ngFor="let requisicion of requisiciones">
+                    {{ requisicion.descripcion }} x {{ requisicion.cantidad }}
+                  </li>
+                </ul>
+
                 <form class="form-horizontal p-t-20"
                       ngNativeValidate 
                       #forma="ngForm"
@@ -59,6 +74,39 @@
                </div>
             </div>
 
+            <div class="form-group row">
+                    <label class="col-sm-3 control-label">Descripción* :</label>
+                    <div class="col-sm-9">
+                      <div class="input-group">
+                        <div class="input-group-addon"><i class="ti-info"></i></div>
+                        <input  name="descripcionCompra" 
+                                [(ngModel)]="descripcionCompra" 
+                                type="text" 
+                                class="form-control"
+                                required>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group row m-t-20">
+              <label class="col-sm-3 control-label">Tipo de proveedor*</label>
+              <div class="col-sm-9">
+                <div class="input-group">
+                  <div class="input-group-addon"><i class="ti-truck"></i></div>
+                  <select class="form-control custom-select" 
+                          data-placeholder="Selecciona una tienda/expo" 
+                          name="tipoDeProveedor"
+                          [(ngModel)]="tipoDeProveedor"
+                          required>
+                    <option value="Proveedores Productos">Proveedores Productos</option>
+                    <option value="Proveedores Materia Prima">Proveedores Materia Prima</option>
+                    <option value="Proveedores Maquila">Proveedores Maquila</option>
+                  </select>
+                  <!-- <input (keyup)="validarFormulario()" name="correo" [(ngModel)]="correo" type="email" class="form-control" placeholder="Correo electrónico"> -->
+                </div>
+              </div>
+            </div>
+
                   
 
                   <div class="form-group row">
@@ -74,6 +122,7 @@
                       </div>
                     </div>
                   </div>
+
                   <div class="form-group row">
                     <label class="col-sm-3 control-label">Fecha Compromiso* :</label>
                     <div class="col-sm-9">
@@ -100,8 +149,6 @@
                   </div>
                 
                 </form>
-
-                <p *ngIf="requisicion && requisicion.aprobador">Aprobado por {{ requisicion.aprobador.nombre }}</p>
               
               </div>
               <!-- Fin de panel de edición de información del cliente -->
@@ -116,7 +163,10 @@
         <div class="left-footer-wrap">
           <button class="btn btn-info waves-effect waves-light"
                 *ngIf="compra"
-                (click)="actualizarCompra()">Actualizar Compra</button>
+                (click)="actualizarCompra()">Actualizar</button>
+
+          <button class="btn btn-primary waves-effect waves-light m-l-10"
+                  (click)="abrirModalNotaDeCompra()">Ver Nota</button>
 
         <button class="btn btn-danger waves-effect waves-light m-l-10"
                 *ngIf="compra"
@@ -125,7 +175,7 @@
         
 
         <button class="btn btn-success waves-effect waves-light"
-                *ngIf="compra"
+                *ngIf="compra && compra.estatusPedido != 'Recibido'"
                 (click)="confirmarRecepcionDeProducto()">Confirmar Recepción</button>
         
                 
@@ -135,7 +185,7 @@
 
         <button class="btn btn-warning waves-effect waves-light"
                 type="submit"
-                *ngIf="requisicion"
+                *ngIf="requisiciones.length>0"
                 form="formaNuevaCompra">Crear Compra</button>
         
         <!-- Fin de botones -->

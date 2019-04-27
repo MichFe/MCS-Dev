@@ -21,18 +21,19 @@ export class OrdenCompraComponent implements OnInit {
   proveedor:any;
 
   //Variables de formulario
-  proveedorNombre:string='';
-  costo:number=0;
+  proveedorNombre:string = '';
+  costo:number = 0;
   fechaEntregaString:string;
-  comentario:string='';
+  comentario:string = '';
+  descripcionCompra:string = '';
+  tipoDeProveedor:string;
 
   //Requisicion
   @Input()
-  requisicion:any;
+  requisiciones:any[];
 
   @Input()
   compra:any;
-
 
   @Output()
   actualizarData:EventEmitter<any>=new EventEmitter();
@@ -52,6 +53,24 @@ export class OrdenCompraComponent implements OnInit {
     
   }
 
+  abrirModalNotaDeCompra(){
+
+    $("#modalOrdenDeCompra").modal("toggle");
+    $("#modalOrdenDeCompra").on("hidden.bs.modal", function (event) {
+      // Open your second one in here
+      $("#modalNotaCompra").modal("toggle");
+      $("#modalOrdenDeCompra").off("hidden.bs.modal");
+
+      $("#modalNotaCompra").on("hidden.bs.modal", function(event) {
+        $("#modalOrdenDeCompra").modal("toggle");
+        $("#modalNotaCompra").off("hidden.bs.modal");
+      });
+
+    });
+
+
+  }
+
   confirmarRecepcionDeProducto(){
     let compra={
       _id: this.compra._id,
@@ -61,31 +80,61 @@ export class OrdenCompraComponent implements OnInit {
     this._compraService.actualizarCompra(compra)
       .subscribe((resp:any)=>{
         let fecha=new Date();
-        let requisicion={
-          _id: this.compra.requisicion._id,
-          estatus: 'Recibido',
-          fechaReciboMercancia: fecha,
-          productoRecibido: true
-        };
 
-      this._requisicionService.actualizarRequisicion(requisicion)
-        .subscribe((resp:any)=>{
-          this.refrescarTablas();
-          $('#modalOrdenDeCompra').modal('toggle');
-          swal(
-            "Actualización Exitosa",
-            "El estatus de la Compra y la Requisición se han actualizado",
-            "success"
-          );
-          this.resetearModal();
-        },
-        (error)=>{
-          swal(
-            "Error al actualizar Requisición",
-            error.error.mensaje + " | " + error.error.errors.message,
-            "error"
-          );
+        let requisicionesActualizadasCorrectamente = 0;
+        let requisicionesConErrorAlActualizar = 0;
+
+        let numeroDeRequisiciones=resp.compra.requisiciones.length;
+        resp.compra.requisiciones.forEach( (requisicion, index) => {
+
+          requisicion.estatus = 'Recibido';
+          requisicion.fechaReciboMercancia = fecha;
+          requisicion.productoRecibido = true;
+          
+          this._requisicionService.actualizarRequisicion(requisicion)
+            .subscribe((resp: any) => {
+
+              requisicionesActualizadasCorrectamente+=1;
+
+              //Ultima requisicion
+              if(index>=(numeroDeRequisiciones-1)){
+                
+                swal(
+                  "Confirmación de recepción de producto",
+                  `Requisiciones actualizadas: ${ requisicionesActualizadasCorrectamente }, errores: ${requisicionesConErrorAlActualizar}`,
+                  "warning"
+                );
+                this.refrescarTablas();
+                $('#modalOrdenDeCompra').modal('toggle');
+                
+                this.resetearModal();
+
+              }
+
+            },
+              (error) => {
+
+                requisicionesConErrorAlActualizar+=1;
+
+                if (index >= (numeroDeRequisiciones-1)) {
+
+                  swal(
+                    "Confirmación de recepción de producto",
+                    `Requisiciones actualizadas: ${requisicionesActualizadasCorrectamente}, errores: ${requisicionesConErrorAlActualizar}`,
+                    "warning"
+                  );
+                  this.refrescarTablas();
+                  $('#modalOrdenDeCompra').modal('toggle');
+
+                  this.resetearModal();
+
+                }
+
+              });
+
         });
+
+        
       },
       (error)=>{
         swal(
@@ -122,6 +171,8 @@ export class OrdenCompraComponent implements OnInit {
     this.fechaEntrega = new Date(compra.fechaCompromisoEntrega);
     this.fechaEntregaString = `${this.fechaEntrega.getFullYear()}-${ (this.fechaEntrega.getMonth()<10)?0:'' }${ this.fechaEntrega.getMonth() + 1 }-${(this.fechaEntrega.getDate()<10)?0:''}${ this.fechaEntrega.getDate() }`;
     this.comentario=compra.comentarioCompras;
+    this.descripcionCompra = compra.descripcionCompra;
+    this.tipoDeProveedor = compra.tipoDeProveedor;
 
   }
 
@@ -132,6 +183,8 @@ export class OrdenCompraComponent implements OnInit {
       costoTotal:this.costo,
       fechaCompromisoEntrega:this.fechaEntrega,
       comentarioCompras:this.comentario,
+      descripcionCompra: this.descripcionCompra,
+      tipoDeProveedor: this.tipoDeProveedor,
       _id:this.compra._id
     };
 
@@ -172,9 +225,12 @@ export class OrdenCompraComponent implements OnInit {
     this.fechaEntrega=null;
     this.fechaEntregaString=null; 
     this.comentario='';
+    this.descripcionCompra='';
+    this.tipoDeProveedor='';
 
     this.deseleccionarRequisicion.emit();
     this.compra=null;
+    this.requisiciones=[];
   }
 
   eliminarCompra(compra){
@@ -272,9 +328,9 @@ export class OrdenCompraComponent implements OnInit {
   }
 
   registrarCompra(){
-
+    
     let compra = {
-      requisicion: this.requisicion._id,
+      requisiciones: this.requisiciones,
       fechaCompra: Date.now(),
       fechaCompromisoEntrega: this.fechaEntrega,
       fechaReciboMercancia: null,
@@ -283,14 +339,18 @@ export class OrdenCompraComponent implements OnInit {
       montoPagado: 0,
       saldoPendiente: this.costo,
       estatus: 'Saldo Pendiente',
+      descripcionCompra: this.descripcionCompra,
       comentarioCompras: this.comentario,
-      usuarioCreador: this._usuarioService.id
+      usuarioCreador: this._usuarioService.id,
+      tipoDeProveedor: this.tipoDeProveedor
     };
 
     this._compraService.crearCompra(compra)
       .subscribe(
         (resp: any) => {
-          this.marcarRequisicionComoComprada();
+
+          this.marcarRequisicionComoComprada(resp.compra._id);
+          
           $('#modalOrdenDeCompra').modal('toggle');
           this.resetearModal();
           swal(
@@ -308,26 +368,39 @@ export class OrdenCompraComponent implements OnInit {
         });
   }
 
-  marcarRequisicionComoComprada(){
+  marcarRequisicionComoComprada(compraId){
 
-    let requisicion= {
-      compraCreada: true,
-      estatus:'Pedido',
-      _id: this.requisicion._id
-    }
+    this.requisiciones.forEach((req, index)=>{
 
-    this._requisicionService.actualizarRequisicion(requisicion)
-      .subscribe(
-        (resp:any)=>{
-          this.refrescarTablas();
-        },
-        (error)=>{
-          swal(
-            "Error al crear Orden de Compra",
-            error.error.mensaje + " | " + error.error.errors.message,
-            "error"
-          );
-        });
+      let requisicion = {
+        compraCreada: true,
+        estatus: 'Pedido',
+        fechaCompromisoProveedor: this.fechaEntrega,
+        compra: compraId,
+        _id: req._id
+      }
+
+      this._requisicionService.actualizarRequisicion(requisicion)
+        .subscribe(
+          (resp: any) => {
+
+            if(index>=(this.requisiciones.length-1)){
+              this.refrescarTablas();
+            }
+          },
+          (error) => {
+            if (index >= (this.requisiciones.length-1)) {
+              this.refrescarTablas();
+            }
+            swal(
+              "Error al crear Orden de Compra",
+              error.error.mensaje + " | " + error.error.errors.message,
+              "error"
+            );
+          });
+    })
+
+    
   }
 
   refrescarTablas(){
@@ -343,7 +416,7 @@ export class OrdenCompraComponent implements OnInit {
       return;
     }
 
-    if (termino.length < 3) {
+    if (termino.length < 1) {
       return;
     }
     this._proveedorService.buscarProveedor(termino).subscribe(

@@ -54,3 +54,15 @@ ul{
 .color-red{
     color: red;
 }
+
+.btn-group{
+    width: 70px;
+    float: right;
+
+}
+
+.page-indicator{
+    line-height: 36px;
+    margin-right: 10px;
+    float: right;
+}

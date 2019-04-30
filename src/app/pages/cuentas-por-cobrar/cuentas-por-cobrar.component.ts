@@ -19,6 +19,11 @@ export class CuentasPorCobrarComponent implements OnInit {
   idClienteActual:string;
   indexClienteActual:number;
 
+  //Variables de paginado
+  conteoCobros:number = 0;
+  paginaActual:number = 1;
+  totalDePaginas: number;
+
   //Variables de formulario
   clienteNombre:string;
 
@@ -26,6 +31,7 @@ export class CuentasPorCobrarComponent implements OnInit {
   //Data
   clientesConSaldoPendiente: any[];
   ventasConSaldo:any[]=[];
+  cobros:any[]=[];
 
   constructor(
     private _ventasService: VentasService,
@@ -35,6 +41,20 @@ export class CuentasPorCobrarComponent implements OnInit {
   ngOnInit() {
    this.cargarClientesSaldoPendiente();
    this.obtenerTotalSaldoPendiente();
+   this.obtenerCobrosPaginados(1);
+  }
+
+  obtenerCobrosPaginados(pagina=1){
+    let desde = (pagina - 1) * 10; 
+    this._cobrosService.obtenerCobrosDe10En10(desde).subscribe(
+      (resp:any)=>{
+        this.cobros = resp.pagos;
+        this.conteoCobros = resp.conteo;
+        this.totalDePaginas = Math.ceil(this.conteoCobros / 10);
+      },
+      (error)=>{
+
+      });
   }
 
   filtrarClientes(){
@@ -195,6 +215,23 @@ export class CuentasPorCobrarComponent implements OnInit {
         (resp.ventasConSaldo[0])?this.clientesConSaldoPendiente[index].activo=true:null;
       }
     );
+  }
+
+  // Funciones de paginado
+  paginaSiguiente() {
+    if (this.paginaActual * 10 >= this.conteoCobros) {
+      return;
+    }
+    this.paginaActual += 1;
+    this.obtenerCobrosPaginados(this.paginaActual);
+  }
+
+  paginaAnterior() {
+    if (this.paginaActual === 1) {
+      return;
+    }
+    this.paginaActual -= 1;
+    this.obtenerCobrosPaginados(this.paginaActual);
   }
 
 }

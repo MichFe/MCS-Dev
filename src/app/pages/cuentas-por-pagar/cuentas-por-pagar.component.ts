@@ -22,6 +22,14 @@ export class CuentasPorPagarComponent implements OnInit {
   totalSaldoPendiente: number = 0;
   totalMontoPagado: number = 0;
 
+  //Variables de paginado
+  conteoPagos: number = 0;
+  paginaActual: number = 1;
+  totalDePaginas: number;
+  
+  //Data
+  pagos: any[] = [];
+
   constructor(
     private _comprasService:OrdenCompraService,
     private _pagosService:PagosService
@@ -30,6 +38,17 @@ export class CuentasPorPagarComponent implements OnInit {
   ngOnInit() {
     this.cargarProveedoresConSaldoPendiente();
     this.obtenerTotalSaldoPendiente();
+    this.obtenerPagosPaginados(1);
+  }
+
+  obtenerPagosPaginados(pagina=1){
+    let desde = (pagina-1)*10;
+    this._pagosService.obtenerPagosPaginados(desde).subscribe(
+      (resp:any)=>{
+        this.pagos=resp.pagos;
+        this.conteoPagos = resp.conteo;
+        this.totalDePaginas = Math.ceil(this.conteoPagos / 10);
+      });
   }
 
   actualizarData() {    
@@ -189,6 +208,23 @@ export class CuentasPorPagarComponent implements OnInit {
             "error"
           );
         });
+  }
+
+  // Funciones de paginado
+  paginaSiguiente() {
+    if (this.paginaActual * 10 >= this.conteoPagos) {
+      return;
+    }
+    this.paginaActual += 1;
+    this.obtenerPagosPaginados(this.paginaActual);
+  }
+
+  paginaAnterior() {
+    if (this.paginaActual === 1) {
+      return;
+    }
+    this.paginaActual -= 1;
+    this.obtenerPagosPaginados(this.paginaActual);
   }
 
 }

@@ -155,6 +155,58 @@
 
   </div>
 
+  <div class="row m-t-10">
+
+    <div class="col col-md-12 text-center">
+
+      <div class="card">
+
+        <div class="card-title">
+          Lista de pagos de clientes
+        </div>
+
+        <div class="botonera">
+        
+          <div class="btn-group right" role="group">
+            <button class="btn btn-info" (click)="paginaAnterior()">
+              <</button> <button class="btn btn-info" (click)="paginaSiguiente()">>
+            </button>
+          </div>
+        
+          <span class="page-indicator">Página {{ paginaActual }} de {{ totalDePaginas }}</span>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Monto</th>
+                  <th>Método de Pago</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let cobro of cobros">
+                  <td>{{ cobro.fecha | date}}</td>
+                  <td>{{ cobro.cliente.nombre }}</td>
+                  <td>{{ cobro.monto | currency:'MXN'}}</td>
+                  <td>{{ cobro.tipoDePago | titlecase }}</td>
+                </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <app-modal-registro-cobro

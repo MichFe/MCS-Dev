@@ -110,7 +110,7 @@
             <td>{{ gasto.monto | currency:'MXN' }}</td>
             <td>{{ gasto.descripcion }}</td>
             <td>{{ gasto.categoria }}</td>
-            <td>{{ gasto.proveedor.nombre }}</td>
+            <td>{{ ( gasto.proveedor && gasto.proveedor.nombre)?gasto.proveedor.nombre:'-' }}</td>
             <td class="pointer"
                 (click)="abrirEditorDeGasto(gasto)"><i class="fa fa-edit color-yellow"></i></td>
             <td class="pointer"

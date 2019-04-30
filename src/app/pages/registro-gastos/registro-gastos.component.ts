@@ -91,15 +91,29 @@ export class RegistroGastosComponent implements OnInit {
   }
 
   guardarGasto() {
+
+    if( !this.monto || !this.descripcion || !this.categoria || !this.fecha){
+      swal(
+        "Gasto incompleto",
+        "Favor de completar los campos requeridos: fecha, monto, descripción y/o categoría",
+        "warning"
+      );
+      return;
+    }
+
     let gasto = {
       fecha: this.fecha,
       monto: this.monto,
       descripcion: this.descripcion,
       categoria: this.categoria,
-      proveedor: this.proveedorSeleccionado._id,
+      proveedor: null,
       pagoCompra: null,
       gastoOperativo: false
     };
+
+    if(this.proveedorSeleccionado && this.proveedorSeleccionado._id){
+      gasto.proveedor = this.proveedorSeleccionado._id;
+    }
 
     if(this.listaGastosOperativos.includes(this.categoria)){
       gasto.gastoOperativo=true;
@@ -107,11 +121,13 @@ export class RegistroGastosComponent implements OnInit {
 
     this._gastoService.crearGasto(gasto).subscribe(
       resp => {
+        this.limpiarFormularioDeGasto();
         swal(
           "Gasto Guardado",
           "El gasto se ha guardado exitosamente",
           "success"
         );
+
         this.obtenerGastosPaginados(this.paginaActual);
       },
       error => {
@@ -122,6 +138,15 @@ export class RegistroGastosComponent implements OnInit {
         );
       }
     );
+  }
+
+  limpiarFormularioDeGasto(){
+    this.monto=null;
+    this.descripcion=null;
+    this.categoria=null;
+    this.proveedorSeleccionado=null;
+    this.proveedorNombre=null;
+
   }
 
   abrirEditorDeGasto(gasto) {

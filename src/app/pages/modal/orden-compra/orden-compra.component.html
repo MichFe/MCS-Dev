@@ -166,7 +166,8 @@
                 (click)="actualizarCompra()">Actualizar</button>
 
           <button class="btn btn-primary waves-effect waves-light m-l-10"
-                  (click)="abrirModalNotaDeCompra()">Ver Nota</button>
+                  (click)="abrirModalNotaDeCompra()"
+                  *ngIf="compra">Ver Nota</button>
 
         <button class="btn btn-danger waves-effect waves-light m-l-10"
                 *ngIf="compra"

@@ -27,6 +27,13 @@ export class CobroService {
     return this.http.get(url);
   }
 
+  obtenerCobrosDe10En10(desde){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/cobro?token=${token}&desde=${desde}`;
+
+    return this.http.get(url);
+  }
+
   eliminarCobro(cobroId){
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/cobro/${cobroId}?token=${token}`;

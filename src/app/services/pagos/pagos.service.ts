@@ -20,6 +20,13 @@ export class PagosService {
     return this.http.post(url, pago);
   }
 
+  obtenerPagosPaginados(desde){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/pago?token=${token}&desde=${desde}`;
+
+    return this.http.get(url);
+  }
+
   obtenerPago(compraId) {
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/pago/${compraId}?token=${token}`;

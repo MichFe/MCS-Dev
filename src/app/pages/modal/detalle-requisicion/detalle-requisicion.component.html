@@ -94,24 +94,15 @@
       <div class="modal-footer">
 
         <!-- Botones -->
-        <button class="btn btn-info waves-effect waves-light btn-actualizar-requisicion" 
-                (click)="actualizarInformacionDeRequisicion()"
-                *ngIf="accion !== 'Registrar'">Actualizar</button>
-
         <button type="submit"
                 form="formaRequisicion"
                 class="btn btn-success waves-effect waves-light" *ngIf="accion === 'Registrar'">{{accion}}</button>
+                
         <button type="button"
-                (click)="actualizarRequisicion(true)"
-                class="btn btn-success waves-effect waves-light" *ngIf="accion !== 'Registrar' ">Aprobar</button>
-        <button type="button"
-                (click)="actualizarRequisicion(false)"
-                class="btn btn-warning waves-effect waves-light" *ngIf="accion !== 'Registrar' ">Rechazar</button>
+                (click)="actualizarInformacionDeRequisicion()"
+                class="btn btn-info waves-effect waves-light" *ngIf="accion !== 'Registrar' ">Actualizar</button>
 
-        <!-- <button type="button"
-                (click)="resetearModal()" 
-                class="btn btn-danger waves-effect waves-light" 
-                data-dismiss="modal">Salir</button> -->
+
         <!-- Fin de botones -->
 
       </div>

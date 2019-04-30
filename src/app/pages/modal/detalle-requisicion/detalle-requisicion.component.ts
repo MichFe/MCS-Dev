@@ -50,6 +50,7 @@ export class DetalleRequisicionComponent implements OnInit {
   ngOnInit() {
     this.usuarioCreador = this._usuarioService.id;
     this.usuarioUltimaModificacion = this._usuarioService.id;
+    this.unidadDeNegocio = this._usuarioService.usuario.unidadDeNegocio;
   }
 
   public setRequisicion() {
@@ -65,7 +66,7 @@ export class DetalleRequisicionComponent implements OnInit {
   resetearModal() {
     this.descripcion = null;
     this.cantidad = null;
-    this.unidadDeNegocio = null;
+    this.unidadDeNegocio = this._usuarioService.usuario.unidadDeNegocio;
     this.fechaSolicitud = null;
     this.accion = 'Registrar';
   }
@@ -124,6 +125,7 @@ export class DetalleRequisicionComponent implements OnInit {
     this._requisicionService.actualizarRequisicion(requisicion)
       .subscribe((resp:any)=>{
         this.refreshCompras.emit();
+        $("#detalleRequisicion").modal('toggle');
         swal(
           'Requisición Actualizada',
           'La requisición se ha actualizado correctamente',

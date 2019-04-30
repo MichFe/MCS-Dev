@@ -259,7 +259,7 @@ export class OrdenCompraComponent implements OnInit {
                 $('#modalOrdenDeCompra').modal('toggle');
                 swal(
                   "Compra eliminada",
-                  "La compra y los pagos asociados a ella, de han eliminado exitosamente.",
+                  "La compra, los pagos y requisiciones asociados a ella se han eliminado exitosamente.",
                   "success"
                 );
                 this.refrescarTablas();

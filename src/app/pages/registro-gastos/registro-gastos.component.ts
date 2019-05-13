@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProveedorService } from 'src/app/services/proveedor/proveedor.service';
 import { GastoService } from 'src/app/services/gasto/gasto.service';
+import { NominaService } from 'src/app/services/nomina/nomina.service';
 declare var $:any;
 
 @Component({
@@ -63,7 +64,8 @@ export class RegistroGastosComponent implements OnInit {
 
   constructor(
     private _proveedorService: ProveedorService,
-    private _gastoService: GastoService
+    private _gastoService: GastoService,
+    private _nominaService: NominaService
   ) {}
 
   ngOnInit() {
@@ -174,14 +176,45 @@ export class RegistroGastosComponent implements OnInit {
     ).then(eliminar => {
       if (eliminar) {
         this._gastoService.eliminarGasto(gastoId).subscribe(
-          resp => {
-            swal(
-              "Gasto Eliminado",
-              "El gasto se ha eliminado correctamente",
-              "success"
-            );
+          (resp:any) => {
 
-            this.obtenerGastosPaginados(this.paginaActual);
+            
+            if(resp.gasto.pagoNomina){
+              let nominaActualizada = {
+                _id: resp.gasto.pagoNomina,
+                estatus: 'Por Pagar'
+              };
+
+              this._nominaService.actualizarNomina(nominaActualizada).subscribe(
+                (resp)=>{
+                  swal(
+                    "Gasto Eliminado",
+                    "El gasto se ha eliminado correctamente",
+                    "success"
+                  );
+
+                  this.obtenerGastosPaginados(this.paginaActual);
+              },
+              (error)=>{
+                swal(
+                  "Error al Eliminar Gasto",
+                  error.error.mensaje + " | " + error.error.errors.message,
+                  "error"
+                );
+              });
+
+            }else{
+
+              swal(
+                "Gasto Eliminado",
+                "El gasto se ha eliminado correctamente",
+                "success"
+              );
+
+              this.obtenerGastosPaginados(this.paginaActual);
+            }
+
+            
           },
           error => {
             swal(

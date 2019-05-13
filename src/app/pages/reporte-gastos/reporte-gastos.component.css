@@ -1,0 +1,28 @@
+.bg-red{
+    background-color: #e55039;
+}
+.bg-blue{
+    background-color: #0a3d62;
+}
+
+.bg-pink{
+    background-color: #b71540;
+}
+
+.progress-bar{
+    background-color: #12CBC4 !important;
+}
+
+.tb-warning{
+    background-color: #f6b93b;
+    color: black;
+}
+
+.tb-success{
+    background-color: #079992;
+    color: white;
+}
+
+.tb-success:hover{
+    color: black;
+}

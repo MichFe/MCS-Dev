@@ -1,3 +1,133 @@
-<p>
-  nomina works!
-</p>
+<div class="container">
+
+  <div class="row">
+    <div class="col col-md-12">
+      <div class="card">
+        
+        <h4 class="card-title" *ngIf="nomina">
+            Nomina del {{ nomina.fechaInicial | date:'longDate' }} al {{ nomina.fechaFinal | date:'longDate' }}
+        </h4>
+
+        
+
+        <div class="botonera">
+          <div class="btn-group pull-left">
+          <button class="btn btn-info waves-effect waves-light"
+                  (click)="nominaSemanaAnterior()"><</button>
+          <button class="btn btn-info waves-effect waves-light"
+                  (click)="nominaSemanaSiguiente()">></button>
+        </div>
+
+          <button class="btn btn-info waves-effect waves-light pull-right"
+            (click)="actualizarNomina()">Guardar cambios</button>
+        </div>
+
+        <div class="card-body">
+
+          <div class="table-responsive">
+            <table class="table table-hover"
+              *ngIf="nomina">
+              <thead>
+                <tr>
+                  <th>Colaborador</th>
+                  <th>Lu</th>
+                  <th>Ma</th>
+                  <th>Mi</th>
+                  <th>Ju</th>
+                  <th>Vi</th>
+                  <th>Sa</th>
+                  <th>Do</th>
+                  <th>Salario Base</th>
+                  <th>Ajustes</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let nomina of nomina.nominaEmpleados, let i=index">
+                  <td>{{ nomina.empleado.nombre }}</td>
+                  <td [ngClass]="{
+                    'asistencia': nomina.lu === 'Asistencia',
+                    'retardo': nomina.lu === 'Retardo',
+                    'falta': nomina.lu === 'Falta'
+                  }"
+                  class="pointer"
+                  (click)="cambiarEstatusDeAsistencia(i, 'lu')"
+                  ></td>
+                  <td [ngClass]="{
+                    'asistencia': nomina.ma === 'Asistencia',
+                    'retardo': nomina.ma === 'Retardo',
+                    'falta': nomina.ma === 'Falta'
+                  }"
+                  class="pointer"
+                  (click)="cambiarEstatusDeAsistencia(i, 'ma')"
+                  ></td>
+                  <td [ngClass]="{
+                    'asistencia': nomina.mi === 'Asistencia',
+                    'retardo': nomina.mi === 'Retardo',
+                    'falta': nomina.mi === 'Falta'
+                  }"
+                  class="pointer"
+                  (click)="cambiarEstatusDeAsistencia(i, 'mi')"
+                  ></td>
+                  <td [ngClass]="{
+                    'asistencia': nomina.ju === 'Asistencia',
+                    'retardo': nomina.ju === 'Retardo',
+                    'falta': nomina.ju === 'Falta'
+                  }"
+                  class="pointer"
+                  (click)="cambiarEstatusDeAsistencia(i, 'ju')"
+                  ></td>
+                  <td [ngClass]="{
+                    'asistencia': nomina.vi === 'Asistencia',
+                    'retardo': nomina.vi === 'Retardo',
+                    'falta': nomina.vi === 'Falta'
+                  }"
+                  class="pointer"
+                  (click)="cambiarEstatusDeAsistencia(i, 'vi')"
+                  ></td>
+                  <td [ngClass]="{
+                    'asistencia': nomina.sa === 'Asistencia',
+                    'retardo': nomina.sa === 'Retardo',
+                    'falta': nomina.sa === 'Falta'
+                  }"
+                  class="pointer"
+                  (click)="cambiarEstatusDeAsistencia(i, 'sa')"
+                  ></td>
+                  <td [ngClass]="{
+                    'asistencia': nomina.do === 'Asistencia',
+                    'retardo': nomina.do === 'Retardo',
+                    'falta': nomina.do === 'Falta'
+                  }"
+                  class="pointer"
+                  (click)="cambiarEstatusDeAsistencia(i, 'do')"
+                  ></td>
+                  <td>{{ nomina.salarioBase | currency:'MXN' }}</td>
+                  <td class="pointer hover-highlight"
+                      (click)="abrirModalAjustes(i)">{{ nomina.totalAjustes | currency:'MXN' }}</td>
+                  <td>{{ nomina.salarioFinal | currency:'MXN' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div *ngIf="nomina && nomina.estatus">
+
+            <h4 class="txt-align-right">Total: {{ nomina.total | currency:'MXN' }}</h4>
+            <h4 class="txt-align-right">Estatus de pago: {{ nomina.estatus }}</h4>
+            <button *ngIf="nomina.estatus != 'Pagada'" class="btn btn-block btn-warning waves-effect waves-light"
+              (click)="pagarNomina()">Pagar Nómina</button>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<app-modal-ajustes-nomina
+  [nominaEmpleado]="nominaEmpleadoSeleccionado"
+  (actualizarNomina)="actualizarNomina($event)"></app-modal-ajustes-nomina>

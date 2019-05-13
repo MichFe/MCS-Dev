@@ -1,0 +1,12 @@
+.red{
+    color: red;
+}
+
+th, td{
+    text-align: center;
+}
+
+td{
+    padding: 5px;
+    vertical-align: middle;
+}

@@ -1,0 +1,106 @@
+<div class="modal fade" id="modalAjusteNomina" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+  
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" 
+            id="exampleModalLabel1">Registro de ajustes de nómina</h4>
+
+        <button (click)="resetearModal()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+      
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+
+              <div *ngIf="nominaEmpleado && nominaEmpleado.empleado">
+                <p>
+                  Empleado: {{ nominaEmpleado.empleado.nombre }}
+                </p>
+
+                <p>
+                  Salario Base: {{ nominaEmpleado.salarioBase | currency:'MXN' }}
+                </p>
+                
+                <p>
+                  Total Ajustes: {{ nominaEmpleado.totalAjustes | currency:'MXN' }}
+                </p>
+                
+                <p>
+                  Salario Final: {{ nominaEmpleado.salarioFinal | currency:'MXN' }}
+                </p>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Motivo</th>
+                      <th>Monto</th>
+                      <th>Tipo</th>
+                      <th>Agregar</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <td><input type="text" name="motivo" [(ngModel)]="motivo" autocomplete="off" class="form-control"></td>
+                      <td><input type="number" name="monto" [(ngModel)]="monto" autocomplete="off" class="form-control"></td>
+                      <td>
+                        <select name="categoria" [(ngModel)]="tipo" class="form-control" id="">
+                          <option *ngFor="let tipo of tiposDeAjustes" [value]="tipo">{{ tipo }}</option>
+                        </select>
+                      </td>
+                      <td><button class="btn btn-sm btn-success waves-effect waves-light"
+                                  (click)="agregarAjuste()">Agregar</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+              </div>
+
+              <div class="table-responsive" *ngIf="nominaEmpleado && nominaEmpleado.ajustes">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Motivo</th>
+                      <th>Monto</th>
+                      <th>Tipo</th>
+                      <th>Eliminar</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let ajuste of nominaEmpleado.ajustes, let i=index;">
+                      <td>{{ ajuste.motivo }}</td>
+                      <td>{{ ajuste.monto | currency:'MXN' }}</td>
+                      <td>{{ ajuste.tipo }}</td>
+                      <td><i class="fa fa-trash pointer red"
+                             (click)="eliminarAjuste(i)"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+
+        <!-- Botones -->
+        <button 
+          class="btn btn-success waves-effect waves-light"
+          (click)="guardarNominaEmpleado()">Guardar</button>        
+        <!-- Fin de botones -->
+
+      </div>
+
+    </div>
+  </div>
+
+</div>

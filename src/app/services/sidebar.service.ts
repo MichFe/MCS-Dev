@@ -40,15 +40,17 @@ export class SidebarService {
       icono: "ti-wallet",
       url:"/gastos",
       submenu:[
-        { titulo: "Registro de gastos", url: "/gastos" }
+        { titulo: "Registro de gastos", url: "/gastos" },
+        { titulo: "Reporte de gastos", url: "/reporteDeGastos"}
       ]
     },
     {
-      modulo: "Usuarios",
+      modulo: "Equipo",
       icono: "mdi mdi-account-multiple",
       url:"/permisosDeUsuario",
       submenu: [
-        { titulo: "Permisos", url: "/permisosDeUsuario" }
+        { titulo: "Permisos", url: "/permisosDeUsuario" },
+        { titulo: "Nomina", url: "/nomina" }
       ]
     }
   ];

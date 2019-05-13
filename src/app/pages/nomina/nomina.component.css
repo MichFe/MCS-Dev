@@ -1,0 +1,27 @@
+th, td{
+    text-align: center;
+    /* line-height: 10px; */
+}
+
+.asistencia{
+    border: 1px solid white;
+    background-color: green;
+}
+
+.retardo{
+    border: 1px solid white;
+    background-color: yellow;
+}
+
+.falta{
+    border: 1px solid white;
+    background-color: red;
+}
+
+.hover-highlight:hover{
+    background-color: #caebf1;
+}
+
+.txt-align-right{
+    text-align: right
+}

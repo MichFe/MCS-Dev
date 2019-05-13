@@ -12,6 +12,35 @@ export class GastoService {
     private http:HttpClient,
     private _usuarioService: UsuarioService
   ) { }
+  
+  obtenerSaldoPendienteYMontoPagado(year, categoria: string = '0') {
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/gasto/saldoPendiente/${year}?categoria=${categoria}&token=${token}`;
+
+    return this.http.get(url);
+  }
+
+  obtenerGastosMensuales(year: number, categoria: string = '0') {
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/gasto/gastosMensuales/${year}?categoria=${categoria}&token=${token}`;
+
+    return this.http.get(url);
+
+  }
+
+  obtenerGastosDiarios(year: number, month: number, categoria: string = '0') {
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/gasto/gastosDiarios/${year}/${month}?categoria=${categoria}&token=${token}`;
+
+    return this.http.get(url);
+  }
+
+  obtenerGastosParaTablaReporteGastos(desde: number, categoria='0', year:number, mes:number){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/gasto/tablaGastos?year=${year}&mes=${mes}&categoria=${categoria}&token=${token}&desde=${desde}`;
+  
+    return this.http.get(url);
+  }
 
   obtenerGastosPaginados(desde){
     let token= this._usuarioService.token;

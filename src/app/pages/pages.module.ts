@@ -63,6 +63,8 @@ import { ModalEditarGastoComponent } from './modal/modal-editar-gasto/modal-edit
 import { ModalReimpresionTicketComponent } from './modal/modal-reimpresion-ticket/modal-reimpresion-ticket.component';
 import { ModalNotaDeCompraComponent } from './modal/modal-nota-de-compra/modal-nota-de-compra.component';
 import { NominaComponent } from './nomina/nomina.component';
+import { ModalAjustesNominaComponent } from './modal/modal-ajustes-nomina/modal-ajustes-nomina.component';
+import { ReporteGastosComponent } from './reporte-gastos/reporte-gastos.component';
 
 
 
@@ -122,7 +124,9 @@ import { NominaComponent } from './nomina/nomina.component';
     ModalEditarGastoComponent,
     ModalReimpresionTicketComponent,
     ModalNotaDeCompraComponent,
-    NominaComponent
+    NominaComponent,
+    ModalAjustesNominaComponent,
+    ReporteGastosComponent
   ],
   exports: [
     DashboardComponent,

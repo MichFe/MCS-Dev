@@ -26,3 +26,15 @@
 .tb-success:hover{
     color: black;
 }
+
+.hover-highlight:hover{
+    font-weight: 500;
+}
+
+th{
+    text-align: center;
+}
+
+.bordered-card-10{
+    border-radius: 10px;
+}

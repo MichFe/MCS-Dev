@@ -212,4 +212,11 @@ export class UsuarioService {
   //---------------------------------------------------------------
   // FIN de Obtener usuarios
   //---------------------------------------------------------------
+
+  obtenerTodosLosUsuarios(){
+    let token = this.token;
+    let url = URL_SERVICIOS + `/usuario/todosLosUsuarios?token=${token}`;
+
+    return this.http.get(url);
+  }
 }

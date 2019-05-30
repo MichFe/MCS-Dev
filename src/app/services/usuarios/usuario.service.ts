@@ -6,8 +6,7 @@ import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Router } from '@angular/router';
 import { SubirArchivoService } from '../subirArchivo/subir-archivo.service';
-
-
+import { MenuServiceService } from '../menuService/menu-service.service';
 
 @Injectable({
   providedIn: "root"
@@ -91,6 +90,13 @@ export class UsuarioService {
   // FIN de Función crear Usuario
   //-------------------------------------
 
+  actualizarOtroUsuario(usuario){
+    let token = this.token;
+    let url = URL_SERVICIOS + `/usuario/${ usuario._id }?token=${ token }`;
+
+    return this.http.put(url, usuario);
+  }
+
   //-------------------------------
   // Función actualizar usuario
   //-------------------------------
@@ -139,6 +145,7 @@ export class UsuarioService {
     this.usuario = usuario;
     this.token = token;
     this.id = id;
+    
   }
   //------------------------------------------------------------------
   // FIN de Función para guardar datos del usuario en localstorage
@@ -172,11 +179,13 @@ export class UsuarioService {
   //-------------------------------------------------------------------------
   // Función para cargar los datos del usuario desde el localstorage
   //-------------------------------------------------------------------------
-  cargarStorage() {
+  async cargarStorage() {
     if (localStorage.getItem("token")) {
       this.token = localStorage.getItem("token");
       this.usuario = JSON.parse(localStorage.getItem("usuario"));
+      
       this.id = localStorage.getItem("id");
+      
     } else {
       this.token = "";
       this.usuario = null;
@@ -218,5 +227,23 @@ export class UsuarioService {
     let url = URL_SERVICIOS + `/usuario/todosLosUsuarios?token=${token}`;
 
     return this.http.get(url);
+  }
+
+  obtenerTodosLosEmpleados(){
+    let token = this.token;
+    let url = URL_SERVICIOS + `/usuario/rodosLosEmpleados?token=${ token }`;
+
+    return this.http.get(url);
+  }
+
+  cambiarPassword(id, password) {
+    let token = this.token;
+    let url = URL_SERVICIOS + `/usuario/cambiarPassword?token=${ token }`;
+    let usuario = {
+      _id: id,
+      password
+    };
+    
+    return this.http.put(url, usuario)
   }
 }

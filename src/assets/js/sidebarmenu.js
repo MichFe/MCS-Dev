@@ -165,6 +165,7 @@ File: js
 
       AdminMenu.prototype.init = function init() {
         var self = this;
+        
         $(this._element).find(this._config.parentTrigger + '.' + this._config.activeClass).has(this._config.subMenu).children(this._config.subMenu).attr('aria-expanded', true).addClass(this._config.collapseClass + ' ' + this._config.collapseInClass);
 
         $(this._element).find(this._config.parentTrigger).not('.' + this._config.activeClass).has(this._config.subMenu).children(this._config.subMenu).attr('aria-expanded', false).addClass(this._config.collapseClass);
@@ -173,7 +174,8 @@ File: js
           var _this = $(this);
           var _parent = _this.parent(self._config.parentTrigger);
           var _siblings = _parent.siblings(self._config.parentTrigger).children(self._config.triggerElement);
-          var _list = _parent.children(self._config.subMenu);
+          var _list = _parent.children(self._config.subMenu);                    
+          
           if (self._config.preventDefault) {
             e.preventDefault();
           }

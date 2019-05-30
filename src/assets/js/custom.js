@@ -6,7 +6,7 @@ File: js
 */
 
 function init_plugins(){
-
+    
 $(function() {
     "use strict";
     $(function() {

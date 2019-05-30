@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="col col-md-12">
+
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Salario</th>
+            <th>Email</th>
+            <th>Unidad de Negocio</th>
+            <th>Rol</th>
+            <th>Guardar Cambios</th>
+          </tr>
+        </thead>
+      
+        <tbody>
+          <tr *ngFor="let usuario of usuarios; let i=index">
+            <td><img class="profile" [src]="usuario.img | imagen:'usuario'"> {{ usuario.nombre }}</td>
+            <td class="clickable-cell" 
+                (click)="actualizarSalario($event, i)">{{ usuario.salario | currency:'MXN' }}</td>
+            <td class="clickable-cell"
+                (click)="actualizarEmail($event, i)">{{ usuario.email }}</td>
+            <td>
+              <select class="form-control custom-select" name="usuario.unidadDeNegocio" [(ngModel)]="usuario.unidadDeNegocio">
+                <option value="Fabrica">Fabrica</option>
+                <option value="Tienda León">Tienda León</option>
+              </select>
+            </td>
+            <td>
+              <select class="form-control custom-select" name="usuario.role" [(ngModel)]="usuario.role">
+                <option value="EMPLEADO">Empleado</option>
+                <option value="NO_EMPLEADO">Usuario</option>
+              </select></td>
+            <td><button 
+                  class="btn btn-sm btn-info waves-effect waves-light"
+                  (click)="guardarCambiosUsuario(usuario, i)">Guardar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+   
+
+  </div>
+</div>

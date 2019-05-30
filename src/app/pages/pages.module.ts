@@ -65,6 +65,9 @@ import { ModalNotaDeCompraComponent } from './modal/modal-nota-de-compra/modal-n
 import { NominaComponent } from './nomina/nomina.component';
 import { ModalAjustesNominaComponent } from './modal/modal-ajustes-nomina/modal-ajustes-nomina.component';
 import { ReporteGastosComponent } from './reporte-gastos/reporte-gastos.component';
+import { ConfiguracionMenuUsuariosComponent } from './configuracion-menu-usuarios/configuracion-menu-usuarios.component';
+import { GestionEmpleadosComponent } from './gestion-empleados/gestion-empleados.component';
+import { CambioPasswordComponent } from './cambio-password/cambio-password.component';
 
 
 
@@ -126,7 +129,10 @@ import { ReporteGastosComponent } from './reporte-gastos/reporte-gastos.componen
     ModalNotaDeCompraComponent,
     NominaComponent,
     ModalAjustesNominaComponent,
-    ReporteGastosComponent
+    ReporteGastosComponent,
+    ConfiguracionMenuUsuariosComponent,
+    GestionEmpleadosComponent,
+    CambioPasswordComponent
   ],
   exports: [
     DashboardComponent,

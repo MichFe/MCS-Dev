@@ -1,0 +1,74 @@
+ul{
+    padding:0px;
+    overflow: auto;
+
+    max-height: 50vh;
+}
+
+li{
+    list-style: none;
+    font-size: 17px;
+}
+
+.list-user{
+    padding: 5px;
+}
+
+.list-user:hover{
+    background-color: #caebf1;
+}
+
+.profile{
+    margin-right: 5px;
+}
+.nombre-usuario{
+    display: inline;
+    line-height: 30px;
+}
+
+.arrow-control{
+    margin: 0;
+    width: 50%;
+    text-align: center;
+    float: left;
+    font-size: 17px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.arrow-control:hover{
+    background-color: #caebf1;
+}
+
+/* seccion derecha */
+
+.menu-wraper{
+    margin-bottom: 20px;
+}
+
+.descripcion{
+    font-weight:500;
+    color: #278395;
+}
+
+.main-menu-wraper{
+    overflow: auto;
+    border-bottom: 1px solid #278395;
+}
+
+.main-menu-border-bottom{
+    border-bottom: 1px solid #278395;
+}
+
+.submenu-wraper{
+    padding-left: 30px;
+    border-bottom: 1px solid #278395;
+}
+
+.submenu-wraper ul{
+    margin-bottom: 0px; 
+}
+
+.submenu{
+    overflow: auto;
+}

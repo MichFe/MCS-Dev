@@ -1,0 +1,87 @@
+<div class="row">
+
+  <div class="col col-12 col-md-3">
+    <div class="card">
+
+        <div class="control-container">
+          <p class="arrow-control ponter"
+             (click)="paginaAnterior()"><</p>
+          <p class="arrow-control ponter"
+             (click)="paginaSiguiente()">></p>
+        </div>
+        <ul>
+          <li *ngFor="let usuario of usuarios"
+              class="list-user pointer"
+              (click)="obtenerMenuDeUsuario(usuario._id)">
+            <img [src]="usuario.img | imagen:'usuario'"
+                 class="profile img-circle size-30">
+            <p class="nombre-usuario">
+              {{ usuario.nombre }}
+            </p>
+          </li>
+        </ul>
+      </div>
+  </div>
+
+  <div class="col col-md-9">
+    <div class="card">
+        <div class="card-title user-name" *ngIf="usuarioActual">
+          Menú de {{ usuarioActual.nombre }}
+        </div>
+
+        <div *ngIf="menu && menu.length>0">
+
+          <div *ngFor="let modulo of menu; let i=index;" class="menu-wraper">
+            <!-- Menu selector -->
+            <div class="main-menu-wraper"
+                 [ngClass]="{'main-menu-border-bottom': modulo.submenu && modulo.submenu.length>0}">
+              <span class="descripcion pull-left">
+              {{ modulo.modulo }}
+              </span>
+
+              <div class="checkbox checkbox-success pull-right">
+                <input type="checkbox" 
+                   [(ngModel)]="modulo.show"
+                   (change)="toggleShowSubmenu(modulo, modulo.show)" 
+                   class="success"
+                   [id]="'id-menu' + i">
+                <label class="checkbox" [for]="'id-menu' + i"></label>
+              </div>
+            </div>
+            
+            <!-- FIN de menu selector -->
+
+            <!-- Submenu selectors -->
+            <div *ngIf="modulo.submenu && modulo.submenu.length>0" class="submenu-wraper">
+              <ul>
+                <li *ngFor="let submenu of modulo.submenu; let i=index;" class="submenu">
+                  <span class="pull-left">{{ submenu.titulo }}</span>
+
+                  <div class="checkbox checkbox-success pull-right">
+                    <input type="checkbox" 
+                         [(ngModel)]="submenu.show" 
+                         class="success"
+                         [id]="'id-submenu' + modulo.modulo + '-' + submenu.titulo">
+                    <label class="checkbox" [for]="'id-submenu' + modulo.modulo + '-' + submenu.titulo"></label>
+                  </div>
+                </li>
+
+                
+
+              </ul>
+            
+            </div>
+            <!-- FIN de Submenu selectors -->
+
+          </div>
+        </div>
+
+        <div class="botonera" *ngIf="menu && menu.length>0">
+          <button class="btn btn-success btn-block waves-effect waves-light m-b-10"
+                  (click)="actualizarMenu()">Guardar Cambios</button>
+        </div>
+
+      </div>
+  </div>
+
+</div>

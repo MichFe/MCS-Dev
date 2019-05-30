@@ -20,6 +20,9 @@ import { PermisosDeUsuariosComponent } from "./permisos-de-usuarios/permisos-de-
 import { RegistroGastosComponent } from "./registro-gastos/registro-gastos.component";
 import { NominaComponent } from "./nomina/nomina.component";
 import { ReporteGastosComponent } from "./reporte-gastos/reporte-gastos.component";
+import { ConfiguracionMenuUsuariosComponent } from "./configuracion-menu-usuarios/configuracion-menu-usuarios.component";
+import { GestionEmpleadosComponent } from "./gestion-empleados/gestion-empleados.component";
+import { CambioPasswordComponent } from "./cambio-password/cambio-password.component";
 
 
 const pagesRoutes:Routes = [
@@ -46,6 +49,9 @@ const pagesRoutes:Routes = [
             { path: 'gastos', component: RegistroGastosComponent },
             { path: 'nomina', component: NominaComponent },
             { path: 'reporteDeGastos', component: ReporteGastosComponent},
+            { path: 'configuracionDeMenu', component: ConfiguracionMenuUsuariosComponent },
+            { path: 'usuarios', component: GestionEmpleadosComponent },
+            { path: 'cambiarPassword', component: CambioPasswordComponent },
             { path: '', redirectTo: '/reporteVentas', pathMatch: 'full' }
         ]
     },

@@ -75,7 +75,15 @@ img.product-image{
    margin-right: auto;
 }
 
+.totales th{
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 5px;
+}
 
+.sin-iva{
+    color: darkgray;
+}
 
 @media print {
 

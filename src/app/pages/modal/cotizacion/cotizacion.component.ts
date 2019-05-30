@@ -31,6 +31,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
   notaValida: boolean = true;
   totalImporte: number = 0;
   totalDescuento: number = 0;
+  iva:number = 0;
 
   //Productos de la nota
   productos: any[];
@@ -219,7 +220,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
     this.cotizacion.productos = this._cotizacionService.productos;
     this.cotizacion.subtotal=this.totalImporte;
     this.cotizacion.descuento=this.totalDescuento;
-    this.cotizacion.total=this.totalImporte - this.totalDescuento;
+    this.cotizacion.total=this.totalImporte - this.totalDescuento + this.iva;
     
 
     this._cotizacionService.actualizarCotizacion(this.cotizacion).subscribe(
@@ -279,7 +280,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
         productos: this._cotizacionService.productos,
         subtotal: this.totalImporte,
         descuento: this.totalDescuento,
-        total: this.totalImporte - this.totalDescuento
+        total: this.totalImporte - this.totalDescuento + this.iva
       };
 
       this._cotizacionService.guardarCotizacion(cotizacion).subscribe(
@@ -319,7 +320,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
 
       this.cotizacion.subtotal = this.totalImporte;
       this.cotizacion.descuento = this.totalDescuento;
-      this.cotizacion.total = this.totalImporte - this.totalDescuento;
+      this.cotizacion.total = this.totalImporte - this.totalDescuento + this.iva;
 
 
       this._cotizacionService.actualizarCotizacion(this.cotizacion).subscribe(
@@ -613,7 +614,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
       productos: this._cotizacionService.productos, 
       subtotal: this.totalImporte, 
       descuento: this.totalDescuento, 
-      total:  this.totalImporte - this.totalDescuento
+      total:  this.totalImporte - this.totalDescuento + this.iva
     };
 
     this._cotizacionService.guardarCotizacion(cotizacion).subscribe(
@@ -650,6 +651,14 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
     this._cotizacionService.productos[i].editandoCantidad = true;
   }
 
+  toggleIva(){
+    if(this.iva>0){
+      this.iva=0;
+    }else{
+      this.iva = (this.totalImporte - this.totalDescuento) * 0.16; 
+    }
+  }
+
   calcularTotal() {
     
     let subtotal:number = 0;
@@ -666,7 +675,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
 
     this.totalDescuento = descuento;
     this.totalImporte = subtotal;    
-
+    this.iva = (subtotal-descuento)*0.16; 
   }
 
   scrollTop() {

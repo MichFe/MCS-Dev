@@ -120,9 +120,9 @@
 
                 </table>
 
-                <table class="table">
+                <table class="table totales">
                   <tr [ngClass]="{'oculto': totalDescuento==0}">
-                    <th class="txt-left"><strong>SUBTOTAL</strong></th>
+                    <th class="txt-left"><strong>IMPORTE</strong></th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -139,6 +139,31 @@
                     <th></th>
                     <th class="text-center">{{ totalDescuento | currency:'MXN' }}</th>
                   </tr>
+                  <tr [ngClass]="{
+                    'no-print': iva<=0,
+                    'sin-iva': iva<=0
+                  }">
+                    <th class="txt-left"><strong>SUBTOTAL</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ totalImporte - totalDescuento | currency:'MXN' }}</th>
+                  </tr>
+                  <tr class="pointer add-product-row" (click)="toggleIva()"
+                      [ngClass]="{
+                        'no-print': iva<=0,
+                        'sin-iva': iva<=0
+                      }">
+                    <th class="txt-left"><strong>IVA</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ iva | currency:'MXN' }}</th>
+                  </tr>
                   <tr>
                     <th class="txt-left"><strong>TOTAL</strong></th>
                     <th></th>
@@ -146,7 +171,7 @@
                     <th></th>
                     <th [ngClass]="{'no-print': totalDescuento==0}"></th>
                     <th></th>
-                    <th class="text-center">{{ totalImporte - totalDescuento | currency:'MXN' }}</th>
+                    <th class="text-center">{{ totalImporte - totalDescuento + iva | currency:'MXN' }}</th>
                   </tr>
                 </table>
                 

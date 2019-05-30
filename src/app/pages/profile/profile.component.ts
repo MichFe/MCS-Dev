@@ -23,6 +23,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = this._usuarioService.usuario;
+    
   }
 
   actualizarUsuario(usuario: Usuario) {

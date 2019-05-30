@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { UsuarioService } from '../usuarios/usuario.service';
-import { map, catchError, switchAll } from 'rxjs/operators';
-import swal from "sweetalert";
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -15,17 +14,15 @@ export class LoginGuardGuard implements CanActivate {
     private router:Router
   ){  }
 
-
-
   canActivate():Observable<boolean>{
 
     return this._usuarioService.validarLogin().pipe(
       map( (resp:any)=>{
 
       if(resp.ok){
-      
-        return true;
 
+        return true;
+        
       }else{
         this.router.navigate(['/login']);
       }

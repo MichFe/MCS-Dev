@@ -4,7 +4,7 @@
       <div class="form-group row m-t-20">
         <div class="col-sm-12">
           <div class="input-group">
-            <div class="input-group-addon"><i class="ti-location-pin"></i></div>
+            <div class="input-group-addon"><i class="ti-layout-grid2"></i></div>
             <select class="form-control custom-select" data-placeholder="Selecciona una categoría" name="categoriaActual"
               (change)="actualizarData()"
               [(ngModel)]="categoriaActual" required>
@@ -77,6 +77,21 @@
     </div>
   <!-- FIN de Widget mini Gráficas -->
 
+  <!-- Elemento utilidad bruta, operativa y neta -->
+  <div class="row">
+    <div class="col col-md-12 text-center">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Utilidad</h4>
+          <h6>Utilidad Bruta: {{ ( totalVentasAnuales ) | currency:'MXN' }}</h6>
+          <h6>Utilidad Operativa: {{ (totalVentasAnuales - totalGastoOperativoAnual) | currency:'MXN' }} </h6>
+          <h6>Utilidad Neta: {{ (totalVentasAnuales - totalGastoNetoAnual) | currency:'MXN' }}</h6>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- FIN de Elemento utilidad bruta, operativa y neta -->
 
   <!-- Elemento Gráficas de Pie -->
   <div class="row">
@@ -88,20 +103,12 @@
           <div class="card-body">
               <h4 class="card-title">Gastos Anuales: {{ year }}</h4>
             <div id="sparkPieGastos"></div>
-            <div class="row m-t-10"
-                 *ngIf="(categoriaActual!='0' && categoriaActual!='Todas')">
+            <div class="row m-t-10">
+              
               <div class="col-12">
-                <h3>Progreso meta anual: {{ totalGastosAnuales }}</h3>
-                <h6 class="card-subtitle">Gastos: {{ totalGastosAnuales | currency:'MXN' }} </h6>
+                <h3>Total de gasto anual: {{ totalGastosAnuales | currency:'MXN' }}</h3>
               </div>
-              <div class="col-12">
-                <div class="progress">
-                  <div class="progress-bar bg-success" role="progressbar" style="height: 6px;" [ngStyle]="{
-                  'width': ((totalGastosAnuales/metaAnual)*100)+'%'
-                  }" aria-valuenow="25"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -182,7 +189,7 @@
               </thead>
           
               <tbody>
-                <tr *ngFor="let gasto of gastos" class="pointer"
+                <tr *ngFor="let gasto of gastos"
                     (click)="verDetalleDeGasto(gasto)">
                   <td>{{ gasto.fecha | date }}</td>
                   <td>{{ (gasto.proveedor)?gasto.proveedor.nombre:'-' }}</td>

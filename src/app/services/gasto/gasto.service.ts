@@ -12,6 +12,13 @@ export class GastoService {
     private http:HttpClient,
     private _usuarioService: UsuarioService
   ) { }
+
+  obtenerTotalAnualDeGastoOperativo(year){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/gasto/gastosOperativosAnuales/${ year }?token=${ token }`;
+
+    return this.http.get(url);
+  }
   
   obtenerSaldoPendienteYMontoPagado(year, categoria: string = '0') {
     let token = this._usuarioService.token;

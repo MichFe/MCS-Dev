@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GastoService } from 'src/app/services/gasto/gasto.service';
 import { UsuarioService } from 'src/app/services/usuarios/usuario.service';
 import { Chart } from "chart.js";
+import { VentasService } from 'src/app/services/ventas/ventas.service';
 declare var $:any;
 
 @Component({
@@ -11,6 +12,9 @@ declare var $:any;
 })
 export class ReporteGastosComponent implements OnInit {
   totalGastosAnuales: number;
+  totalGastoOperativoAnual:number;
+  totalGastoNetoAnual:number;
+  totalVentasAnuales:number;
   categoriaActual: string = "0";
   gastoSeleccionadoTabla: any = {};
 
@@ -36,6 +40,7 @@ export class ReporteGastosComponent implements OnInit {
   gastosMensuales: any = [];
   gastosAnuales: number[] = [];
   cuentasPorPagar: any = [];
+  ventasAnuales: any = [];
 
   mesesArray = [
     "Enero",
@@ -112,13 +117,17 @@ export class ReporteGastosComponent implements OnInit {
 
   constructor(
     private _gastosService: GastoService,
-    private _usuarioService: UsuarioService
+    private _usuarioService: UsuarioService,
+    private _ventasService: VentasService
   ) {
     this.year = this.fechaActual.getFullYear();
     this.month = this.fechaActual.getMonth();
     this.categoriaActual = "0";
 
     this.obtenerGastosMensuales(this.year, this.categoriaActual);
+    this.obtenerVentasMensuales(this.year);
+    this.obtenerTotalDeGastoOperativo(this.year);
+    this.obtenerTotalDeGastoAnual(this.year);
     this.obtenerGastosDiarios(this.year, this.month, this.categoriaActual);
     this.obtenerSaldoPendienteYMontoPagado(this.year, this.categoriaActual);
   }
@@ -139,8 +148,52 @@ export class ReporteGastosComponent implements OnInit {
   actualizarData() {
     this.obtenerGastos(1, this.categoriaActual);
     this.obtenerGastosMensuales(this.year, this.categoriaActual);
+    this.obtenerVentasMensuales(this.year);
+    this.obtenerTotalDeGastoOperativo(this.year);
+    this.obtenerTotalDeGastoAnual(this.year);
     this.obtenerGastosDiarios(this.year, this.month, this.categoriaActual);
     this.obtenerSaldoPendienteYMontoPagado(this.year, this.categoriaActual);
+  }
+
+  obtenerTotalDeGastoOperativo(year){
+    this._gastosService.obtenerTotalAnualDeGastoOperativo(year).subscribe(
+      (resp:any)=>{
+        this.totalGastoOperativoAnual = resp.totalGastoOperativo;
+    },
+    (error)=>{
+      swal(
+        "Error al obtener total de gasto",
+        error.error.mensaje + " | " + error.error.errors.message,
+        "error"
+      );
+    })
+  }
+
+  obtenerVentasMensuales(year: number, unidadDeNegocio: string = '0') {
+
+    this._ventasService.obtenerVentasMensuales(year, unidadDeNegocio).subscribe(
+      (resp: any) => {
+        this.ventasAnuales = resp.ventasMensuales;
+        this.configurarGraficas();
+        this.totalVentasAnuales = this.ventasAnuales.reduce((a, b) => a + b, 0);
+
+      }
+    );
+  }
+
+  obtenerTotalDeGastoAnual(year: number, categoria: string="0"){
+    this._gastosService.obtenerGastosMensuales(year, categoria).subscribe(
+      (resp: any) => {
+        this.totalGastoNetoAnual = resp.gastosMensuales.reduce((a, b) => a + b, 0);
+      },
+      error => {
+        swal(
+          "Error al obtener total de gasto anual",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
+    );
   }
 
   obtenerGastosMensuales(year: number, categoria: string = "0") {
@@ -150,7 +203,13 @@ export class ReporteGastosComponent implements OnInit {
         this.configurarGraficas();
         this.totalGastosAnuales = this.gastosAnuales.reduce((a, b) => a + b, 0);
       },
-      error => {}
+      error => {
+        swal(
+          "Error al obtener gastos mensuales",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
     );
   }
 
@@ -160,7 +219,13 @@ export class ReporteGastosComponent implements OnInit {
         this.gastosMensuales = resp.gastosDiarios;
         this.configurarGraficas();
       },
-      error => {}
+      error => {
+        swal(
+          "Error al obtener gastos diarios",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
     );
   }
 
@@ -175,7 +240,13 @@ export class ReporteGastosComponent implements OnInit {
           ];
           this.configurarGraficas();
         },
-        error => {}
+        error => {
+          swal(
+            "Error al obtener total de saldo pendiente y monto pagado",
+            error.error.mensaje + " | " + error.error.errors.message,
+            "error"
+          );
+        }
       );
   }
 
@@ -200,7 +271,13 @@ export class ReporteGastosComponent implements OnInit {
           this.paginarResultados();
           this.activarPagina(pagina);
         },
-        error => {}
+        error => {
+          swal(
+            "Error al obtener gastos",
+            error.error.mensaje + " | " + error.error.errors.message,
+            "error"
+          );
+        }
       );
   }
 

@@ -25,12 +25,12 @@
           <td>{{requisicion.estatus}}</td>
           <td>
             <div class="checkbox checkbox-success">
-                  <input [id]="'id-checkbox-requisiciones-' + i"
-                         type="checkbox"
-                         name="seleccionIva"
-                         [(ngModel)]="requisicion.seleccionada">
-                  <label class="checkbox" [for]="'id-checkbox-requisiciones-' + i"></label>
-                </div>
+                <input [id]="'id-checkbox-requisiciones-' + i"
+                       type="checkbox"
+                       name="seleccionIva"
+                       [(ngModel)]="requisicion.seleccionada">
+                <label class="checkbox" [for]="'id-checkbox-requisiciones-' + i"></label>
+              </div>
           </td>
           <td><i class="fa fa-edit pointer"
                  (click)="detalleRequisicion(requisicion)"></i></td>

@@ -4,6 +4,7 @@ import { UsuarioService } from '../services/usuarios/usuario.service';
 import { Usuario } from '../models/usuario.model';
 import { Router } from '@angular/router';
 import swal from 'sweetalert'
+import { MenuServiceService } from '../services/menuService/menu-service.service';
 
 declare function init_plugins();
 
@@ -20,7 +21,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private _usuarioService: UsuarioService,
-    private router: Router
+    private router: Router,
+    private _menuService: MenuServiceService
   ) {
   }
 
@@ -66,7 +68,36 @@ export class LoginComponent implements OnInit {
       .subscribe(correcto => {
         
         if (correcto) {
-          this.router.navigate(["/reporteVentas"]);
+          this._menuService.obtenerMenuDeUsuario(this._usuarioService.id).subscribe(
+            (resp:any)=>{
+              let menu = resp.menu.menu;
+              this._menuService.menuDelUsuario = menu;
+
+              let rutaInicial;
+              if(menu[0].submenu && menu[0].submenu.length>0){
+                rutaInicial = menu[0].submenu[0].url;
+              }else{
+                rutaInicial = menu[0].url;
+              }
+              this.router.navigate([rutaInicial]);
+          },
+          (error)=>{
+            this._menuService.crearMenuDefault(this._usuarioService.id).subscribe(
+              (resp:any)=>{
+                let menu = resp.menu.menu;
+                this._menuService.menuDelUsuario = menu;
+
+                let rutaInicial;
+
+                if (menu[0].submenu && menu[0].submenu.length > 0) {
+                  rutaInicial = menu[0].submenu[0].url;
+                } else {
+                  rutaInicial = menu[0].url;
+                }
+                this.router.navigate([rutaInicial]);
+              });
+          });
+
         } else {
           swal(
             "Error en Login:",

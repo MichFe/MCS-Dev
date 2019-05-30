@@ -215,7 +215,7 @@ export class NominaComponent implements OnInit {
 
   obtenerTodosLosUsuarios() {
     return new Promise((resolve, reject) => {
-      this._usuarioService.obtenerTodosLosUsuarios().subscribe(
+      this._usuarioService.obtenerTodosLosEmpleados().subscribe(
         (resp: any) => {
           resolve(resp.usuarios);
         },

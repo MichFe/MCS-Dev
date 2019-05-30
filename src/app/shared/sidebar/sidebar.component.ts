@@ -9,7 +9,7 @@ declare function toggleSidebar();
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styles: []
+  styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent implements OnInit {
 
@@ -19,11 +19,17 @@ export class SidebarComponent implements OnInit {
     public _sidebar:SidebarService,
     public _usuarioService:UsuarioService,
     public _requisicionesService: RequisicionesService 
-  ) { }
+  ) { 
+    this.usuario = this._usuarioService.usuario;
+    this._sidebar.obtenerMenuDeUsuario();
+    
+    if (this.usuario.role === "ADMIN_ROLE") {
+      this.obtenerTotalRequisicionesPorAprobar(1);
+    }
+  }
   
   ngOnInit() {
-    this.usuario = this._usuarioService.usuario;
-    this.obtenerTotalRequisicionesPorAprobar(1);
+    
   }
 
   obtenerTotalRequisicionesPorAprobar(pagina){

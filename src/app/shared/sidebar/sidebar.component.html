@@ -8,24 +8,28 @@
     <nav class="sidebar-nav">
       <ul id="sidebarnav">
         <li class="user-profile">
-          <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false">
+          <a class="has-arrow waves-effect waves-dark" aria-expanded="false">
             <img class="size-30" [src]="usuario.img | imagen"/>
             <span class="hide-menu">{{ usuario.nombre }}</span></a>
           <ul aria-expanded="false" class="collapse">
             <li><a [routerLink]="['/perfil']"
                     routerLinkActive="active">Perfil </a></li>
+            <li><a [routerLink]="['/cambiarPassword']" 
+                    routerLinkActive="active" >Cambiar Contraseña</a></li>
             <li><a (click)="logout()" class="pointer">Logout</a></li>
           </ul>
         </li>
         <li class="nav-devider"></li>
         <li class="nav-small-cap">MODULOS</li>
 
-        <li *ngFor="let menu of _sidebar.menu"> 
+        <ng-container *ngFor="let menu of _sidebar.menu">
+          <li *ngIf="menu.show"> 
           <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i [class]="menu.icono" [routerLink]="[ menu.url ]"></i><span
               class="hide-menu"
               [routerLink]="[ menu.url ]">{{ menu.modulo }}</span></a>
           <ul aria-expanded="false" class="collapse">
-            <li *ngFor="let submenu of menu.submenu">
+            <ng-container *ngFor="let submenu of menu.submenu">
+              <li *ngIf="submenu.show">
               <a [routerLink]="[ submenu.url ]" routerLinkActive="active" (click)="expandCollapsSidebar()">
                 {{ submenu.titulo }} 
                 <span class="badge badge-pill badge-info" 
@@ -35,8 +39,14 @@
               </a>
               
             </li>
+            </ng-container>
+            
+            
           </ul>
         </li>
+        </ng-container>
+        
+        
       </ul>
     </nav>
     <!-- End Sidebar navigation -->

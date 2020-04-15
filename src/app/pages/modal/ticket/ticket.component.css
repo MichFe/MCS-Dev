@@ -112,3 +112,15 @@ li.cliente:hover{
     cursor: not-allowed;
 }
 
+.nombre-cliente{
+    font-size: 13px;
+    font-weight: bold;
+
+}
+
+.gray-logo{
+    width: 200px;
+    filter: grayscale(1);
+    margin-bottom: 10px;
+}
+

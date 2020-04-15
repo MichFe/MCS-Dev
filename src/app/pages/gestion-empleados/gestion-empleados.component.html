@@ -1,3 +1,56 @@
+<div class="row m-b-15">
+  <button class="btn btn-success button-right"
+          (click)="toggleCreandoUsuario()">Crear Usuario</button>
+
+  <div class="col col-md-12" *ngIf="creandoUsuario">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Salario</th>
+            <th>Email</th>
+            <th>Unidad de Negocio</th>
+            <th>Rol</th>
+            <th>Guardar Cambios</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>
+              <input class="form-control" type="text" name="nuevoUsuario.unidadDeNegocio" [(ngModel)]="nuevoUsuario.nombre">
+            </td>
+            <td>
+              <input class="form-control" type="number" name="nuevoUsuario.salario" [(ngModel)]="nuevoUsuario.salario">
+            </td>
+            <td>
+              <input class="form-control" type="email" name="nuevoUsuario.email" [(ngModel)]="nuevoUsuario.email">              
+            </td>
+            <td>
+              <select class="form-control" name="nuevoUsuario.unidadDeNegocio" [(ngModel)]="nuevoUsuario.unidadDeNegocio">
+                <option value="Fabrica">Fabrica</option>
+                <option value="Tienda León">Tienda León</option>
+              </select>
+            </td>
+            <td>
+              <select class="form-control" name="nuevoUsuario.role" [(ngModel)]="nuevoUsuario.role">
+                <option value="EMPLEADO">Empleado</option>
+                <option value="NO_EMPLEADO">Usuario</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-info waves-effect waves-light"
+                  (click)="crearNuevoUsuario(nuevoUsuario)">Crear Usuario</button>
+            </td>
+          </tr>
+        
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <div class="row">
   <div class="col col-md-12">
 
@@ -35,6 +88,9 @@
             <td><button 
                   class="btn btn-sm btn-info waves-effect waves-light"
                   (click)="guardarCambiosUsuario(usuario, i)">Guardar</button></td>
+            <td><button 
+                  class="btn btn-sm btn-danger waves-effect waves-light"
+                  (click)="eliminarUsuario(usuario, i)">Eliminar</button></td>
           </tr>
         </tbody>
       </table>

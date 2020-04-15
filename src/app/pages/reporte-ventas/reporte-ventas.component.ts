@@ -139,8 +139,7 @@ export class ReporteVentasComponent implements OnInit {
     this.obtenerVentasDiarias(this.year, this.month, this.unidadDeNegocioActual);
     this.obtenerSaldoPendienteYMontoPagado(this.year,this.unidadDeNegocioActual);
     this.obtenerDescuentosMensuales(this.year, this.unidadDeNegocioActual);
-    this.obtenerMetas();
-    
+    this.obtenerMetas();    
 
   }
 
@@ -310,7 +309,7 @@ export class ReporteVentasComponent implements OnInit {
         mes=Number(mes);
         this.month = mes-1;
         this.day = 1;
-        this.obtenerVentasDiarias(this.year,this.month);
+        this.obtenerVentasDiarias(this.year,this.month,this.unidadDeNegocioActual);
         this.obtenerVentas(1,this.unidadDeNegocioActual);
         this.configurarGraficas();
 

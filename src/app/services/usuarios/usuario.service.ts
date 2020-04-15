@@ -17,7 +17,7 @@ export class UsuarioService {
   token: string;
 
   constructor(
-    public http: HttpClient, 
+    public http: HttpClient,
     private router: Router,
     private _subirArchivoService: SubirArchivoService
   ) {
@@ -44,7 +44,7 @@ export class UsuarioService {
     return this.http.post(url, usuario).pipe(
       map((resp: any) => {
         // Guardamos los datos del usuario, su token e id
-        
+
         this.guardarStorage(resp.id, resp.token, resp.usuario);
 
         return true;
@@ -82,7 +82,8 @@ export class UsuarioService {
   // Función crear Usuario
   //-------------------------------------
   crearUsuario(usuario: Usuario) {
-    let url = URL_SERVICIOS + "/usuario";
+    let token = this.token;
+    let url = URL_SERVICIOS + `/usuario?token=${token}`;
 
     return this.http.post(url, usuario);
   }
@@ -90,9 +91,22 @@ export class UsuarioService {
   // FIN de Función crear Usuario
   //-------------------------------------
 
-  actualizarOtroUsuario(usuario){
+  //-------------------------------------
+  // Funcion eliminar usuario
+  //-------------------------------------
+  eliminarUsuario(usuario){
     let token = this.token;
     let url = URL_SERVICIOS + `/usuario/${ usuario._id }?token=${ token }`;
+
+    return this.http.delete(url);
+  }
+  //-------------------------------------
+  // FIN de Funcion eliminar usuario
+  //-------------------------------------
+
+  actualizarOtroUsuario(usuario) {
+    let token = this.token;
+    let url = URL_SERVICIOS + `/usuario/${usuario._id}?token=${token}`;
 
     return this.http.put(url, usuario);
   }
@@ -100,35 +114,33 @@ export class UsuarioService {
   //-------------------------------
   // Función actualizar usuario
   //-------------------------------
-  actualizarUsuario( usuario:Usuario ){
-    let token=this.token;
-    let url = URL_SERVICIOS + '/usuario/' + usuario._id + '?token=' + token;
+  actualizarUsuario(usuario: Usuario) {
+    let token = this.token;
+    let url = URL_SERVICIOS + "/usuario/" + usuario._id + "?token=" + token;
 
-    return this.http.put( url, usuario ).pipe( 
-      map( (resp:any)=>{
-
+    return this.http.put(url, usuario).pipe(
+      map((resp: any) => {
         swal(
-          'Actualización exitosa',
-          'La información de usuario se ha actualizado correctamente',
-          'success'
+          "Actualización exitosa",
+          "La información de usuario se ha actualizado correctamente",
+          "success"
         );
-        
 
-        let usuarioDB:Usuario = resp.usuario;
-        this.guardarStorage( usuarioDB._id, this.token, usuarioDB);
-      
+        let usuarioDB: Usuario = resp.usuario;
+        this.guardarStorage(usuarioDB._id, this.token, usuarioDB);
+
         return true;
       }),
-      catchError( (err:any)=>{
-        
+      catchError((err: any) => {
         swal(
-          'Error al actualizar usuario',
-          err.error.mensaje + ' | ' + err.error.errors.message,
-          'error'
+          "Error al actualizar usuario",
+          err.error.mensaje + " | " + err.error.errors.message,
+          "error"
         );
 
         return err;
-      }));
+      })
+    );
   }
   //--------------------------------------
   // FIN de Función actualizar usuario
@@ -145,35 +157,27 @@ export class UsuarioService {
     this.usuario = usuario;
     this.token = token;
     this.id = id;
-    
   }
   //------------------------------------------------------------------
   // FIN de Función para guardar datos del usuario en localstorage
   //------------------------------------------------------------------
 
-  cambiarImagen(file:File, id: string){
+  cambiarImagen(file: File, id: string) {
+    this._subirArchivoService
+      .subirArchivo(file, "usuario", id)
+      .then((resp: any) => {
+        this.usuario.img = resp.usuario.img;
+        swal(
+          "Imagen actualizada",
+          "Se ha actualizado la imagen de: " + this.usuario.nombre,
+          "success"
+        );
 
-    this._subirArchivoService.subirArchivo( file, 'usuario', id )
-        .then(
-          (resp:any)=>{
-
-            this.usuario.img = resp.usuario.img;
-            swal(
-              'Imagen actualizada',
-              'Se ha actualizado la imagen de: ' + this.usuario.nombre,
-              'success'
-            );
-
-            this.guardarStorage( id, this.token, this.usuario );
-            
-          }
-        )
-        .catch(
-          (err)=>{
-            console.log(err);
-            
-          });
-
+        this.guardarStorage(id, this.token, this.usuario);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   //-------------------------------------------------------------------------
@@ -183,9 +187,8 @@ export class UsuarioService {
     if (localStorage.getItem("token")) {
       this.token = localStorage.getItem("token");
       this.usuario = JSON.parse(localStorage.getItem("usuario"));
-      
+
       this.id = localStorage.getItem("id");
-      
     } else {
       this.token = "";
       this.usuario = null;
@@ -213,8 +216,8 @@ export class UsuarioService {
   //---------------------------------------------------------------
   // Obtener usuarios
   //---------------------------------------------------------------
-  obtenerUsuarios(desde){
-    let url = URL_SERVICIOS + `/usuario?token=${ this.token }&desde=${ desde }`;
+  obtenerUsuarios(desde) {
+    let url = URL_SERVICIOS + `/usuario?token=${this.token}&desde=${desde}`;
 
     return this.http.get(url);
   }
@@ -222,28 +225,28 @@ export class UsuarioService {
   // FIN de Obtener usuarios
   //---------------------------------------------------------------
 
-  obtenerTodosLosUsuarios(){
+  obtenerTodosLosUsuarios() {
     let token = this.token;
     let url = URL_SERVICIOS + `/usuario/todosLosUsuarios?token=${token}`;
 
     return this.http.get(url);
   }
 
-  obtenerTodosLosEmpleados(){
+  obtenerTodosLosEmpleados() {
     let token = this.token;
-    let url = URL_SERVICIOS + `/usuario/rodosLosEmpleados?token=${ token }`;
+    let url = URL_SERVICIOS + `/usuario/todosLosEmpleados?token=${token}`;
 
     return this.http.get(url);
   }
 
   cambiarPassword(id, password) {
     let token = this.token;
-    let url = URL_SERVICIOS + `/usuario/cambiarPassword?token=${ token }`;
+    let url = URL_SERVICIOS + `/usuario/cambiarPassword?token=${token}`;
     let usuario = {
       _id: id,
       password
     };
-    
-    return this.http.put(url, usuario)
+
+    return this.http.put(url, usuario);
   }
 }

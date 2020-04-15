@@ -3,6 +3,8 @@ import { RequisicionesService } from './requisiciones/requisiciones.service';
 import { MenuServiceService } from './menuService/menu-service.service';
 import { UsuarioService } from './usuarios/usuario.service';
 
+declare function activeLiSideBar();
+
 @Injectable({
   providedIn: "root"
 })
@@ -50,6 +52,16 @@ export class SidebarService {
       ]
     },
     {
+      modulo: "Inventario",
+      icono: "mdi mdi-package-variant-closed",
+      url: "/inventarioTienda",
+      show: false,
+      submenu: [
+        { titulo: "Inventario tienda", url: "/inventarioTienda", show: false }
+      ]
+
+    },
+    {
       modulo: "Equipo",
       icono: "mdi mdi-account-multiple",
       url: "/nomina",
@@ -82,6 +94,7 @@ export class SidebarService {
     this._menuService.obtenerMenuDeUsuario(this._usuarioService.id).subscribe(
       (resp:any)=>{
         this.menu = resp.menu.menu;
+        activeLiSideBar();
        
         
     },(error)=>{

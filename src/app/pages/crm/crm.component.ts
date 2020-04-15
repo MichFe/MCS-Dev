@@ -595,10 +595,10 @@ export class CrmComponent implements OnInit {
     }
 
     //Evitamos busquedas con terminos menores a 3 caracteres
-    if (this.terminoBusqueda.length<=3) {
+    // if (this.terminoBusqueda.length<=3) {
 
-      return;
-    }
+    //   return;
+    // }
 
     //Ejecutamos la consulta
     this._clientesServicio.buscarCliente(this.terminoBusqueda).subscribe(

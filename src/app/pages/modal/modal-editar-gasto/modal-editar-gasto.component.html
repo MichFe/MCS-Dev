@@ -76,15 +76,7 @@
                                 [(ngModel)]="categoria" 
                                 class="form-control" 
                                 id="">
-                          <option value="Materiales e Insumos">Materiales e Insumos</option>
-                          <option value="Servicios">Servicios</option>
-                          <option value="Transporte">Transporte</option>
-                          <option value="Mantenimiento y Reparaciones">Mantenimiento y Reparaciones</option>
-                          <option value="Viáticos">Viáticos</option>
-                          <option value="Servicios Profesionales">Servicios Profesionales</option>
-                          <option value="Nomina">Nomina</option>
-                          <option value="Pago a proveedores">Pago a proveedores</option>
-                          <option value="Otros">Otros</option>
+                          <option *ngFor="let gasto of listaGastos" [value]="gasto">{{ gasto }}</option>
                         </select>
                       </div>
                     </div>

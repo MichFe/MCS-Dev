@@ -1,0 +1,36 @@
+.inventario-wrapper{
+    padding: 0px 10%;
+}
+
+ul{
+    overflow: auto;
+     padding: 0px;
+}
+
+li{
+    list-style: none;
+}
+
+ul.familia>li:first-child{
+    border-bottom: 1px solid #278395;
+    margin-bottom: 5px;
+    color: #278395;
+    font-weight: 500;
+}
+
+ul.productos li{
+    padding: 5px 5px 5px 30px;
+}
+
+ul.productos li:hover{
+    background-color:#caebf1;
+}
+
+.cantidad{
+    width: 50px;
+    text-align: center;
+}
+
+.cantidad:hover{
+    font-weight: 500;
+}

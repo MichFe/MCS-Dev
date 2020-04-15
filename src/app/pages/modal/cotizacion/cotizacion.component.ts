@@ -514,8 +514,6 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   eliminarProducto(i){
-
-    console.log(this.productos[i]);
     
 
     //Validamos si la imagen es custom o de un producto de catalogo

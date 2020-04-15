@@ -10,6 +10,16 @@ export class GestionEmpleadosComponent implements OnInit {
 
   //Data
   usuarios:any[] = [];
+  nuevoUsuario = {
+    nombre: "",
+    email: "",
+    password: "123456",
+    role: "USER_ROLE",
+    unidadDeNegocio: "",
+    salario: 0
+  };
+
+  creandoUsuario:boolean=false;
 
   constructor(
     private _usuarioService:UsuarioService
@@ -17,6 +27,38 @@ export class GestionEmpleadosComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerUsuarios();
+  }
+
+  toggleCreandoUsuario(){
+    if(this.creandoUsuario){
+      this.creandoUsuario=false;
+    }else{
+      this.creandoUsuario=true;
+    }
+  }
+
+  crearNuevoUsuario(nuevoUsuario){
+    this._usuarioService.crearUsuario(nuevoUsuario).subscribe(
+      (resp)=>{
+
+        this.obtenerUsuarios();
+
+        //Reset nuevoUsuario
+        this.nuevoUsuario.nombre= "";
+        this.nuevoUsuario.email= "";
+        this.nuevoUsuario.password= "123456";
+        this.nuevoUsuario.role= "USER_ROLE";
+        this.nuevoUsuario.unidadDeNegocio= "";
+        this.nuevoUsuario.salario= 0;
+
+        //Toggle creando usuario
+        this.toggleCreandoUsuario();
+
+        
+    },
+    (error)=>{
+
+    })
   }
 
   obtenerUsuarios(){
@@ -27,6 +69,16 @@ export class GestionEmpleadosComponent implements OnInit {
       (error)=>{
 
       })
+  }
+
+  eliminarUsuario(usuario, i){
+    this._usuarioService.eliminarUsuario(usuario).subscribe(
+      (resp)=>{
+        this.obtenerUsuarios();
+    },
+    (error)=>{
+
+    })
   }
 
   crearCeldaTemporal(celda){

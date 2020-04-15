@@ -93,7 +93,7 @@ export class RegistroGastosComponent implements OnInit {
   }
 
   guardarGasto() {
-
+    this.fecha = new Date();
     if( !this.monto || !this.descripcion || !this.categoria || !this.fecha){
       swal(
         "Gasto incompleto",

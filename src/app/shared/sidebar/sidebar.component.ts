@@ -6,6 +6,7 @@ import { RequisicionesService } from 'src/app/services/requisiciones/requisicion
 
 declare function toggleSidebar();
 
+
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',

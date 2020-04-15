@@ -14,3 +14,8 @@ th, td:not(:first-child){
 .clickable-cell{
     cursor: pointer;
 }
+
+.button-right{
+    margin-left: auto;
+    margin-bottom: 10px;    
+}

@@ -74,10 +74,13 @@ ul{
 }
 
 .descuento-lista{
-    float: left;
     font-size: 15px;
     color: darkorange;
-    width: 10px;
+}
+
+.comentarios-lista{
+    margin-left: 5px;
+    font-size: 12px;
 }
 
 .botonera-item-lista{

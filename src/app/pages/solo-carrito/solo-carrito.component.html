@@ -12,6 +12,7 @@
       <p class="nombre-lista fw-500 pointer" (click)="cambiarNombre(i)">{{ producto.nombre }}</p>
       <p class="precio-lista pointer" (click)="cambiarPrecio(i)">{{ producto.precio | currency: 'MXN' }}</p>
       <p *ngIf="producto.descuento" class="descuento-lista"> -{{ producto.descuento | currency: 'MXN' }}</p>
+      <p *ngIf="producto.descripcion" class="comentarios-lista">{{ producto.descripcion }}</p>
     </div>
 
     <div class="botonera-item-lista right">

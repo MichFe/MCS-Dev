@@ -1,0 +1,21 @@
+<div class="row">
+
+  <div class="col col-md-12 inventario-wrapper">
+    
+    <ul class="familia"
+        *ngFor="let familia of familias">
+      <li>Inventario de {{ familia._id.familia }}</li>
+
+      <ul class="productos">
+        <li *ngFor="let producto of familia.productos">
+          <span >{{ producto.codigo }}</span>
+          <span class="pull-right pointer cantidad"
+                (click)="editarInventario($event, producto)">{{ (producto.cantidad)?producto.cantidad:0 }}</span>
+        </li>
+      </ul>
+
+    </ul>
+
+  </div>
+
+</div>

@@ -37,6 +37,13 @@ export class ProductoService {
 
   }
 
+  obtenerFamiliasYProductos(){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/producto/familiasYProductos?token=${token}`;
+
+    return this.http.get( url );
+  }
+
   eliminarProductoPorId(id:string){
     let token = this._usuarioService.token;
     let url= URL_SERVICIOS + `/producto/${ id }?token=${ token }`;

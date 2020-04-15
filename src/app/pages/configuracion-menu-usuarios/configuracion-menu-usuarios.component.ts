@@ -36,11 +36,11 @@ export class ConfiguracionMenuUsuariosComponent implements OnInit {
     
   }
 
-  obtenerMenuDeUsuario(usuarioId){
+  obtenerMenuDeUsuario(usuarioId, usuario){
     this._menuService.obtenerMenuDeUsuario(usuarioId).subscribe(
       (resp:any)=>{
         this.menu=resp.menu.menu;
-        this.usuarioActual=usuarioId;
+        this.usuarioActual=usuario;
     },
     (error)=>{
       this._menuService.crearMenuDefault(usuarioId).subscribe(
@@ -60,7 +60,7 @@ export class ConfiguracionMenuUsuariosComponent implements OnInit {
   actualizarMenu(){
       
       
-    this._menuService.actualizarMenu( this.usuarioActual , this.menu ).subscribe(
+    this._menuService.actualizarMenu( this.usuarioActual._id , this.menu ).subscribe(
       (resp:any)=>{
         this.menu=resp.menu.menu;
         swal(

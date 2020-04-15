@@ -23,6 +23,7 @@ import { ReporteGastosComponent } from "./reporte-gastos/reporte-gastos.componen
 import { ConfiguracionMenuUsuariosComponent } from "./configuracion-menu-usuarios/configuracion-menu-usuarios.component";
 import { GestionEmpleadosComponent } from "./gestion-empleados/gestion-empleados.component";
 import { CambioPasswordComponent } from "./cambio-password/cambio-password.component";
+import { InventarioTiendaComponent } from "../inventario-tienda/inventario-tienda.component";
 
 
 const pagesRoutes:Routes = [
@@ -52,6 +53,7 @@ const pagesRoutes:Routes = [
             { path: 'configuracionDeMenu', component: ConfiguracionMenuUsuariosComponent },
             { path: 'usuarios', component: GestionEmpleadosComponent },
             { path: 'cambiarPassword', component: CambioPasswordComponent },
+            { path: 'inventarioTienda', component: InventarioTiendaComponent },
             { path: '', redirectTo: '/reporteVentas', pathMatch: 'full' }
         ]
     },

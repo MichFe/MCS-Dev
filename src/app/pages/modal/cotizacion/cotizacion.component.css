@@ -85,6 +85,14 @@ img.product-image{
     color: darkgray;
 }
 
+.modal-dialog{
+    margin: 0;
+}
+
+.modal-content{
+    width: 100vw;
+}
+
 @media print {
 
     .no-print {

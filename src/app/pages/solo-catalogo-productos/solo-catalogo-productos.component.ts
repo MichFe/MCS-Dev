@@ -112,8 +112,10 @@ export class SoloCatalogoProductosComponent implements OnInit {
   agregarACarrito(producto) {
     producto.cantidad=1;
     producto.descuento=0;
+    let clonedProduct = {};
+    Object.assign(clonedProduct,producto);
     
-    this._cotizacionService.carrito.push(producto);
+    this._cotizacionService.carrito.push(clonedProduct);
   }
 
   paginaAnterior() {

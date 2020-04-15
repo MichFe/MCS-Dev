@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 //Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
+import { InventarioTiendaComponent } from './inventario-tienda/inventario-tienda.component';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { LoginComponent } from './login/login.component';
   ],
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    InventarioTiendaComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

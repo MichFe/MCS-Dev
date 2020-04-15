@@ -9,9 +9,10 @@ declare var $:any;
   styleUrls: ["./modal-editar-gasto.component.css"]
 })
 export class ModalEditarGastoComponent implements OnInit {
+
   //Variables
   proveedorSeleccionado: any;
-  fecha=new Date();
+  fecha = new Date();
 
   //Variables de formulario
   proveedorNombre: string = "";
@@ -22,6 +23,22 @@ export class ModalEditarGastoComponent implements OnInit {
 
   //Data
   proveedores: any[] = [];
+  listaGastos = [
+    "Proveedores Productos",
+    "Proveedores Materia Prima",
+    "Proveedores Maquila",
+    "Nómina",
+    "Otros",
+    "Fletes",
+    "Publicidad",
+    "Gastos no Operativos",
+    "Comisiones por Ventas",
+    "Impuestos",
+    "Transporte",
+    "Maquinaria/Equipo",
+    "Mantenimiento",
+    "Renta/Servicios"
+  ];
 
   //Inputs
   @Input()
@@ -29,25 +46,26 @@ export class ModalEditarGastoComponent implements OnInit {
 
   //Outputs
   @Output()
-  actualizarData:EventEmitter<any> = new EventEmitter; 
+  actualizarData: EventEmitter<any> = new EventEmitter();
 
   constructor(
     private _proveedorService: ProveedorService,
     private _gastoService: GastoService
-    ) {}
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnChanges() {
+    
     let existeGasto = Object.getOwnPropertyNames(this.gasto).includes(
-      "proveedor"
+      "monto"
     );
+
     if (!existeGasto) {
       return;
     }
 
-    this.proveedorNombre = this.gasto.proveedor.nombre;
+    ( this.gasto && this.gasto.proveedor )? this.proveedorNombre = this.gasto.proveedor.nombre: this.proveedorNombre = null;
     this.monto = this.gasto.monto;
     this.fecha = new Date(this.gasto.fecha);
     this.cargarFechaString();
@@ -56,7 +74,7 @@ export class ModalEditarGastoComponent implements OnInit {
   }
 
   resetearModal() {
-    this.proveedorSeleccionado=null;
+    this.proveedorSeleccionado = null;
   }
 
   buscarProveedor() {
@@ -105,7 +123,7 @@ export class ModalEditarGastoComponent implements OnInit {
     $("#modalEdicionDeGasto").modal("toggle");
   }
 
-  cargarFechaString() {    
+  cargarFechaString() {
     let year = this.fecha.getFullYear();
     let mes = this.fecha.getMonth();
     let dia = this.fecha.getDate();
@@ -114,17 +132,16 @@ export class ModalEditarGastoComponent implements OnInit {
     let diaString: string;
 
     if (mes < 10) {
-      mesString = '0' + mes;
+      mesString = "0" + mes;
     } else {
       mesString = String(mes);
     }
 
     if (dia < 10) {
-      diaString = '0' + dia;
+      diaString = "0" + dia;
     } else {
       diaString = String(dia);
     }
-
 
     this.fechaString = `${year}-${mesString}-${diaString}`;
   }
@@ -146,34 +163,48 @@ export class ModalEditarGastoComponent implements OnInit {
   }
 
   actualizarGasto() {
-    
     let gastoActualizado = {
       _id: this.gasto._id,
-      proveedor: (this.proveedorSeleccionado) ? this.proveedorSeleccionado._id : this.gasto.proveedor._id,
-      descripcion: this.descripcion, 
-      categoria: this.categoria, 
-      monto: this.monto, 
+      descripcion: this.descripcion,
+      categoria: this.categoria,
+      proveedor:null,
+      monto: this.monto,
       fecha: this.fecha
     };
 
-    this._gastoService.actualizarGasto(gastoActualizado)
-      .subscribe(
-        (resp)=>{
-          this.actualizarData.emit();
-          $("#modalEdicionDeGasto").modal('toggle');
+    if( this.proveedorSeleccionado){
+      gastoActualizado.proveedor = this.proveedorSeleccionado._id;
+    }else{
 
-          swal(
-            "Gasto actualizado",
-            "El gasto se ha actualizado correctamente",
-            "success"
-            );
+      if(this.gasto.proveedor && this.gasto.proveedor._id){
+        gastoActualizado.proveedor = this.gasto.proveedor._id;
+      }
+      
+      if( this.proveedorNombre.length == 0 ){
+        
+        gastoActualizado.proveedor = 'ninguno';
+      }
+
+    }
+
+    this._gastoService.actualizarGasto(gastoActualizado).subscribe(
+      resp => {
+        this.actualizarData.emit();
+        $("#modalEdicionDeGasto").modal("toggle");
+
+        swal(
+          "Gasto actualizado",
+          "El gasto se ha actualizado correctamente",
+          "success"
+        );
       },
-      (error)=>{
+      error => {
         swal(
           "Error al actualizar Gasto",
           error.error.mensaje + " | " + error.error.errors.message,
           "error"
         );
-      });
+      }
+    );
   }
 }

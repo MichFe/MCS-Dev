@@ -64,6 +64,7 @@
             <th>Unidad de Negocio</th>
             <th>Rol</th>
             <th>Guardar Cambios</th>
+            <th>Eliminar</th>
           </tr>
         </thead>
       
@@ -89,8 +90,14 @@
                   class="btn btn-sm btn-info waves-effect waves-light"
                   (click)="guardarCambiosUsuario(usuario, i)">Guardar</button></td>
             <td><button 
-                  class="btn btn-sm btn-danger waves-effect waves-light"
-                  (click)="eliminarUsuario(usuario, i)">Eliminar</button></td>
+                  *ngIf="!usuario.blacklist"
+                  class="btn btn-sm btn-warning waves-effect waves-light"
+                  (click)="toggleUsuarioBlacklist(usuario, i)">Desactivar</button>
+
+                <button
+                  *ngIf="usuario.blacklist" 
+                  class="btn btn-sm btn-success waves-effect waves-light" 
+                  (click)="toggleUsuarioBlacklist(usuario, i)">Activar</button></td>
           </tr>
         </tbody>
       </table>

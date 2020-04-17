@@ -2,109 +2,108 @@ import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from 'src/app/services/usuarios/usuario.service';
 
 @Component({
-  selector: 'app-gestion-empleados',
-  templateUrl: './gestion-empleados.component.html',
-  styleUrls: ['./gestion-empleados.component.css']
+  selector: "app-gestion-empleados",
+  templateUrl: "./gestion-empleados.component.html",
+  styleUrls: ["./gestion-empleados.component.css"]
 })
 export class GestionEmpleadosComponent implements OnInit {
-
   //Data
-  usuarios:any[] = [];
+  usuarios: any[] = [];
   nuevoUsuario = {
     nombre: "",
     email: "",
     password: "123456",
     role: "USER_ROLE",
     unidadDeNegocio: "",
-    salario: 0
+    salario: 0,
+    blacklist:false,
   };
 
-  creandoUsuario:boolean=false;
+  creandoUsuario: boolean = false;
 
-  constructor(
-    private _usuarioService:UsuarioService
-  ) { }
+  constructor(private _usuarioService: UsuarioService) {}
 
   ngOnInit() {
     this.obtenerUsuarios();
   }
 
-  toggleCreandoUsuario(){
-    if(this.creandoUsuario){
-      this.creandoUsuario=false;
-    }else{
-      this.creandoUsuario=true;
+  toggleCreandoUsuario() {
+    if (this.creandoUsuario) {
+      this.creandoUsuario = false;
+    } else {
+      this.creandoUsuario = true;
     }
   }
 
-  crearNuevoUsuario(nuevoUsuario){
+  crearNuevoUsuario(nuevoUsuario) {
     this._usuarioService.crearUsuario(nuevoUsuario).subscribe(
-      (resp)=>{
-
+      resp => {
         this.obtenerUsuarios();
 
         //Reset nuevoUsuario
-        this.nuevoUsuario.nombre= "";
-        this.nuevoUsuario.email= "";
-        this.nuevoUsuario.password= "123456";
-        this.nuevoUsuario.role= "USER_ROLE";
-        this.nuevoUsuario.unidadDeNegocio= "";
-        this.nuevoUsuario.salario= 0;
+        this.nuevoUsuario.nombre = "";
+        this.nuevoUsuario.email = "";
+        this.nuevoUsuario.password = "123456";
+        this.nuevoUsuario.role = "USER_ROLE";
+        this.nuevoUsuario.unidadDeNegocio = "";
+        this.nuevoUsuario.salario = 0;
 
         //Toggle creando usuario
         this.toggleCreandoUsuario();
-
-        
-    },
-    (error)=>{
-
-    })
+      },
+      error => {}
+    );
   }
 
-  obtenerUsuarios(){
+  obtenerUsuarios() {
     this._usuarioService.obtenerTodosLosUsuarios().subscribe(
-      (resp:any)=>{
+      (resp: any) => {
         this.usuarios = resp.usuarios;
       },
-      (error)=>{
-
-      })
+      error => {}
+    );
   }
 
-  eliminarUsuario(usuario, i){
-    this._usuarioService.eliminarUsuario(usuario).subscribe(
-      (resp)=>{
+  toggleUsuarioBlacklist(usuario, i) {
+    
+    if( usuario.blacklist === true ){
+      usuario.blacklist = false;
+    }else{
+      usuario.blacklist = true;
+    };
+
+    this._usuarioService.actualizarOtroUsuario(usuario).subscribe(
+      resp => {
+
         this.obtenerUsuarios();
-    },
-    (error)=>{
 
-    })
+      },
+      error => {}
+    );
   }
 
-  crearCeldaTemporal(celda){
+  crearCeldaTemporal(celda) {
     let editableCell: any = celda.cloneNode();
     celda.parentNode.replaceChild(editableCell, celda);
 
     editableCell.contentEditable = true;
-    editableCell.style.backgroundColor = '#caebf1';
+    editableCell.style.backgroundColor = "#caebf1";
 
     return editableCell;
   }
 
-  actualizarEmail(event,i){
-    let celda:HTMLElement = event.srcElement;
+  actualizarEmail(event, i) {
+    let celda: HTMLElement = event.srcElement;
     let editableCell = this.crearCeldaTemporal(celda);
 
-    editableCell.addEventListener("keyup", (keyup)=>{
-      if(keyup.keyCode == 13){
-
+    editableCell.addEventListener("keyup", keyup => {
+      if (keyup.keyCode == 13) {
         this.usuarios[i].email = editableCell.innerText.trim();
         editableCell.blur();
-
       }
     });
 
-    editableCell.addEventListener("blur", ()=>{
+    editableCell.addEventListener("blur", () => {
       editableCell.parentNode.replaceChild(celda, editableCell);
       editableCell.remove();
     });
@@ -112,53 +111,48 @@ export class GestionEmpleadosComponent implements OnInit {
     editableCell.focus();
   }
 
-  actualizarSalario(event,i){
-
-    let celda:HTMLElement=event.srcElement;
+  actualizarSalario(event, i) {
+    let celda: HTMLElement = event.srcElement;
     let editableCell = this.crearCeldaTemporal(celda);
 
-    editableCell.addEventListener("keyup", (keyup)=>{
+    editableCell.addEventListener("keyup", keyup => {
       let inputNumber = Number(editableCell.innerText.trim());
 
-      if(keyup.keyCode == 13){
-
-        if( !isNaN(inputNumber) ){
+      if (keyup.keyCode == 13) {
+        if (!isNaN(inputNumber)) {
           this.usuarios[i].salario = inputNumber;
         }
-      
+
         editableCell.blur();
       }
-      
     });
 
-    editableCell.addEventListener('blur', ()=>{
-      editableCell.parentNode.replaceChild(celda,editableCell);
+    editableCell.addEventListener("blur", () => {
+      editableCell.parentNode.replaceChild(celda, editableCell);
       editableCell.remove();
     });
 
     editableCell.focus();
-
   }
 
-  guardarCambiosUsuario(usuario, i){
+  guardarCambiosUsuario(usuario, i) {
     this._usuarioService.actualizarOtroUsuario(usuario).subscribe(
-      (resp:any)=>{
-        this.usuarios[i]=resp.usuario;
-        
+      (resp: any) => {
+        this.usuarios[i] = resp.usuario;
+
         swal(
           "Usuario Actualizado",
           "El usuario ha sido actualizado correctamente",
           "success"
         );
-    },
-    (error)=>{
-      swal(
-        "Error al actualizar usuario",
-        error.error.mensaje + " | " + error.error.errors.message,
-        "error"
-      );
-    })
-    
+      },
+      error => {
+        swal(
+          "Error al actualizar usuario",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
+    );
   }
-
 }

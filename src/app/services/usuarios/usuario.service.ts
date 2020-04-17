@@ -94,9 +94,9 @@ export class UsuarioService {
   //-------------------------------------
   // Funcion eliminar usuario
   //-------------------------------------
-  eliminarUsuario(usuario){
+  eliminarUsuario(usuario) {
     let token = this.token;
-    let url = URL_SERVICIOS + `/usuario/${ usuario._id }?token=${ token }`;
+    let url = URL_SERVICIOS + `/usuario/${usuario._id}?token=${token}`;
 
     return this.http.delete(url);
   }

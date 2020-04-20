@@ -103,6 +103,12 @@ export class RegistroGastosComponent implements OnInit {
       return;
     }
 
+    let year = Number(this.fechaString.split("-")[0]);
+    let month = Number(this.fechaString.split("-")[1])-1;
+    let day = Number(this.fechaString.split("-")[2]);    
+
+    this.fecha = new Date(year, month, day);
+
     let gasto = {
       fecha: this.fecha,
       monto: this.monto,

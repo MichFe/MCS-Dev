@@ -94,6 +94,11 @@ export class NominaComponent implements OnInit {
   nominaSemanaAnterior(){
     let fechaInicialSemanaAnterior = new Date(this.fechaInicial);
     fechaInicialSemanaAnterior.setDate(fechaInicialSemanaAnterior.getDate()-7);
+    let fechaFinalSemanaAnterior = new Date(fechaInicialSemanaAnterior);
+    fechaFinalSemanaAnterior.setDate(fechaFinalSemanaAnterior.getDate()+6);
+
+    this.fechaInicial = fechaInicialSemanaAnterior;
+    this.fechaFinal = fechaFinalSemanaAnterior;
 
     this.obtenerNominaFechaEnRango(fechaInicialSemanaAnterior);
   }
@@ -101,7 +106,11 @@ export class NominaComponent implements OnInit {
   nominaSemanaSiguiente(){
     let fechaInicialSemanaSiguiente = new Date(this.fechaInicial);
     fechaInicialSemanaSiguiente.setDate(fechaInicialSemanaSiguiente.getDate() + 7);
+    let fechaFinalSemanaSiguiente = new Date(fechaInicialSemanaSiguiente);
+    fechaFinalSemanaSiguiente.setDate(fechaFinalSemanaSiguiente.getDate() + 6);
 
+    this.fechaInicial = fechaInicialSemanaSiguiente;
+    this.fechaFinal = fechaFinalSemanaSiguiente;
     this.obtenerNominaFechaEnRango(fechaInicialSemanaSiguiente);
   }
 
@@ -197,10 +206,12 @@ export class NominaComponent implements OnInit {
   }
 
   obtenerNominaFechaEnRango(fecha) {
+    
     this._nominaService.obtenerNominaFechaEnRango(fecha).subscribe(
       (resp: any) => {
         if (!resp.nomina.fechaInicial) {
-          this.prepararNuevaNomina(fecha);
+          this.nomina = null;
+          //this.prepararNuevaNomina(fecha);
         } else {
           this.nomina = resp.nomina;
           this.fechaInicial = new Date(resp.nomina.fechaInicial);
@@ -208,7 +219,8 @@ export class NominaComponent implements OnInit {
         }
       },
       error => {
-        this.prepararNuevaNomina(fecha);
+        this.nomina = null;
+        //this.prepararNuevaNomina(fecha);
       }
     );
   }
@@ -232,14 +244,21 @@ export class NominaComponent implements OnInit {
 
   async prepararNuevaNomina(fecha) {
 
-    let diaSemanaActual = fecha.getDay();
-    let diasInicioSemana = diaSemanaActual != 1 ? diaSemanaActual - 1 : 0;
+    let diaSemanaActual = this.fechaInicial.getDay();
+    let diasInicioSemana;
+
+    if( diaSemanaActual == 0 ){
+      diasInicioSemana = 6  
+    }else{
+      diasInicioSemana = diaSemanaActual != 1 ? diaSemanaActual - 1 : 0;
+    }
     
-    let fechaInicial = new Date(fecha);
+    
+    let fechaInicial = new Date(this.fechaInicial);
     fechaInicial.setDate(fechaInicial.getDate()-diasInicioSemana);
     fechaInicial.setHours(0,0,0,0);
 
-    let fechaFinal = new Date(fecha);
+    let fechaFinal = new Date(this.fechaInicial);
     fechaFinal.setDate(fechaInicial.getDate() + 6);
     fechaFinal.setHours(0,0,0,0);
 

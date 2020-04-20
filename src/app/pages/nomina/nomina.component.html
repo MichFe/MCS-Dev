@@ -17,10 +17,29 @@
           <button class="btn btn-info waves-effect waves-light"
                   (click)="nominaSemanaSiguiente()">></button>
         </div>
-
+      
           <button class="btn btn-info waves-effect waves-light pull-right"
-            (click)="actualizarNomina()">Guardar cambios</button>
+            (click)="actualizarNomina()"
+            *ngIf="nomina">Guardar cambios</button>
         </div>
+
+        
+      <div class="card" *ngIf="!nomina">
+
+        <div class="text-center p-20">
+          <p>
+            Aún no se ha generado una nómina para la semana del 
+            {{ fechaInicial | date:'longDate' }} 
+            al {{ fechaFinal | date:'longDate' }}
+          </p>
+
+          <button class="btn btn-info" 
+          (click)="prepararNuevaNomina(fecha)">
+          Crear Nómina</button>
+
+        </div>
+
+      </div>
 
         <div class="card-body">
 

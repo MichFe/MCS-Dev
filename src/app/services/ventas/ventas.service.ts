@@ -13,6 +13,13 @@ export class VentasService {
     private _usuarioService: UsuarioService
   ) { }
 
+  obtenerVentasCliente(clienteID){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/venta/ventasPorCliente/${ clienteID }?token=${ token }`;
+
+    return this.http.get(url);
+  }
+
   obtenerDescuentosMensuales(year, unidadDeNegocio: string = '0'){
     let token= this._usuarioService.token;
     let url = URL_SERVICIOS + `/venta/descuentosAnuales/${year}?unidadDeNegocio=${unidadDeNegocio}&token=${ token }`;

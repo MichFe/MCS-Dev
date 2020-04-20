@@ -32,9 +32,14 @@
                   Cotización: {{ cliente.nombre }}
                 </span>
 
-                <span class="pull-right">
+                <span class="pull-right pointer"
+                      *ngIf="!editandoFecha" 
+                      (click)="abrirEditorDeFechaDeCotizacion()">
                   León Gto. a {{ fecha | date:'fullDate'}}
                 </span>
+
+                <input type="date" class="form-control" *ngIf="editandoFecha" name="fechaEditada" [(ngModel)]="fechaEditada">
+                <button class="btn btn-sm btn-info" (click)="editarFechaDeCotizacion()" *ngIf="editandoFecha">Cambiar Fecha</button>
               </div>
             </div>
             <!-- Fin de header de cotizacion -->

@@ -28,6 +28,9 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
 
   //Variables
   fecha: number = Date.now();
+  editandoFecha: Boolean = false;
+  fechaEditada;
+  
   notaValida: boolean = true;
   totalImporte: number = 0;
   totalDescuento: number = 0;
@@ -143,6 +146,19 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
     );
 
   }
+  abrirEditorDeFechaDeCotizacion(){
+    this.editandoFecha=true;
+  }
+
+  editarFechaDeCotizacion(){
+    let year = Number(this.fechaEditada.split("-")[0]);
+    let month = Number(this.fechaEditada.split("-")[1])-1;
+    let day = Number(this.fechaEditada.split("-")[2]);
+    
+    this.fecha = new Date(year,month,day);    
+    
+    this.editandoFecha = false;
+  }
 
   obtenerCotizaciones(indiceCotizacion=0){
     this._cotizacionService.obtenerCotizacion(this.proyecto._id).subscribe(
@@ -221,6 +237,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
     this.cotizacion.subtotal=this.totalImporte;
     this.cotizacion.descuento=this.totalDescuento;
     this.cotizacion.total=this.totalImporte - this.totalDescuento + this.iva;
+    this.cotizacion.fecha=this.fecha;
     
 
     this._cotizacionService.actualizarCotizacion(this.cotizacion).subscribe(

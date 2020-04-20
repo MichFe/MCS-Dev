@@ -16,6 +16,10 @@ declare var $: any;
 })
 export class ReporteVentasComponent implements OnInit {
   //Variables
+  cliente:string;
+  clienteNombre: string;
+  clientes: any[] = [];
+
   sparkResize: any;
   conteoVentas:number;
   fechaActual= new Date();
@@ -40,6 +44,9 @@ export class ReporteVentasComponent implements OnInit {
 
   //Data
   ventas: any[]=[];
+
+  ventasCliente:any[]=[];
+
   ventasAnuales: number[]=[];
   ventasMensuales: any = [];
   ventasDiarias:any =[];
@@ -131,6 +138,58 @@ export class ReporteVentasComponent implements OnInit {
     this.obtenerMetas();
     
 
+  }
+
+  buscarCliente(){
+    let termino = this.clienteNombre;
+
+    if (termino.length === 0) {
+      this.clientes = [];
+      return;
+    }
+
+    if (termino.length < 1) {
+      return;
+    }
+
+    this._clienteService.buscarCliente(termino).subscribe(
+      (resp: any) => {
+        
+        this.clientes = resp.cliente;
+      },
+      error => {
+
+        swal(
+          "Error al buscar Cliente",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
+    );
+  }
+
+  seleccionarcliente(cliente) {
+    this.cliente = cliente;
+    this.clienteNombre = cliente.nombre;
+    this.clientes = [];
+
+    this.cargarVentasDelCliente(cliente);
+  }
+
+  cargarVentasDelCliente(cliente){
+    this._ventasService.obtenerVentasCliente(cliente._id).subscribe(
+      (resp:any)=>{
+        
+        this.ventasCliente = resp.ventasCliente;
+        
+      },
+      (error)=>{
+        swal(
+          `Error al obtener ventas de ${this.clienteNombre}`,
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      })
   }
 
   actualizarData(){

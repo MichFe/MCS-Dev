@@ -85,3 +85,26 @@ th{
     color: black;
 }
 
+/* Estilos buscador de clientes */
+ul.clientes{
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 3px;
+    max-height: 200px;
+    overflow: auto;
+}
+
+li.cliente{
+    padding: 5px 5px 5px 41px;
+    border-bottom: 1px solid lightgray;
+    cursor: pointer;
+    text-align: left;
+
+}
+
+li.cliente:hover{
+    background-color: #caebf1;
+
+}
+

@@ -27,7 +27,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
   cambiosCarrito:Subscription;
 
   //Variables
-  fecha: number = Date.now();
+  fecha = new Date();
   editandoFecha: Boolean = false;
   fechaEditada;
   
@@ -121,7 +121,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
         }else{
           this.cotizacion=null;
           this._cotizacionService.productos = [];
-          this.fecha = Date.now();
+          this.fecha = new Date();
           this.totalDescuento = 0;
           this.totalImporte = 0;
 
@@ -136,7 +136,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
       (err)=>{
         this.cotizacion = null;
         this._cotizacionService.productos=[];
-        this.fecha = Date.now();
+        this.fecha = new Date();
         this.totalDescuento = 0;
         this.totalImporte = 0;
 
@@ -183,7 +183,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
         } else {
           this.cotizacion = null;
           this._cotizacionService.productos = [];
-          this.fecha = Date.now();
+          this.fecha = new Date();
           this.totalDescuento = 0;
           this.totalImporte = 0;
 
@@ -202,7 +202,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
       (err) => {
         this.cotizacion = null;
         this._cotizacionService.productos = [];
-        this.fecha = Date.now();
+        this.fecha = new Date();
         this.totalDescuento = 0;
         this.totalImporte = 0;
 
@@ -217,7 +217,7 @@ export class CotizacionComponent implements OnInit, OnChanges, OnDestroy {
     this.cotizacion = null;
     this._cotizacionService.productos = [];
     this.productos=this._cotizacionService.productos;
-    this.fecha = Date.now();
+    this.fecha = new Date();
     this.totalDescuento = 0;
     this.totalImporte = 0;
 

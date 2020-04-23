@@ -91,10 +91,10 @@ export class TicketComponent implements OnInit {
   cambiarFecha(){
     this.fecha=new Date();
     
-    let horas=this.fecha.getHours();
+    let horas = this.fecha.getHours();
     let minutos = this.fecha.getMinutes();
     
-    let fechaArray=this.fechaString.split('-');
+    let fechaArray = this.fechaString.split('-');
     this.fecha = new Date(Number(fechaArray[0]), Number(fechaArray[1])-1, Number(fechaArray[2]),horas,minutos);
     
   }

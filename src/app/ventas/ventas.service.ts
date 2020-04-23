@@ -17,7 +17,7 @@ export class VentasService {
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/venta?token=${ token }`;
 
-    return this.http.post( url, venta);
+    return this.http.post( url, venta );
 
 
   }

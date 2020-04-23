@@ -331,7 +331,7 @@ export class OrdenCompraComponent implements OnInit {
     
     let compra = {
       requisiciones: this.requisiciones,
-      fechaCompra: Date.now(),
+      fechaCompra: new Date(),
       fechaCompromisoEntrega: this.fechaEntrega,
       fechaReciboMercancia: null,
       proveedor: this.proveedor._id,

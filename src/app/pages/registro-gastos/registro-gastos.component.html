@@ -99,6 +99,7 @@
             <th>Descripción</th>
             <th>Categoría</th>
             <th>Proveedor</th>
+            <th>Solicitante</th>
             <th>Editar</th>
             <th>Eliminar</th>
           </tr>
@@ -111,6 +112,7 @@
             <td>{{ gasto.descripcion }}</td>
             <td>{{ gasto.categoria }}</td>
             <td>{{ ( gasto.proveedor && gasto.proveedor.nombre)?gasto.proveedor.nombre:'-' }}</td>
+            <td>{{ gasto.usuarioCreador.nombre }}</td>
             <td class="pointer"
                 (click)="abrirEditorDeGasto(gasto)"><i class="fa fa-edit color-yellow"></i></td>
             <td class="pointer"
@@ -121,6 +123,71 @@
       </table>
     </div>
     
+  </div>
+</div>
+
+<div class="row">
+  <div class="card">
+    
+    <h4>Gastos por usuario</h4>
+
+    <!-- Buscador de usuarios -->
+     <div class="form-group row m-t-20">
+              <div class="col-sm-12">
+                <div class="input-group">
+                   <div class="input-group-addon"><i class="ti-user"></i></div>
+                    <input name="usuarioNombre"
+                           autocomplete="off"
+                           id="usuarioInput"
+                           (keyup)="buscarUsuario()" 
+                               [(ngModel)]="usuarioNombre" 
+                               type="string" 
+                               class="form-control" 
+                               placeholder="Ingresa el nombre del cliente"
+                               required>
+                 </div>
+
+                <div *ngIf="usuarios.length>0">
+                  <ul class="clientes">
+                    <li *ngFor="let usuario of usuarios"
+                        class="cliente"
+                        (click)="seleccionarUsuario(usuario)">{{ usuario.nombre }}</li>
+                  </ul>
+                </div>
+               </div>
+            </div>
+    <!-- FIN de Buscador de usuarios -->
+
+    <div class="table-responsive" *ngIf="gastosUsuario">
+
+      <table class="table">
+
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Monto</th>
+            <th>Descripción</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Solicitante</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let gasto of gastosUsuario">
+            <td>{{ gasto.fecha | date }}</td>
+            <td>{{ gasto.monto | currency:'MXN' }}</td>
+            <td>{{ gasto.descripcion }}</td>
+            <td>{{ gasto.categoria }}</td>
+            <td>{{ ( gasto.proveedor && gasto.proveedor.nombre)?gasto.proveedor.nombre:'-' }}</td>
+            <td>{{ gasto.usuarioCreador.nombre }}</td>
+          </tr>
+        </tbody>
+
+
+      </table>
+
+    </div>
   </div>
 </div>
 

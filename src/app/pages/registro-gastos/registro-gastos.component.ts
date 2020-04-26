@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProveedorService } from 'src/app/services/proveedor/proveedor.service';
 import { GastoService } from 'src/app/services/gasto/gasto.service';
 import { NominaService } from 'src/app/services/nomina/nomina.service';
+import { UsuarioService } from 'src/app/services/usuarios/usuario.service';
 declare var $:any;
 
 @Component({
@@ -15,6 +16,12 @@ export class RegistroGastosComponent implements OnInit {
   fecha = new Date();
   gastos: any[];
   gastoSeleccionadoParaEditar: any = {};
+
+  //Manejo de filtro por usuario
+  gastosUsuario:any[];
+  usuarioNombre:string;
+  usuarios:any[]=[];
+  usuario:any;
 
   //Variables de paginado
   paginaActual: number = 1;
@@ -65,12 +72,66 @@ export class RegistroGastosComponent implements OnInit {
   constructor(
     private _proveedorService: ProveedorService,
     private _gastoService: GastoService,
-    private _nominaService: NominaService
+    private _nominaService: NominaService,
+    private _usuarioService: UsuarioService
   ) {}
 
   ngOnInit() {
     this.obtenerGastosPaginados(this.paginaActual);
     this.cargarFechaString();
+  }
+
+  seleccionarUsuario(usuario){
+    this.usuario = usuario;
+    this.usuarioNombre = usuario.nombre;
+    this.usuarios = [];
+
+    this.cargarGastosDelUsuario(usuario);
+  }
+
+  cargarGastosDelUsuario(usuario){
+    this._gastoService.obtenerGastosPorUsuario(usuario).subscribe(
+      (resp: any) => {
+
+        this.gastosUsuario = resp.gastosUsuario;
+
+      },
+      (error) => {
+        swal(
+          `Error al obtener gastos de ${this.usuarioNombre}`,
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      })
+  }
+
+  buscarUsuario(){
+    let termino = this.usuarioNombre;
+
+    if (termino.length === 0) {
+      this.usuarios = [];
+      this.gastosUsuario = [];
+      return;
+    }
+
+    if (termino.length < 1) {
+      return;
+    }
+
+    this._usuarioService.buscarUsuario(termino).subscribe(
+      (resp: any) => {
+
+        this.usuarios = resp.usuario;
+      },
+      error => {
+
+        swal(
+          "Error al buscar Usuaro",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      }
+    );
   }
 
   obtenerGastosPaginados(pagina: number) {

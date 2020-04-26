@@ -1,0 +1,55 @@
+<h4 class="text-center">Proveedores</h4>
+
+<div class="row">
+
+    <div class="col col-md-3 lista-proveedores">
+      <ul class="card">
+        <li *ngFor="let proveedor of proveedores"
+          (click)="seleccionarProveedor(proveedor)">
+          {{ proveedor.nombre }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="col col-md-9">
+      <div class="card">
+
+        <h3>Información del proveedor:</h3>
+        <div class="input-group">
+          <div class="input-group-addon"><i class="ti-user"></i></div>
+          <input type="text" class="form-control" name="nombreProveedor" [(ngModel)]="nombreProveedor">
+        </div>
+
+        <div class="input-group">
+          <div class="input-group-addon"><i class="ti-mobile"></i></div>
+          <input type="text" class="form-control" name="telefonoProveedor" [(ngModel)]="telefonoProveedor">
+        </div>
+
+        <div class="input-group">
+          <div class="input-group-addon"><i class="ti-location-pin"></i></div>
+          <input type="text" class="form-control" name="direccionProveedor" [(ngModel)]="direccionProveedor">
+        </div>
+
+        <div class="input-group">
+          <div class="input-group-addon"><i class="ti-email"></i></div>
+          <input type="email" class="form-control" name="emailProveedor" [(ngModel)]="emailProveedor">
+        </div>
+
+        <button class="btn btn-info waves-effect waves-light"
+          (click)="actualizarProveedor()">Guardar Cambios</button>
+
+      </div>
+    </div>
+
+</div>
+
+<div class="row">
+  <div class="col col-md-12">
+    <div class="card" *ngIf="proveedorSeleccionado">
+      <h3 class="text-center">Compras a {{ proveedorSeleccionado.nombre }}</h3>
+
+
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+
+
+ul{
+    padding: 0;
+    margin: 0;
+    overflow: auto;
+}
+
+li{
+    list-style: none;
+    padding: 5px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+li:hover{
+    background-color:#caebf1;
+}
+
+.input-group{
+    margin-bottom: 10px;
+}
+
+.lista-proveedores{
+    max-height: 300px;
+    overflow: auto;
+}

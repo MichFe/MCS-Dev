@@ -68,6 +68,7 @@ import { ReporteGastosComponent } from './reporte-gastos/reporte-gastos.componen
 import { ConfiguracionMenuUsuariosComponent } from './configuracion-menu-usuarios/configuracion-menu-usuarios.component';
 import { GestionEmpleadosComponent } from './gestion-empleados/gestion-empleados.component';
 import { CambioPasswordComponent } from './cambio-password/cambio-password.component';
+import { ProveedoresComponent } from './proveedores/proveedores.component';
 
 
 
@@ -132,7 +133,8 @@ import { CambioPasswordComponent } from './cambio-password/cambio-password.compo
     ReporteGastosComponent,
     ConfiguracionMenuUsuariosComponent,
     GestionEmpleadosComponent,
-    CambioPasswordComponent
+    CambioPasswordComponent,
+    ProveedoresComponent
   ],
   exports: [
     DashboardComponent,

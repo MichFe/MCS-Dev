@@ -13,6 +13,13 @@ export class GastoService {
     private _usuarioService: UsuarioService
   ) { }
 
+  obtenerGastosPorUsuario(usuario){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/gasto/gastosPorUsuario/${ usuario._id }?token=${ token }`;
+
+    return this.http.get(url);
+  }
+
   obtenerTotalAnualDeGastoOperativo(year){
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/gasto/gastosOperativosAnuales/${ year }?token=${ token }`;

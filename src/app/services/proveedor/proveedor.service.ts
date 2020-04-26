@@ -13,6 +13,14 @@ export class ProveedorService {
     private _usuarioService:UsuarioService,
   ) { }
 
+    obtenerTodosLosProveedores(){
+      let token = this._usuarioService.token;
+      let url = URL_SERVICIOS + `/proveedor/todosLosProveedores?token=${ token }`;
+
+      return this.http.get(url);
+    }
+
+    //Obtener proveedores paginados
     obtenerProveedores(desde){
       let token = this._usuarioService.token;
       let url = URL_SERVICIOS + `/proveedor?desde=${desde}&token=${ token }`;

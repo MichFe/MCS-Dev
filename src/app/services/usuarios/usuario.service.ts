@@ -239,6 +239,15 @@ export class UsuarioService {
     return this.http.get(url);
   }
 
+  buscarUsuario(termino) {
+    let token = this.token;
+    let url = URL_SERVICIOS + '/busqueda/coleccion/usuario/' + termino + '?token=' + token;
+
+    return this.http.get(url);
+  }
+
+  
+
   cambiarPassword(id, password) {
     let token = this.token;
     let url = URL_SERVICIOS + `/usuario/cambiarPassword?token=${token}`;

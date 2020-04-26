@@ -16,7 +16,7 @@ declare var $: any;
 })
 export class ReporteVentasComponent implements OnInit {
   //Variables
-  cliente:string;
+  cliente:any;
   clienteNombre: string;
   clientes: any[] = [];
 
@@ -145,6 +145,7 @@ export class ReporteVentasComponent implements OnInit {
 
     if (termino.length === 0) {
       this.clientes = [];
+      this.ventasCliente = [];
       return;
     }
 

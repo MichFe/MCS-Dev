@@ -24,7 +24,7 @@
 
         <ng-container *ngFor="let menu of _sidebar.menu">
           <li *ngIf="menu.show"> 
-          <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i [class]="menu.icono" [routerLink]="[ menu.url ]"></i><span
+          <a class="has-arrow waves-effect waves-dark" aria-expanded="false"><i [ngClass]="{'notificacion': menu.notificacion}" [class]="menu.icono" [routerLink]="[ menu.url ]"></i><span
               class="hide-menu"
               [routerLink]="[ menu.url ]">{{ menu.modulo }}</span></a>
           <ul aria-expanded="false" class="collapse">

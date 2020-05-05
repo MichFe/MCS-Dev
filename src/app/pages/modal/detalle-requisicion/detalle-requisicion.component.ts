@@ -5,6 +5,7 @@ import {UnidadNegocio} from 'src/app/enums/unidadNegocio.enum';
 import {Requisicion} from 'src/app/models/requisicion.model';
 import {EstatusRequisicion} from '../../../enums/estatusRequisicion.enum';
 import swal from 'sweetalert';
+import { SidebarService } from 'src/app/services/sidebar.service';
 
 declare var $: any;
 
@@ -42,7 +43,8 @@ export class DetalleRequisicionComponent implements OnInit {
 
   constructor(
     public _usuarioService: UsuarioService,
-    public _requisicionService: RequisicionesService
+    public _requisicionService: RequisicionesService,
+    public _sidebarService: SidebarService
   ) {
     this.solicitante = this._usuarioService.usuario.nombre;
   }
@@ -104,6 +106,7 @@ export class DetalleRequisicionComponent implements OnInit {
           'success'
         );
         this.refreshCompras.emit(true);
+        this._sidebarService.obtenerTotalRequisicionesPorAprobar();
         $('#detalleRequisicion').modal('toggle');
         this.resetearModal();
       },

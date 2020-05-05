@@ -118,6 +118,13 @@ export class SidebarService {
             menu.submenu.forEach(submenu => {
               if (submenu.titulo == "Aprobaciones") {
                 submenu.notificacion = resp.totalReqisiciones;
+
+                if(submenu.notificacion>0){
+                  menu.notificacion=true;
+                }else{
+                  menu.notificacion=false;
+                }
+
               }
             });
           }

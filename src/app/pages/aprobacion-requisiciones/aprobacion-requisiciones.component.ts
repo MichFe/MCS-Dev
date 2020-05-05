@@ -104,6 +104,7 @@ export class AprobacionRequisicionesComponent implements OnInit {
                 );
               }
               this.obtenerRequisicionesPorAprobar(this.paginaActual);
+              this._sideBarService.obtenerTotalRequisicionesPorAprobar();
             }
             
           });

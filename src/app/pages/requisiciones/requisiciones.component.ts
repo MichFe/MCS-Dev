@@ -4,6 +4,7 @@ import { Requisicion } from '../../models/requisicion.model';
 import { DetalleRequisicionComponent } from '../modal/detalle-requisicion/detalle-requisicion.component';
 import swal from 'sweetalert';
 import { OrdenCompraService } from 'src/app/services/ordenCompra/orden-compra.service';
+import { SidebarService } from 'src/app/services/sidebar.service';
 
 declare var $: any;
 
@@ -36,7 +37,8 @@ export class RequisicionesComponent implements OnInit {
 
   constructor(
     private _requisicionesService: RequisicionesService,
-    private _comprasService: OrdenCompraService
+    private _comprasService: OrdenCompraService,
+    private _sidebarService: SidebarService
     ) {
   }
 
@@ -200,8 +202,9 @@ export class RequisicionesComponent implements OnInit {
           this._requisicionesService.eliminarRequisiciones(requisicion)
             .subscribe((resp) => {
 
+              this._sidebarService.obtenerTotalRequisicionesPorAprobar();
               this.cargarElementosPagina(this.paginaActual);
-
+              
               swal(
                 "Requisición Eliminada",
                 "La requisición se ha eliminado correctamente",

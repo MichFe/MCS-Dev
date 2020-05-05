@@ -4,6 +4,20 @@
 
     <div class="col col-md-3 lista-proveedores">
       <ul class="card">
+
+        <!-- Buscador de proveedores -->
+        
+        <!-- Filtro de proveedores por nombre -->
+          <!-- <label class="col-sm-3 control-label">Buscar Proveedor</label> -->
+            <div class="input-group">
+              <div class="input-group-addon"><i class="ti-search"></i></div>
+              <input name="proveedorNombre" id="clienteInput" autocomplete="off" (keyup)="filtrarProveedores()"
+                [(ngModel)]="proveedorNombre" type="string" class="form-control" placeholder="Ingresa el nombre"
+                required>
+            </div>
+        <!-- FIN de Filtro de proveedores por nombre -->
+
+
         <li *ngFor="let proveedor of proveedores"
           (click)="seleccionarProveedor(proveedor)">
           {{ proveedor.nombre }}

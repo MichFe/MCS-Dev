@@ -51,6 +51,7 @@ export class RegistroGastosComponent implements OnInit {
     "Proveedores Productos",
     "Proveedores Materia Prima",
     "Proveedores Maquila",
+    "Consumibles",
     "Nómina",
     "Otros",
     "Fletes",
@@ -59,7 +60,7 @@ export class RegistroGastosComponent implements OnInit {
     "Transporte",
     "Maquinaria/Equipo",
     "Mantenimiento",
-    "Renta/Servicios"
+    "Servicios/Rentas"
   ];
 
   //Variables de formulario

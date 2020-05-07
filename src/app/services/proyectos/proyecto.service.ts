@@ -16,7 +16,7 @@ export class ProyectoService {
 
   getProyectos(clienteId, pagina){
     let token = this._usuarioService.token;
-    let url = URL_SERVICIOS + '/proyecto/' + clienteId + '?token=' + token + '&deste=' + pagina;
+    let url = URL_SERVICIOS + '/proyecto/' + clienteId + '?token=' + token + '&desde=' + pagina;
     
     return this.http.get( url );
   }

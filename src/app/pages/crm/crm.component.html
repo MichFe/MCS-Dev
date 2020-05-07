@@ -106,7 +106,12 @@
                 <!-- -------------------------------------------
                 ---- Div Proyectos del cliente actual       ----
                 -------------------------------------------- -->
-                <div class="chat-clientes" *ngIf="chatProyectos">
+                <div class="chat-clientes" *ngIf="chatProyectos"
+                    id="proyectosDiv"
+                    infiniteScroll
+                    [boxId]="'proyectosDiv'"
+                    [habilitado]="infScrollProyectos"
+                    (scrollDown)="cargarProyectos()">
                   
                   <ul class="chatonline style-none">
 

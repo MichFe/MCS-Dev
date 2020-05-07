@@ -33,6 +33,8 @@ export class CrmComponent implements OnInit {
 
   infScrollChats: boolean = false;
   infScrollClientes: boolean = false;
+  infScrollProyectos: boolean = false;
+
   imagenChat:File;
   imagenChatTemporal: string | ArrayBuffer;
   imagenChatTemporalUrl:string;
@@ -52,6 +54,7 @@ export class CrmComponent implements OnInit {
 
   totalChatsProyecto: number;
   totalClientes: number;
+  totalProyectos: number;
 
   imagenAgrandada:any;
   finDeChats:boolean=false;
@@ -324,7 +327,9 @@ export class CrmComponent implements OnInit {
       (resp: any) => {
 
         this.proyectos = resp.proyectos;
+        this.totalProyectos = resp.totalProyectos;
         this.obtenerTotalMensajesPorProyecto(clienteId);
+        this.infScrollProyectos = true;
       },
       error => {
         swal(
@@ -389,7 +394,9 @@ export class CrmComponent implements OnInit {
   agregarProyecto(proyecto) {
     this._proyectoService.postProyecto(proyecto).subscribe(
       (resp: any) => {
-        this.obtenerProyectos(this.clienteActual._id, 1);
+        this.obtenerProyectos(this.clienteActual._id, 0);
+        let proyectosDiv = document.getElementById("proyectosDiv");
+        this.scrollTop(proyectosDiv);
         swal(
           "Registro de proyecto exitoso",
           "El proyecto " +
@@ -645,6 +652,10 @@ export class CrmComponent implements OnInit {
 
   scrollBottom(element) {
     element.scrollTop = element.scrollHeight;
+  }
+
+  scrollTop(element){
+    element.scrollTop = 0;
   }
 
   agregarChat(event, tipo) {
@@ -911,6 +922,32 @@ export class CrmComponent implements OnInit {
           }
         );
     }
+  }
+
+  cargarProyectos(){
+    if(this.proyectos.length >= this.totalProyectos){
+      return;
+    }
+
+    this.infScrollProyectos = false;
+    let pagina = this.proyectos.length;
+
+    this._proyectoService.getProyectos(this.clienteActual._id ,pagina).subscribe(
+      (resp:any)=>{
+        resp.proyectos.forEach((proyecto)=>{
+          this.proyectos.push(proyecto);
+        });
+
+        this.infScrollProyectos = true;
+    },
+    (error)=>{
+      swal(
+        "Error al cargar croyectos",
+        error.error.mensaje + " | " + error.error.errors.message,
+        "error"
+      );
+    });
+
   }
 
   cargarClientes() {

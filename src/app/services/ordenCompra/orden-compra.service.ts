@@ -30,6 +30,20 @@ export class OrdenCompraService {
 
   }
 
+  obtenerComprasProveedor( proveedorId, desde ){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/compra/comprasProveedor/${ proveedorId }?token=${token}&desde=${desde}`;
+
+    return this.http.get(url);
+  }
+
+  obtenerTotalComprasProveedor( proveedorId){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/compra/totalComprasAUnProveedor/${proveedorId}?token=${token}`;
+
+    return this.http.get(url);
+  }
+
   eliminarCompra(compra){
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/compra/${ compra._id }?token=${ token }`;

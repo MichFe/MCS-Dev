@@ -59,10 +59,83 @@
 
 <div class="row">
   <div class="col col-md-12">
-    <div class="card" *ngIf="proveedorSeleccionado">
+    <div class="card text-center" *ngIf="proveedorSeleccionado">
       <h3 class="text-center">Compras a {{ proveedorSeleccionado.nombre }}</h3>
 
+      <p>Total Compras: {{ totalDeComprasaProveedorSeleccionado | currency:'MXN' }}</p>
+      <p>Total Gastos: {{ totalDeGastosProveedorSeleccionado | currency:'MXN' }}</p>
 
+      <h4>Compras</h4>
+      <div class="text-right">
+        <div class="paginado btn-group right">
+          <button class="btn btn-info" (click)="comprasPaginaAnterior()">
+            <
+          </button> 
+          <button class="btn btn-info" (click)="comprasPaginaSiguiente()">
+            >
+          </button>
+        </div>
+      </div>
+      
+      <div class="table-responsive m-b-30">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Proveedor</th>
+              <th>Monto</th>
+              <th>Saldo pendiente</th>
+              <th>Comprado por</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let compra of comprasProveedor">
+              <td>{{ compra.fechaCompra | date }}</td>
+              <td>{{ compra.proveedor.nombre }}</td>
+              <td>{{ compra.costoTotal | currency:'MXN' }}</td>
+              <td>{{ compra.saldoPendiente | currency:'MXN' }}</td>
+              <td>{{ compra.usuarioCreador.nombre }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Gastos</h4>
+      <div class="text-right">
+        <div class="paginado btn-group right">
+          <button class="btn btn-info" (click)="gastosPaginaAnterior()">
+            < 
+          </button> 
+          <button class="btn btn-info" (click)="gastosPaginaSiguiente()">
+              >
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Proveedor</th>
+              <th>Monto</th>
+              <th>Descripción</th>
+              <th>Comprado por</th>
+            </tr>
+          </thead>
+      
+          <tbody>
+            <tr *ngFor="let gasto of gastosProveedor">
+              <td>{{ gasto.fecha |date }}</td>
+              <td>{{ gasto.proveedor.nombre }}</td>
+              <td>{{ gasto.monto | currency:'MXN' }}</td>
+              <td>{{ gasto.descripcion }}</td>
+              <td>{{ gasto.usuarioCreador.nombre }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
     </div>
   </div>

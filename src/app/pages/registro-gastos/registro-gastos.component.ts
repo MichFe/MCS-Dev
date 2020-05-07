@@ -18,10 +18,10 @@ export class RegistroGastosComponent implements OnInit {
   gastoSeleccionadoParaEditar: any = {};
 
   //Manejo de filtro por usuario
-  gastosUsuario:any[];
-  usuarioNombre:string;
-  usuarios:any[]=[];
-  usuario:any;
+  gastosUsuario: any[];
+  usuarioNombre: string;
+  usuarios: any[] = [];
+  usuario: any;
 
   //Variables de paginado
   paginaActual: number = 1;
@@ -34,6 +34,7 @@ export class RegistroGastosComponent implements OnInit {
     "Proveedores Productos",
     "Proveedores Materia Prima",
     "Proveedores Maquila",
+    "Consumibles",
     "Nómina",
     "Otros",
     "Fletes",
@@ -44,7 +45,7 @@ export class RegistroGastosComponent implements OnInit {
     "Transporte",
     "Maquinaria/Equipo",
     "Mantenimiento",
-    "Renta/Servicios"
+    "Servicios/Rentas"
   ];
 
   listaGastosOperativos = [
@@ -82,7 +83,7 @@ export class RegistroGastosComponent implements OnInit {
     this.cargarFechaString();
   }
 
-  seleccionarUsuario(usuario){
+  seleccionarUsuario(usuario) {
     this.usuario = usuario;
     this.usuarioNombre = usuario.nombre;
     this.usuarios = [];
@@ -90,23 +91,22 @@ export class RegistroGastosComponent implements OnInit {
     this.cargarGastosDelUsuario(usuario);
   }
 
-  cargarGastosDelUsuario(usuario){
+  cargarGastosDelUsuario(usuario) {
     this._gastoService.obtenerGastosPorUsuario(usuario).subscribe(
       (resp: any) => {
-
         this.gastosUsuario = resp.gastosUsuario;
-
       },
-      (error) => {
+      error => {
         swal(
           `Error al obtener gastos de ${this.usuarioNombre}`,
           error.error.mensaje + " | " + error.error.errors.message,
           "error"
         );
-      })
+      }
+    );
   }
 
-  buscarUsuario(){
+  buscarUsuario() {
     let termino = this.usuarioNombre;
 
     if (termino.length === 0) {
@@ -121,11 +121,9 @@ export class RegistroGastosComponent implements OnInit {
 
     this._usuarioService.buscarUsuario(termino).subscribe(
       (resp: any) => {
-
         this.usuarios = resp.usuario;
       },
       error => {
-
         swal(
           "Error al buscar Usuaro",
           error.error.mensaje + " | " + error.error.errors.message,
@@ -156,7 +154,7 @@ export class RegistroGastosComponent implements OnInit {
 
   guardarGasto() {
     this.fecha = new Date();
-    if( !this.monto || !this.descripcion || !this.categoria || !this.fecha){
+    if (!this.monto || !this.descripcion || !this.categoria || !this.fecha) {
       swal(
         "Gasto incompleto",
         "Favor de completar los campos requeridos: fecha, monto, descripción y/o categoría",
@@ -166,8 +164,8 @@ export class RegistroGastosComponent implements OnInit {
     }
 
     let year = Number(this.fechaString.split("-")[0]);
-    let month = Number(this.fechaString.split("-")[1])-1;
-    let day = Number(this.fechaString.split("-")[2]);    
+    let month = Number(this.fechaString.split("-")[1]) - 1;
+    let day = Number(this.fechaString.split("-")[2]);
 
     this.fecha = new Date(year, month, day);
 
@@ -181,12 +179,12 @@ export class RegistroGastosComponent implements OnInit {
       gastoOperativo: false
     };
 
-    if(this.proveedorSeleccionado && this.proveedorSeleccionado._id){
+    if (this.proveedorSeleccionado && this.proveedorSeleccionado._id) {
       gasto.proveedor = this.proveedorSeleccionado._id;
     }
 
-    if(this.listaGastosOperativos.includes(this.categoria)){
-      gasto.gastoOperativo=true;
+    if (this.listaGastosOperativos.includes(this.categoria)) {
+      gasto.gastoOperativo = true;
     }
 
     this._gastoService.crearGasto(gasto).subscribe(
@@ -210,13 +208,12 @@ export class RegistroGastosComponent implements OnInit {
     );
   }
 
-  limpiarFormularioDeGasto(){
-    this.monto=null;
-    this.descripcion=null;
-    this.categoria=null;
-    this.proveedorSeleccionado=null;
-    this.proveedorNombre=null;
-
+  limpiarFormularioDeGasto() {
+    this.monto = null;
+    this.descripcion = null;
+    this.categoria = null;
+    this.proveedorSeleccionado = null;
+    this.proveedorNombre = null;
   }
 
   abrirEditorDeGasto(gasto) {
@@ -244,17 +241,15 @@ export class RegistroGastosComponent implements OnInit {
     ).then(eliminar => {
       if (eliminar) {
         this._gastoService.eliminarGasto(gastoId).subscribe(
-          (resp:any) => {
-
-            
-            if(resp.gasto.pagoNomina){
+          (resp: any) => {
+            if (resp.gasto.pagoNomina) {
               let nominaActualizada = {
                 _id: resp.gasto.pagoNomina,
-                estatus: 'Por Pagar'
+                estatus: "Por Pagar"
               };
 
               this._nominaService.actualizarNomina(nominaActualizada).subscribe(
-                (resp)=>{
+                resp => {
                   swal(
                     "Gasto Eliminado",
                     "El gasto se ha eliminado correctamente",
@@ -262,17 +257,16 @@ export class RegistroGastosComponent implements OnInit {
                   );
 
                   this.obtenerGastosPaginados(this.paginaActual);
-              },
-              (error)=>{
-                swal(
-                  "Error al Eliminar Gasto",
-                  error.error.mensaje + " | " + error.error.errors.message,
-                  "error"
-                );
-              });
-
-            }else{
-
+                },
+                error => {
+                  swal(
+                    "Error al Eliminar Gasto",
+                    error.error.mensaje + " | " + error.error.errors.message,
+                    "error"
+                  );
+                }
+              );
+            } else {
               swal(
                 "Gasto Eliminado",
                 "El gasto se ha eliminado correctamente",
@@ -281,8 +275,6 @@ export class RegistroGastosComponent implements OnInit {
 
               this.obtenerGastosPaginados(this.paginaActual);
             }
-
-            
           },
           error => {
             swal(

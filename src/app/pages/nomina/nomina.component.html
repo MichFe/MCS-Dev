@@ -20,7 +20,11 @@
       
           <button class="btn btn-info waves-effect waves-light pull-right"
             (click)="actualizarNomina()"
-            *ngIf="nomina">Guardar cambios</button>
+            *ngIf="nomina && nomina.estatus=='Por Pagar'">Guardar cambios</button>
+
+          <button class="btn btn-danger waves-effect waves-light pull-right"
+            (click)="eliminarNomina()"
+            *ngIf="nomina && nomina.estatus=='Pagada'">Eliminar Nómina</button>
         </div>
 
         

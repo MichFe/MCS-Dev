@@ -47,11 +47,60 @@ export class NominaComponent implements OnInit {
     // this.crearNuevaNomina(this.nomina);
   }
 
+  eliminarNomina(){
+
+    swal(
+      'Eliminar',
+      '¿Está seguro de que desea eliminar la nómina?',
+      'warning', {
+        buttons: {
+          Aprobar: {
+            text: 'Si, Aprobar',
+            value: true,
+            className: 'btn-warning'
+          },
+          Rechazar: {
+            text: 'No, regresar',
+            value: false,
+            className: 'btn-danger'
+          }
+        },
+
+      }).then(isConfirm => {
+        if(isConfirm){
+          this._nominaService.eliminarNomina(this.nomina._id).subscribe(
+            (resp: any) => {
+              this.obtenerNominaFechaEnRango(this.fecha);
+              swal(
+                "Nómina Eliminada",
+                "La nómina se ha eliminado exitosamente",
+                "success"
+              );
+            },
+            (error) => {
+              swal(
+                "Error al eliminar nómina",
+                error.error.mensaje + " | " + error.error.errors.message,
+                "error"
+              );
+            });
+        }else{
+          return;
+        }
+      });
+
+    
+  }
+
   pagarNomina(){
+    let fechaInicial:Date = new Date(this.nomina.fechaInicial);
+    let fechaFinal:Date = new Date(this.nomina.fechaFinal);
+
+
     let gasto = {
       fecha: new Date(),
       monto: this.nomina.total,
-      descripcion: 'Pago de nómina',
+      descripcion: `Pago de nómina del ${ fechaInicial.getDate() } al ${ fechaFinal.getDate()} de ${ this.meses[fechaFinal.getMonth()] } del ${ fechaFinal.getFullYear() }`,
       categoria: 'Nómina',
       proveedor: null,
       pagoCompra: null,

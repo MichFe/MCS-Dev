@@ -191,6 +191,12 @@ export class OrdenCompraComponent implements OnInit {
     this._compraService.actualizarCompra(compra)
       .subscribe(
         (resp:any)=>{
+          this.fechaEntrega = resp.compra.fechaCompromisoEntrega;
+          
+          resp.compra.requisiciones.forEach((requisicion)=>{
+            this.actualizarRequisicion(requisicion._id,resp.compra._id);
+          });
+        
           this.refrescarTablas();
           swal(
             "Compra Actualizada",
@@ -205,6 +211,28 @@ export class OrdenCompraComponent implements OnInit {
             "error"
           );
         });
+  }
+
+  actualizarRequisicion(requisicionId, compraId){
+    let requisicion = {
+      compraCreada: true,
+      estatus: 'Pedido',
+      fechaCompromisoProveedor: this.fechaEntrega,
+      compra: compraId,
+      _id: requisicionId
+    }
+
+    this._requisicionService.actualizarRequisicion(requisicion).subscribe(
+      (resp)=>{
+
+    },
+    (error)=>{
+      swal(
+        "Error al crear Orden de Compra",
+        error.error.mensaje + " | " + error.error.errors.message,
+        "error"
+      );
+    });
   }
 
   cambiarFecha(){
@@ -348,7 +376,7 @@ export class OrdenCompraComponent implements OnInit {
     this._compraService.crearCompra(compra)
       .subscribe(
         (resp: any) => {
-
+          
           this.marcarRequisicionComoComprada(resp.compra._id);
           
           $('#modalOrdenDeCompra').modal('toggle');

@@ -164,6 +164,10 @@ export class NominaComponent implements OnInit {
   }
 
   abrirModalAjustes(i) {
+    if(this.nomina.estatus != "Por Pagar"){
+      return;
+    }
+
     this.indiceEmpleadoSeleccionado = i;
     this.nominaEmpleadoSeleccionado = this.nomina.nominaEmpleados[i];
 
@@ -329,7 +333,12 @@ export class NominaComponent implements OnInit {
       salarioFinal: 0
     };
 
-    let usuarios: any = await this.obtenerTodosLosUsuarios();
+    let usuarios:any = await this.obtenerTodosLosUsuarios();    
+
+    usuarios = usuarios.filter( (usuario)=>{
+      return usuario.blacklist !== true;
+    });
+    
 
     let nomina = {
       fechaInicial: fechaInicial,

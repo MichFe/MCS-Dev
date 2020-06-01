@@ -12,9 +12,9 @@ declare var $:any;
 })
 export class ReporteGastosComponent implements OnInit {
   totalGastosAnuales: number;
-  totalGastoOperativoAnual:number;
-  totalGastoNetoAnual:number;
-  totalVentasAnuales:number;
+  totalGastoOperativoAnual: number;
+  totalGastoNetoAnual: number;
+  totalVentasAnuales: number;
   categoriaActual: string = "0";
   gastoSeleccionadoTabla: any = {};
 
@@ -74,6 +74,7 @@ export class ReporteGastosComponent implements OnInit {
     "Proveedores Productos",
     "Proveedores Materia Prima",
     "Proveedores Maquila",
+    "Consumibles",
     "Nómina",
     "Otros",
     "Fletes",
@@ -84,7 +85,7 @@ export class ReporteGastosComponent implements OnInit {
     "Transporte",
     "Maquinaria/Equipo",
     "Mantenimiento",
-    "Renta/Servicios"
+    "Servicios/Rentas"
   ];
 
   //Variables de gráficas
@@ -155,36 +156,38 @@ export class ReporteGastosComponent implements OnInit {
     this.obtenerSaldoPendienteYMontoPagado(this.year, this.categoriaActual);
   }
 
-  obtenerTotalDeGastoOperativo(year){
+  obtenerTotalDeGastoOperativo(year) {
     this._gastosService.obtenerTotalAnualDeGastoOperativo(year).subscribe(
-      (resp:any)=>{
-        this.totalGastoOperativoAnual = resp.totalGastoOperativo;
-    },
-    (error)=>{
-      swal(
-        "Error al obtener total de gasto",
-        error.error.mensaje + " | " + error.error.errors.message,
-        "error"
-      );
-    })
-  }
-
-  obtenerVentasMensuales(year: number, unidadDeNegocio: string = '0') {
-
-    this._ventasService.obtenerVentasMensuales(year, unidadDeNegocio).subscribe(
       (resp: any) => {
-        this.ventasAnuales = resp.ventasMensuales;
-        this.configurarGraficas();
-        this.totalVentasAnuales = this.ventasAnuales.reduce((a, b) => a + b, 0);
-
+        this.totalGastoOperativoAnual = resp.totalGastoOperativo;
+      },
+      error => {
+        swal(
+          "Error al obtener total de gasto",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
       }
     );
   }
 
-  obtenerTotalDeGastoAnual(year: number, categoria: string="0"){
+  obtenerVentasMensuales(year: number, unidadDeNegocio: string = "0") {
+    this._ventasService
+      .obtenerVentasMensuales(year, unidadDeNegocio)
+      .subscribe((resp: any) => {
+        this.ventasAnuales = resp.ventasMensuales;
+        this.configurarGraficas();
+        this.totalVentasAnuales = this.ventasAnuales.reduce((a, b) => a + b, 0);
+      });
+  }
+
+  obtenerTotalDeGastoAnual(year: number, categoria: string = "0") {
     this._gastosService.obtenerGastosMensuales(year, categoria).subscribe(
       (resp: any) => {
-        this.totalGastoNetoAnual = resp.gastosMensuales.reduce((a, b) => a + b, 0);
+        this.totalGastoNetoAnual = resp.gastosMensuales.reduce(
+          (a, b) => a + b,
+          0
+        );
       },
       error => {
         swal(

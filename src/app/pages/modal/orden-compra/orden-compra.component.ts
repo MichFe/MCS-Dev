@@ -4,6 +4,7 @@ import { OrdenCompraService } from 'src/app/services/ordenCompra/orden-compra.se
 import { UsuarioService } from 'src/app/services/usuarios/usuario.service';
 import swal from 'sweetalert';
 import { RequisicionesService } from 'src/app/services/requisiciones/requisiciones.service';
+import { PagosService } from 'src/app/services/pagos/pagos.service';
 declare var $:any;
 
 @Component({
@@ -19,6 +20,7 @@ export class OrdenCompraComponent implements OnInit {
   //Data
   proveedores:any[] = [];
   proveedor:any;
+  pagos:any[];
 
   //Variables de formulario
   proveedorNombre:string = '';
@@ -46,7 +48,8 @@ export class OrdenCompraComponent implements OnInit {
     private _proveedorService:ProveedorService,
     private _compraService:OrdenCompraService,
     private _usuarioService: UsuarioService,
-    private _requisicionService: RequisicionesService
+    private _requisicionService: RequisicionesService,
+    private _pagosService: PagosService
   ) { }
 
   ngOnInit() {
@@ -69,6 +72,46 @@ export class OrdenCompraComponent implements OnInit {
     });
 
 
+  }
+
+  obtenerPagosDeLaCompra(){
+
+    if (this.pagos) {
+      this.pagos = null;
+      return;
+    }
+    
+    this._pagosService.obtenerPago( this.compra._id ).subscribe(
+      (resp:any)=>{
+        this.pagos = resp.pagos;
+      },
+      (error)=>{
+        swal(
+          "Error al cargar pagos",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      });
+  }
+
+  eliminarPagoDeLaCompra( pago ){
+    this._pagosService.eliminarPago( pago._id ).subscribe(
+      (resp)=>{
+        this.pagos = [];
+        this.obtenerPagosDeLaCompra();
+        swal(
+          "Pago Eliminado",
+          "El Pago se ha eliminado correctamente",
+          "success"
+        );
+      },
+      (error)=>{
+        swal(
+          "Error al eliminar pago",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      });
   }
 
   confirmarRecepcionDeProducto(){

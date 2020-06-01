@@ -150,6 +150,42 @@
                   </div>
                 
                 </form>
+
+                <p class="venta-footer small pointer txt-color-blue" (click)="obtenerPagosDeLaCompra()">
+                  Mostrar/Ocultar historial de pago <i [ngClass]="{
+                                          'ti-arrow-down': pagos,
+                                          'ti-arrow-right': !pagos
+                                        }"></i>
+                </p>
+
+                <div class="table-responsive"
+                 *ngIf="pagos">
+              <table class="table table-hover text-center" data-mobile-responsive="true">
+                
+                <thead>
+                  <tr>
+                    <th>Fecha</th>
+                    <th>Monto</th>
+                    <th>Forma de Pago</th>
+                    <th>Eliminar</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr *ngFor="let pago of pagos"
+                      [ngClass]="{
+                        'table-warning': pago.monto<0,
+                        'table-success': pago.monto>0
+                      }">
+                    <td>{{ pago.fecha | date }}</td>
+                    <td>{{ pago.monto | currency:'MXN' }}</td>
+                    <td>{{ pago.tipoDePago | titlecase }}</td>
+                    <td class="pointer color-red"
+                        (click)="eliminarPagoDeLaCompra(pago)"><i class="fa fa-trash"></i></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
               
               </div>
               <!-- Fin de panel de edición de información del cliente -->

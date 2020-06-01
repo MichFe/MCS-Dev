@@ -9,7 +9,6 @@ declare var $:any;
   styleUrls: ["./modal-editar-gasto.component.css"]
 })
 export class ModalEditarGastoComponent implements OnInit {
-
   //Variables
   proveedorSeleccionado: any;
   fecha = new Date();
@@ -27,6 +26,7 @@ export class ModalEditarGastoComponent implements OnInit {
     "Proveedores Productos",
     "Proveedores Materia Prima",
     "Proveedores Maquila",
+    "Consumibles",
     "Nómina",
     "Otros",
     "Fletes",
@@ -37,7 +37,7 @@ export class ModalEditarGastoComponent implements OnInit {
     "Transporte",
     "Maquinaria/Equipo",
     "Mantenimiento",
-    "Renta/Servicios"
+    "Servicios/Rentas"
   ];
 
   //Inputs
@@ -56,16 +56,15 @@ export class ModalEditarGastoComponent implements OnInit {
   ngOnInit() {}
 
   ngOnChanges() {
-    
-    let existeGasto = Object.getOwnPropertyNames(this.gasto).includes(
-      "monto"
-    );
+    let existeGasto = Object.getOwnPropertyNames(this.gasto).includes("monto");
 
     if (!existeGasto) {
       return;
     }
 
-    ( this.gasto && this.gasto.proveedor )? this.proveedorNombre = this.gasto.proveedor.nombre: this.proveedorNombre = null;
+    this.gasto && this.gasto.proveedor
+      ? (this.proveedorNombre = this.gasto.proveedor.nombre)
+      : (this.proveedorNombre = null);
     this.monto = this.gasto.monto;
     this.fecha = new Date(this.gasto.fecha);
     this.cargarFechaString();
@@ -167,24 +166,21 @@ export class ModalEditarGastoComponent implements OnInit {
       _id: this.gasto._id,
       descripcion: this.descripcion,
       categoria: this.categoria,
-      proveedor:null,
+      proveedor: null,
       monto: this.monto,
       fecha: this.fecha
     };
 
-    if( this.proveedorSeleccionado){
+    if (this.proveedorSeleccionado) {
       gastoActualizado.proveedor = this.proveedorSeleccionado._id;
-    }else{
-
-      if(this.gasto.proveedor && this.gasto.proveedor._id){
+    } else {
+      if (this.gasto.proveedor && this.gasto.proveedor._id) {
         gastoActualizado.proveedor = this.gasto.proveedor._id;
       }
-      
-      if( this.proveedorNombre.length == 0 ){
-        
-        gastoActualizado.proveedor = 'ninguno';
-      }
 
+      if (this.proveedorNombre.length == 0) {
+        gastoActualizado.proveedor = "ninguno";
+      }
     }
 
     this._gastoService.actualizarGasto(gastoActualizado).subscribe(

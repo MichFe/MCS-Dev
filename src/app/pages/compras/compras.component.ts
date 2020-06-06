@@ -77,6 +77,24 @@ export class ComprasComponent implements OnInit {
     this.obtenerRequisicionesAprobadas(1);
     this.obtenerCompras(1);
     this.obtenerTodasLasCompras(1);
+    this.actualizarCompraActual();
+    
+  }
+
+  actualizarCompraActual(){
+    this._comprasService.buscarCompraPorId( this.compra._id ).subscribe(
+      (resp:any)=>{
+        
+        this.compra = resp.compra;
+
+      },
+      (error)=>{
+        swal(
+          'Error al consultar las requisiciones',
+          error.error.mensaje + ' | ' + error.error.errors.message,
+          'error'
+        );
+      });
   }
 
   registrarCliente(){

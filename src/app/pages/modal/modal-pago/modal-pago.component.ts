@@ -41,7 +41,7 @@ export class ModalPagoComponent implements OnInit {
   registrarPagoAProveedor() {
 
     //Validamos que el monto pagado no sea mayor al saldo pendiente
-    if(this.monto>this.compra.saldoPendiente){
+    if( this.monto > this.compra.saldoPendiente ){
       swal(
         "Monto mayor al saldo",
         "El monto ingresado es mayor al saldo pendiente, favor de ajustarlo",
@@ -62,7 +62,7 @@ export class ModalPagoComponent implements OnInit {
       fecha: this.fecha
     };
 
-    this._pagosService.registraPago(pago).subscribe(
+    this._pagosService.registraPago( pago ).subscribe(
       (resp: any) => {
         let gasto = {
           fecha: resp.pago.fecha,
@@ -74,9 +74,7 @@ export class ModalPagoComponent implements OnInit {
           gastoOperativo: true
         };
 
-        if( this.compra.tipoDeProveedor)
-
-        this._gastoService.crearGasto(gasto).subscribe(
+        this._gastoService.crearGasto( gasto ).subscribe(
           resp => {
             swal(
               "Pago registrado exitosamente",
@@ -92,9 +90,11 @@ export class ModalPagoComponent implements OnInit {
             );
           }
         );
+
         this.actualizarData.emit();
         this.resetearModal();
         $("#modalPago").modal("toggle");
+
       },
       error => {
         swal(

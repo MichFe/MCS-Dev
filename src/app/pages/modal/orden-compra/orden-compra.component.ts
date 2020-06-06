@@ -97,8 +97,10 @@ export class OrdenCompraComponent implements OnInit {
   eliminarPagoDeLaCompra( pago ){
     this._pagosService.eliminarPago( pago._id ).subscribe(
       (resp)=>{
+
         this.pagos = [];
         this.obtenerPagosDeLaCompra();
+        this.actualizarData.emit();
         swal(
           "Pago Eliminado",
           "El Pago se ha eliminado correctamente",
@@ -127,7 +129,7 @@ export class OrdenCompraComponent implements OnInit {
         let requisicionesActualizadasCorrectamente = 0;
         let requisicionesConErrorAlActualizar = 0;
 
-        let numeroDeRequisiciones=resp.compra.requisiciones.length;
+        let numeroDeRequisiciones = resp.compra.requisiciones.length;
         resp.compra.requisiciones.forEach( (requisicion, index) => {
 
           requisicion.estatus = 'Recibido';
@@ -139,14 +141,28 @@ export class OrdenCompraComponent implements OnInit {
 
               requisicionesActualizadasCorrectamente+=1;
 
-              //Ultima requisicion
-              if(index>=(numeroDeRequisiciones-1)){
+              // Ultima requisicion
+              if( index >= (numeroDeRequisiciones-1)){
                 
-                swal(
-                  "Confirmación de recepción de producto",
-                  `Requisiciones actualizadas: ${ requisicionesActualizadasCorrectamente }, errores: ${requisicionesConErrorAlActualizar}`,
-                  "warning"
-                );
+                // UX si no hay errores mostramos palomita si hay errores warning
+                if( requisicionesConErrorAlActualizar > 0 ){
+
+                  swal(
+                    "Confirmación de recepción de producto",
+                    `Requisiciones actualizadas: ${requisicionesActualizadasCorrectamente}, errores: ${requisicionesConErrorAlActualizar}`,
+                    "warning"
+                  );
+                  
+                }else{
+
+                  swal(
+                    "Recepcion Exitosa",
+                    "La o las requisiciones se marcaron como recibidas correctamente",
+                    "success"
+                  );
+
+                }
+                
                 this.refrescarTablas();
                 $('#modalOrdenDeCompra').modal('toggle');
                 
@@ -157,15 +173,29 @@ export class OrdenCompraComponent implements OnInit {
             },
               (error) => {
 
-                requisicionesConErrorAlActualizar+=1;
+                requisicionesConErrorAlActualizar += 1;
 
                 if (index >= (numeroDeRequisiciones-1)) {
 
-                  swal(
-                    "Confirmación de recepción de producto",
-                    `Requisiciones actualizadas: ${requisicionesActualizadasCorrectamente}, errores: ${requisicionesConErrorAlActualizar}`,
-                    "warning"
-                  );
+                  // UX si no hay errores mostramos palomita si hay errores warning
+                  if (requisicionesConErrorAlActualizar > 0) {
+
+                    swal(
+                      "Confirmación de recepción de producto",
+                      `Requisiciones actualizadas: ${requisicionesActualizadasCorrectamente}, errores: ${requisicionesConErrorAlActualizar}`,
+                      "warning"
+                    );
+
+                  } else {
+
+                    swal(
+                      "Recepcion Exitosa",
+                      "La o las requisiciones se marcaron como recibidas correctamente",
+                      "success"
+                    );
+
+                  }
+                  
                   this.refrescarTablas();
                   $('#modalOrdenDeCompra').modal('toggle');
 
@@ -302,6 +332,7 @@ export class OrdenCompraComponent implements OnInit {
     this.deseleccionarRequisicion.emit();
     this.compra=null;
     this.requisiciones=[];
+    this.pagos = null;
   }
 
   eliminarCompra(compra){

@@ -24,6 +24,9 @@ export class ReporteGastosComponent implements OnInit {
   month: number = 0;
   day: number = this.fechaActual.getDate();
 
+  fechaInicial = new Date( 2020, 0, 0 );
+  fechaFinal = new Date( 2020, 7, 31 );
+
   // Variables de Paginado
   paginas: any[] = [
     {
@@ -41,6 +44,8 @@ export class ReporteGastosComponent implements OnInit {
   gastosAnuales: number[] = [];
   cuentasPorPagar: any = [];
   ventasAnuales: any = [];
+  gastosPorCategoria: any = [];
+  objetosGastosPorCategoria: any = [];
 
   mesesArray = [
     "Enero",
@@ -90,9 +95,15 @@ export class ReporteGastosComponent implements OnInit {
 
   //Variables de gráficas
   sparkResize: any;
+
   canvas1: any;
   ctx1: any;
   chart1: any;
+
+  canvas2: any;
+  ctx2: any;
+  chart2: any;
+
   graphColors = [
     "#0a3d62", //Ene
     "#b71540", //Feb
@@ -138,12 +149,70 @@ export class ReporteGastosComponent implements OnInit {
     this.canvas1 = <HTMLCanvasElement>(
       document.getElementById("chart-bar-gastosMensuales")
     );
+    
+    this.canvas2 = <HTMLCanvasElement>(
+      document.getElementById("chart-bar-gastosPorCategoria")
+    );
+
     this.ctx1 = this.canvas1.getContext("2d");
+    this.ctx2 = this.canvas2.getContext("2d");
 
     this.obtenerGastos(1, this.categoriaActual);
+    this.cargarGastosPorCategoriaMes();
+
 
     // Carga inicial de gráficas
     this.configurarGraficas();
+  }
+
+  cargarGastosPorCategoriaMes(){
+
+    this.fechaInicial = new Date( this.year, this.month, 1 );
+    this.fechaFinal = new Date( this.year, this.month + 1, 0 );
+
+    this.obtenerGastosPorCategoria();
+    
+  }
+
+  cargarGastosPorCategoriaAnual(){
+
+    this.fechaInicial = new Date( this.year, 0, 1 );
+    this.fechaFinal = new Date( this.year, 11, 31  );
+
+    this.obtenerGastosPorCategoria();
+  }
+
+  obtenerGastosPorCategoria(){
+    this._gastosService.obtenerTotalGastosPorCategoria( this.fechaInicial, this.fechaFinal ).subscribe( 
+      ( resp:any ) => {
+        this.objetosGastosPorCategoria = resp.gastosPorCategoria;
+
+        this.gastosPorCategoria = [];
+
+        // Definiendo dataset a 0 en cada categoría
+        this.listaGastos.forEach( (categoria) => {
+          this.gastosPorCategoria.push(0);
+        });
+
+        // Cargado la consulta al data set
+        this.listaGastos.forEach( (categoria, indexListaGasto) => {
+          this.objetosGastosPorCategoria.forEach( (categoriaObjectArray) =>{
+            if(categoria == categoriaObjectArray._id){
+              this.gastosPorCategoria[indexListaGasto] = categoriaObjectArray.gastoTotal;
+            }
+          });
+        });
+        
+        this.configurarGraficas();        
+        
+      },
+      error =>{
+        swal(
+          "Error al obtener total de gastos por categoría",
+          error.error.mensaje + " | " + error.error.errors.message,
+          "error"
+        );
+      });
   }
 
   actualizarData() {
@@ -154,6 +223,8 @@ export class ReporteGastosComponent implements OnInit {
     this.obtenerTotalDeGastoAnual(this.year);
     this.obtenerGastosDiarios(this.year, this.month, this.categoriaActual);
     this.obtenerSaldoPendienteYMontoPagado(this.year, this.categoriaActual);
+    this.obtenerGastosPorCategoria();
+    this.cargarGastosPorCategoriaMes();
   }
 
   obtenerTotalDeGastoOperativo(year) {
@@ -322,6 +393,7 @@ export class ReporteGastosComponent implements OnInit {
         this.day = 1;
         this.obtenerGastosDiarios(this.year, this.month);
         this.obtenerGastos(1, this.categoriaActual);
+        this.actualizarData();
         this.configurarGraficas();
       })
       .catch();
@@ -533,5 +605,39 @@ export class ReporteGastosComponent implements OnInit {
         }
       }
     });
+
+    this.chart2 ? this.chart2.destroy() : null;
+    this.chart2 = new Chart(this.ctx2, {
+      type: "horizontalBar",
+      data: {
+        labels: this.listaGastos,
+        datasets: [
+          {
+            label: "Gastos por Categoría",
+            backgroundColor: this.graphColors,
+            borderColor: this.graphColors,
+            data: this.gastosPorCategoria
+          }
+        ]
+      },
+
+      // Configuration options go here
+      options: {
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var index = tooltipItem.index;
+              var lecturaData = data.datasets[tooltipItem.datasetIndex];
+              let monto: number = data.datasets[0].data[index];
+
+              return (
+                "  $" + monto.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              );
+            }
+          }
+        }
+      }
+    });
+
   }
 }

@@ -13,6 +13,13 @@ export class GastoService {
     private _usuarioService: UsuarioService
   ) { }
 
+  obtenerTotalGastosPorCategoria( fechaInicial, fechaFinal ){
+    let token = this._usuarioService.token;
+    let url = URL_SERVICIOS + `/gasto/gastosPorCategoria?token=${ token }&fechaInicial=${ fechaInicial }&fechaFinal=${ fechaFinal }`;
+
+    return this.http.get(url);
+  }
+
   obtenerGastosPorProveedor(proveedor, desde){
     let token = this._usuarioService.token;
     let url = URL_SERVICIOS + `/gasto/gastosPorProveedor/${ proveedor._id }?token=${ token }&desde=${ desde }`;

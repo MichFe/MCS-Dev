@@ -167,6 +167,27 @@
   </div>
   <!-- FIN de Elemento grafica de barras de ventas mensuales -->
 
+    <!-- Elemento grafica de barras de gastos por categoría -->
+    <div class="row">
+      <div class="col col-md-12">
+        <div class="card text-center">
+          <div class="card-title">
+            <h4>Gastos por categoría</h4>
+          </div>
+          <div class="botonera">
+            <button class="btn btn-sm btn-info waves-effect waves-light"
+              (click)="cargarGastosPorCategoriaMes()">Mes</button>
+            <button class="btn btn-sm btn-primary waves-effect waves-light m-l-20"
+              (click)="cargarGastosPorCategoriaAnual()">Año</button>
+          </div>
+          <div class="card-body">
+            <canvas id="chart-bar-gastosPorCategoria" height="200"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- FIN de Elemento grafica de barras de gastos por categoría -->
+
   <!-- Top 5 ventas -->
   <div class="row"
        *ngIf="gastos.length>0">
@@ -203,9 +224,6 @@
           </div>
         </div>
       </div>
-
-     
-     
 
       <!-- Componente de paginado   -->
       <div>

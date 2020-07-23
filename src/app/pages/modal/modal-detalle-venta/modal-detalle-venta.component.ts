@@ -137,6 +137,23 @@ export class ModalDetalleVentaComponent implements OnInit,OnChanges {
 
   }
 
+  abrirModalNotaDeVenta(){
+
+    $("#modalDetalleVenta").modal("toggle");
+    $("#modalDetalleVenta").on("hidden.bs.modal", function (event) {
+      // Open your second one in here
+      $("#notaVenta").modal("toggle");
+      $("#modalDetalleVenta").off("hidden.bs.modal");
+
+      $("#notaVenta").on("hidden.bs.modal", function(event) {
+        $("#modalDetalleVenta").modal("toggle");
+        $("#notaVenta").off("hidden.bs.modal");
+      });
+
+    });
+    
+  }
+
   recargarVenta(){
     this._ventasService.obtenerVentaPorId(this.venta._id)
       .subscribe(

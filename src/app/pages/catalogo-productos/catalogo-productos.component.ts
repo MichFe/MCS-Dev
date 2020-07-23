@@ -27,6 +27,8 @@ export class CatalogoProductosComponent implements OnInit {
   indiceDeProductoLista:number;
   descripcionProductoLista:string='';
 
+  ventaCreada:any;
+
   incluirIva: string;
 
   //Paginado
@@ -68,6 +70,10 @@ export class CatalogoProductosComponent implements OnInit {
   ) {}
 
   ngOnInit() {}
+
+  actualizarNuevaVenta( venta ){
+    this.ventaCreada = venta;
+  }
 
   agregarDescuentoTotal(){
 

@@ -188,7 +188,11 @@
   [totalCarrito]="totalCarrito"
   [totalDescuento]="totalDescuento"
   [iva]="ivaCarrito"
-  (vaciarCarrito)="resetearCarrito()"></app-ticket>
+  (vaciarCarrito)="resetearCarrito()"
+  (ventaCreada)="actualizarNuevaVenta($event)"></app-ticket>
+
+  <app-modal-nota-de-venta
+    [venta]="ventaCreada"></app-modal-nota-de-venta>
 
   <app-nuevo-cliente
     (clienteNuevo)="registrarClienteNuevo($event)"

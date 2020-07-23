@@ -69,6 +69,7 @@ import { ConfiguracionMenuUsuariosComponent } from './configuracion-menu-usuario
 import { GestionEmpleadosComponent } from './gestion-empleados/gestion-empleados.component';
 import { CambioPasswordComponent } from './cambio-password/cambio-password.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
+import { ModalNotaDeVentaComponent } from './modal/modal-nota-de-venta/modal-nota-de-venta.component';
 
 
 
@@ -134,7 +135,8 @@ import { ProveedoresComponent } from './proveedores/proveedores.component';
     ConfiguracionMenuUsuariosComponent,
     GestionEmpleadosComponent,
     CambioPasswordComponent,
-    ProveedoresComponent
+    ProveedoresComponent,
+    ModalNotaDeVentaComponent
   ],
   exports: [
     DashboardComponent,

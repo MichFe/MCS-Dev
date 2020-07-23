@@ -1,0 +1,241 @@
+<div class="modal fade" id="notaVenta" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1">
+
+  <div class="modal-dialog modal-lg" role="document">
+
+    <div class="modal-content">
+      <!-- Modal header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLabel1">Venta</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+      </div>
+      <!-- Fin de Modal header -->
+
+      <!-- Modal Body -->
+      <div class="modal-body p-l-5 p-r-5 p-t-0 p-b-0">
+        <div class="card-body">
+
+          <div id="documento-nota"
+               class="container print-content"
+               *ngIf="venta && venta.carrito">
+              
+            <!-- Header de cotizacion -->
+            <div class="row m-b-5">
+
+              <div class="col col-md-12 m-b-30">
+                <img class="logo pull-left" src="../assets/images/mobla-logo.png" alt="">
+              </div>
+              
+            </div>
+            
+            <div class="row">
+              <div class="col col-md-12">
+                <span class="pull-left">
+                  Cliente: {{ venta.cliente.nombre }}
+                </span>
+
+                <span class="pull-right">
+                  León Gto. a {{ venta.fecha | date:'fullDate'}}
+                </span>
+              </div>
+            </div>
+            <!-- Fin de header de cotizacion -->
+
+            <!-- Tabla de productos -->
+            <div class="row m-b-30">
+              <div class="col col-md-12 p-l-10 p-r-10 table-responsive">
+            
+                <table id="tablaCotizacion" class="table editable-table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Imágen</th>
+                      <th>Producto</th>
+                      <th>Descripción</th>
+                      <th>Cant.</th>
+                      <th [ngClass]="{'no-print': totalDescuento==0}">Descuento/Pieza</th>
+                      <th>Precio</th>
+                      <th>Importe</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let producto of venta.carrito; let i=index;" (change)="calcularDescuento()">
+                      <td class="text-center">
+            
+                        <div *ngIf="producto.img">
+                          <img class="product-image" [src]="producto.img | imagen:'producto'"
+                            *ngIf="!producto.img.includes('cotizacion')">
+                          <img class="product-image" [src]="producto.img | imagen:'cotizacion'"
+                            *ngIf="producto.img.includes('cotizacion')">
+                        </div>
+            
+                        <div *ngIf="!producto.img">
+                          <img class="product-image" [src]="producto.img | imagen:'producto'">
+                        </div>
+            
+                      </td>
+                      <td class="text-center">{{ producto.codigo }}</td>
+                      <td class="text-center">{{ producto.nombre }}</td>
+                      <td class="text-center">
+                        {{ producto.cantidad }}
+                      </td>
+                      <td class="text-center" [ngClass]="{
+                                        'no-print':totalDescuento==0
+                                      }">
+                        {{ producto.descuento | currency:'MXN' }}
+                      </td>
+                      <td class="text-center">
+                        {{ producto.precio | currency:'MXN' }}
+                      </td>
+                      <td class="text-center">
+                        {{ ( (producto.precio - ((producto.descuento)?producto.descuento:0 )) * producto.cantidad ) | currency:'MXN' }}
+                      </td>
+                      
+                    </tr>
+            
+                  </tbody>
+            
+                </table>
+            
+                <table class="table totales">
+                  <tr [ngClass]="{'oculto': totalDescuento==0}">
+                    <th class="txt-left"><strong>IMPORTE</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ venta.subtotal | currency:'MXN' }}</th>
+                  </tr>
+                  <tr [ngClass]="{'oculto': totalDescuento==0}">
+                    <th class="txt-left"><strong>DESCUENTO</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ totalDescuento | currency:'MXN' }}</th>
+                  </tr>
+                  <tr [ngClass]="{
+                                'no-print': venta.iva<=0,
+                                'sin-iva': venta.iva<=0
+                              }">
+                    <th class="txt-left"><strong>SUBTOTAL</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ venta.subtotal - totalDescuento | currency:'MXN' }}</th>
+                  </tr>
+                  <tr [ngClass]="{
+                                    'no-print': venta.iva<=0,
+                                    'sin-iva': venta.iva<=0
+                                  }">
+                    <th class="txt-left"><strong>IVA</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ venta.iva | currency:'MXN' }}</th>
+                  </tr>
+                  <tr>
+                    <th class="txt-left"><strong>TOTAL</strong></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th [ngClass]="{'no-print': totalDescuento==0}"></th>
+                    <th></th>
+                    <th class="text-center">{{ venta.subtotal - totalDescuento + venta.iva | currency:'MXN' }}</th>
+                  </tr>
+                </table>
+            
+              </div>
+            </div>
+            <!-- Fin de tabla de productos -->
+
+            <!-- Terminos y Condiciones -->
+            <div class="terminos">
+              <h3 class="titulo-terminos">TERMINOS Y CONDICIONES</h3>
+              <p class="justificado">Los precios incluyen flete siempre y cuando sea dentro del área metropolitana de León, Gto. La
+                mercancía será enviada
+                sólo una vez sin cargos, si no es posible realizar la entrega por situaciones ajenas a MOBLA, el siguiente flete
+                correrá
+                por parte del cliente. A partir de que se dé aviso al cliente que la mercancía está lista para su entrega, el
+                cliente
+                cuenta con 15 días naturales para recibir el pedido, a partir del día 16 se cobrara el 1% diario del total de la
+                Nota de
+                Venta por costos de almacenamiento. Ningún proyecto incluye trabajos de albañilería, electricidad, fontanería,
+                pintura o
+                similares. No se aceptan cambios ni modificaciones al proyecto una vez firmado este documento y recibido el
+                anticipo. En
+                caso de cancelación no se regresa el anticipo. Nuestros productos están garantizados contra cualquier defecto de
+                fabricación siempre y cuando se usen de forma adecuada y para lo que fueron diseñados. Buscamos que la experiencia
+                de
+                fabricar proyectos bajo diseño con nosotros sea lo más agradable posible. Para lograr que la información se
+                transmita de
+                una manera muy clara; es necesario llenar una “hoja de Producto bajo diseño”, contar con una imagen clara de lo que
+                se
+                busca y marcar todos los detalles en dicho documento, ya que, si no viene estipulado ahí, no se va a producir. Todo
+                lo
+                que no esté o no quede claro en esta “hoja de Producto bajo diseño” se hará a consideración de nuestros maestros
+                carpinteros, no se aceptan reclamaciones por algo que no se especificó o no viene claro en la imagen del producto
+                que se
+                esté elaborando. En proyectos bajo diseño pueden existir algunas variaciones, el cliente al aceptar el proyecto
+                declara
+                que es consciente del riesgo.</p>
+            
+              <h3 class="titulo-terminos">POLITICA DE ENTREGAS</h3>
+              <p class="justificado">Para <strong class="bold">productos de línea</strong> el tiempo de entrega es de 30 a 45 días
+                hábiles. A partir de que se recibe el anticipo y se
+                firma este documento.</p>
+            
+              <p class="justificado">Para <strong class="bold">productos bajo diseño o especiales</strong> el tiempo de entrega es
+                de 45 días hábiles. En este caso el tiempo de entrega
+                corre a partir de que se firma(n)/ autoriza(n) la(s) “Hoja(s) de Producto bajo diseño”, NO A PARTIR DE LA FECHA DEL
+                ANTICIPO. Para poder pasar la orden a producción es necesario contar con las “Hoja(s) de Producto bajo diseño”
+                completas, firmadas/ autorizadas. En caso de que por razones ajenas a Mobla no sea posible pasar la orden a
+                producción,
+                no nos hacemos responsables por el incremento en el tiempo de fabricación. Ej. Si quedan especificaciones pendientes
+                para la elaboración de su pedido, hasta que nos proporcionen dichas especificaciones se podrá ingresar la orden a
+                producción.</p>
+            </div>
+            <!-- Fin de Terminos y Condiciones -->
+
+            <!-- Firma de Terminos y Condiciones -->
+            <div class="firma">
+              <p class="text-center firma-top">Acepto términos y condiciones</p>
+
+              <p class="text-center firma-bottom">Nombre y firma</p>
+            </div>
+            <!-- Firma de Terminos y Condiciones -->
+
+           </div>
+
+        </div>
+        </div>
+        <!-- Final de Modal Body -->
+        
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+        
+          <!-- Botones -->
+        
+          <button type="button"
+            class="btn btn-success waves-effect waves-light" (click)="imprimirNota()">Imprimir</button>
+        
+          <button type="button" class="btn btn-primary waves-effect waves-light"
+                  data-dismiss="modal" aria-label="Close">Regresar</button>
+        
+          <!-- <button type="button" 
+                        (click)="resetearModal()" 
+                        class="btn btn-danger waves-effect waves-light" 
+                        data-dismiss="modal">Salir</button> -->
+          <!-- Fin de botones -->
+        
+        </div>
+        <!-- Fin de Modal Footer -->
+        
+    </div>
+  </div>
+</div>

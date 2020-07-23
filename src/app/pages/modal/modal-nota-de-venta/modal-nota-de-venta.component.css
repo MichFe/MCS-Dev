@@ -1,0 +1,75 @@
+img.logo{
+    width:150px;
+}
+
+th{
+    text-align: center;
+}
+
+th.txt-left{
+    text-align: left;
+}
+
+td{
+    vertical-align: middle;
+    text-align: center;
+}
+
+div.politicas{
+    font-size:8px;
+}
+
+img.product-image{
+    height: 50px;
+    width: 50px;
+    object-fit: cover;
+    
+    border-radius: 5px;
+}
+
+.totales th{
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 5px;
+}
+
+.oculto{
+    display: none;
+}
+
+.sin-iva{
+    color: darkgray;
+}
+
+.titulo-terminos{
+    font-size: 10px;
+}
+
+p.justificado{
+    font-size: 8px;
+    text-align: justify;
+}
+
+.bold{
+    font-weight: 600;
+}
+
+.firma-top{
+    margin-bottom: 100px;
+}
+
+.firma-bottom{
+    border-top: 1px solid rgb(170, 176, 179);
+    width: 50%;
+    margin: 0 auto;
+}
+
+
+
+@media print {
+
+    .no-print {
+        display: none;
+    }
+    
+}

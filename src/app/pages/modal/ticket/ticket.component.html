@@ -309,7 +309,6 @@
               </div>
               <!-- FIN de Pago con otro -->
 
-
             </div>
             <!-- Fin de tabla de productos -->
 
@@ -336,6 +335,12 @@
                 type="button" 
                 class="btn btn-success waves-effect waves-light" 
                 (click)="imprimirTicket()">Imprimir</button>
+        
+        <button [ngClass]="{'disabled': !ventaConfirmada}"
+                *ngIf="ventaConfirmada"
+                type="button"
+                class="btn btn-primary waves-effect waves-light"
+                (click)="abrirNotaDeVenta()">Nota de Venta</button>
 
         <button type="button" 
                 *ngIf="!ventaConfirmada"

@@ -124,3 +124,18 @@ li.cliente:hover{
     margin-bottom: 10px;
 }
 
+.titulo-terminos{
+    font-size: 12px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.justificado{
+    text-align: justify !important;
+    font-size: 12px;
+}
+
+.bold{
+    font-weight: 600;
+}
+

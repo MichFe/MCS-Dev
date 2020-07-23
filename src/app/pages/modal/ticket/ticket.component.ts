@@ -30,6 +30,9 @@ export class TicketComponent implements OnInit {
   @Output()
   vaciarCarrito: EventEmitter<any> = new EventEmitter();
 
+  @Output()
+  ventaCreada: EventEmitter<any> = new EventEmitter();
+
   //Variables
   tipoPago: string;
   unidadDeNegocio: string = this._usuarioService.usuario.unidadDeNegocio;
@@ -62,6 +65,24 @@ export class TicketComponent implements OnInit {
     this.cargarFechaString();
     
     
+  }
+
+  abrirNotaDeVenta(){
+
+    $("#ticketVenta").modal("toggle");
+
+    $("#ticketVenta").on("hidden.bs.modal", function (event) {
+      // Open your second one in here
+      $("#notaVenta").modal("toggle");
+      $("#ticketVenta").off("hidden.bs.modal");
+    });
+
+    $("#notaVenta").on("hidden.bs.modal", function(event) {
+      // Open your second one in here
+      $("#ticketVenta").modal("toggle");
+      $("#notaVenta").off("hidden.bs.modal");
+    });
+
   }
 
   cargarFechaString(){
@@ -294,6 +315,7 @@ export class TicketComponent implements OnInit {
           this._ventasService.generarVenta(venta).subscribe(
             (resp: any) => {
               this.ventaConfirmada=true;
+              this.ventaCreada.emit(resp.venta);
 
               this.registrarPago(resp.venta, this.efectivo);
 

@@ -66,14 +66,20 @@
 }
 
 @media print {
-    body * {
-        visibility:hidden;
+    body *{
+        visibility: hidden;
     }
+    body app-root {
+        display: none;
+
+    }
+    
     #printSection, #printSection * {
-        visibility:visible;
+        visibility: visible;
+        
     }
     #printSection {
-        position:absolute;
+        position: absolute;
         left:0;
         top:0;
     }

@@ -32,7 +32,7 @@ export class ModalNotaDeVentaComponent implements OnInit {
 
       this.venta.carrito.forEach((producto) => {
         if (producto.descuento) {
-          this.totalDescuento += producto.descuento;
+          this.totalDescuento += ( producto.descuento * producto.cantidad );
         }
       });
 
